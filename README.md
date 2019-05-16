@@ -1,1 +1,5 @@
-To Be boilerplate for PERN app
+Boilerplate for React, Express, Node
+
+Todo
+-Postgres
+-Test code
