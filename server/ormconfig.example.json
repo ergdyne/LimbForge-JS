@@ -1,0 +1,17 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "tempe",
+  "password": "[email protected]@r3",
+  "database": "tempe",
+  "synchronize": false,
+  "migrationsRun": true,
+  "logging": false,
+  "entities": [
+     "dist/entity/**/*.js"
+  ],
+  "cli": {
+     "entitiesDir": "src/entity"
+   }
+}
