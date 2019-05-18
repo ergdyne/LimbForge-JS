@@ -2,7 +2,7 @@ import express from 'express'
 import 'reflect-metadata'
 import {createConnection} from 'typeorm'
 import bodyParser from 'body-parser'
-import {Account} from './entity/Account'
+import {User} from './entity/Account'
 
 createConnection().then(async (connection)=>{
   await connection.synchronize()
@@ -11,7 +11,7 @@ createConnection().then(async (connection)=>{
   app.use(bodyParser.json())
   
   app.get('/create', async(req,res)=>{
-    let user = new Account()
+    let user = new User()
     user.email = 'j@ergdyne.com'
     user.password = 'this is a strange hash'
     return connection.manager
@@ -20,7 +20,7 @@ createConnection().then(async (connection)=>{
   })
 
   app.get('/all', async(req,res)=>{
-    let userRepo = connection.getRepository(Account)
+    let userRepo = connection.getRepository(User)
     return userRepo.find().then(users => res.status(200).send(users))
   })
 

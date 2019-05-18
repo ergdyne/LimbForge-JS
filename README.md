@@ -1,5 +1,4 @@
-Boilerplate for React, Express, Node
+Boilerplate for React, Express, Node, Postgres
 
-Todo
--Postgres
--Test code
+Uses TypeScript, TypeORM
+
