@@ -1,5 +1,4 @@
 import React from 'react'
-import {Route, Switch, Redirect} from 'react-router-dom'
 import style from './App.css'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
@@ -7,10 +6,11 @@ import {Landing,Patients} from './routes/routes'
 import {navData} from './testData'
 
 export default class App extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-      page:''
+      page:`patients`,
+      loggedIn: true
     }
   }
 
@@ -22,7 +22,6 @@ export default class App extends React.Component {
 
   content = () =>{
     switch (this.state.page){
-      case '': return(<Landing/>)
       case 'patients': return(<Patients/>)
       default: return(<Landing/>)
     }
@@ -34,6 +33,7 @@ export default class App extends React.Component {
         <NavBar 
           data={navData} 
           updatePage={this.updatePage}
+          loggedIn={this.state.loggedIn}
         />
         {this.content()}
         <br />
