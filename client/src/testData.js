@@ -26,8 +26,9 @@ const ampCauses = [
 const past = new Date(1950,1,1)
 const amp = new Date(2012,2,2)
 
-function patient(first, last){
+function patient(first, last,id){
   return {
+    id:id,
     firstName: first,
     lastName: last,
     dateOfBirth: past,
@@ -36,13 +37,14 @@ function patient(first, last){
     country: `USA`,
     gender: `male`,
     amputationLevel: `transradial`,
-    amputationCause: ampCauses[(Math.round(Math.random()*ampCauses.length))]
+    amputationCause: ampCauses[(Math.round(Math.random()*(ampCauses.length-1)))]
   }
 }
 
-const patients = [`A`,`B`,`C`,`E`,`F`].map(x => patient(x,`Z`))
+const patients = [`A`,`B`,`C`,`D`,`E`,`F`,`G`].map((x,i) => patient(x,`Z`,i))
 
 const patientColHeaders = [
+  {accessor: `id`, header: ``, type:`id`},
   {accessor: `firstName`, header: `First Name`, type:`string`},
   {accessor: `lastName`, header: `Last Name`, type:`string`},
   {accessor: `dateOfBirth`, header: `Date of Birth`, type:`date`},
