@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 export default class NavBar extends React.Component{
   constructor(){
@@ -9,7 +10,7 @@ export default class NavBar extends React.Component{
   /* TODO add highlight current and convert to component*/
   menuItems = ()=>{
     return(
-      this.props.data.menu.map((item)=>{
+      this.props.menu.map((item)=>{
         return(
           <a 
             className="bar-item button hide-small padding-large hover-white"
@@ -44,7 +45,7 @@ export default class NavBar extends React.Component{
           <a 
             className="bar-item button padding-large theme-d4"
             onClick={()=>this.props.updatePage(
-              (this.props.loggedIn)?this.props.data.home:'')}
+              (this.props.loggedIn)?this.props.home:'')}
           >
             <i className="fa fa-home margin-right"></i>
             {`Logo`}
@@ -57,4 +58,14 @@ export default class NavBar extends React.Component{
       </div>
     )
   }
+}
+
+NavBar.propTypes = {
+  home: PropTypes.string.isRequired,
+  loggedIn: PropTypes.bool.isRequired,
+  menu: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    link: PropTypes.string.isRequired
+  })),
+  updatePage: PropTypes.func.isRequired
 }

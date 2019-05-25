@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
     "build": "webpack --mode production",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --require jsdomSetup.js --require @babel/register --require ignore-styles --require isomorphic-fetch --recursive"
   },
   "keywords": [],
   "author": "",
@@ -16,9 +16,17 @@
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.4.4",
     "babel-loader": "^8.0.6",
+    "chai": "^4.2.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.13.1",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
+    "ignore-styles": "^5.0.1",
+    "isomorphic-fetch": "^2.2.1",
+    "jsdom": "^15.1.0",
+    "mocha": "^6.1.4",
     "prop-types": "^15.7.2",
     "webpack": "^4.31.0",
     "webpack-cli": "^3.3.2",

@@ -5,12 +5,12 @@ import Patient from '../components/Patient';
 
 //Incoming data should be only USER state
 //Patients component will connect to DB to get patient data
-//Will store locally any loading state
+//Will store locally any loading state and do all the patient transaction with DB at this level or below.
 export default class Patients extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      page: 'patients',
+      level: 'patients',
       patients: [],
       patient: {
         id: null,
@@ -21,8 +21,8 @@ export default class Patients extends React.Component {
         city: '',
         country: '',
         gender: '',
-        amputationlevel: '',
-        amputationCauses: '',
+        amputationLevel: '',
+        amputationCause: '',
         measurements: [],
       }
     }
@@ -41,16 +41,17 @@ export default class Patients extends React.Component {
   }
 
   //umm
-  back = () => this.setState({page:'patients'})
+  back = () => this.setState({level:'patients'})
 
   viewPatient = (patientID) => {
-    this.setState({ page: 'patient' })
+    this.setState({ level: 'patient' })
     //Temporary... will be go fetch patient info
     this.setState({ patient: patients[patientID] })
   }
 
-  content = () => {
-    switch (this.state.page) {
+  //Content switching is zooming in and out
+  level = () => {
+    switch (this.state.level) {
       case 'patient': return(
         <Patient 
           patient={this.state.patient}
@@ -75,7 +76,7 @@ export default class Patients extends React.Component {
             <div className="col m12">
               <div className="card round white">
                 <div className="container padding">
-                  {this.content()}
+                  {this.level()}
                 </div>
               </div>
             </div>
@@ -83,6 +84,7 @@ export default class Patients extends React.Component {
         </div>
       </div>
     )
-
   }
 }
+
+//No prop types yet...

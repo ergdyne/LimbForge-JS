@@ -2,7 +2,7 @@ import React from 'react'
 import style from './App.css'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
-import {Landing,Patients} from './routes/routes'
+import {Landing,Patients, NewPatient} from './routes/routes'
 import {navData} from './testData'
 
 export default class App extends React.Component {
@@ -10,7 +10,7 @@ export default class App extends React.Component {
     super(props)
     this.state = {
       page:`patients`,
-      loggedIn: true
+      loggedIn: navData.loggedIn
     }
   }
 
@@ -20,9 +20,13 @@ export default class App extends React.Component {
     console.log(this.state.page)
   }
 
+  //This is something that should be done with someting like React-Router, but it wasn't working right.
+  //Switching out major content areas (routes) with a common Nav and Footer
+  //These areas are roughly define by shared state/state branches.
   content = () =>{
     switch (this.state.page){
       case 'patients': return(<Patients/>)
+      case 'new-patient': return(<NewPatient/>)
       default: return(<Landing/>)
     }
   }
@@ -31,11 +35,12 @@ export default class App extends React.Component {
     return (
       <div className="theme-l5">
         <NavBar 
-          data={navData} 
+          menu={navData.menu}
+          home={navData.home} 
           updatePage={this.updatePage}
           loggedIn={this.state.loggedIn}
         />
-        {this.content()}
+        {this.state.loggedIn?this.content():<Landing/>}
         <br />
         <Footer/>
       </div>

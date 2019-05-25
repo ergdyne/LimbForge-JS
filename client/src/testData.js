@@ -3,7 +3,7 @@ const navData = {
   home:`patients`,
   menu:[
     {text:`Patients`,link:`patients`},
-    {text:`Something`,link:`something`}
+    {text:`New Patient`,link:`new-patient`}
   ]
 }
 
