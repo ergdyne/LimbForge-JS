@@ -1,10 +1,8 @@
-Boilerplate for React, Express, Node, Postgres
-
-Uses TypeScript, TypeORM
-
 Documentation will attempt to lean on the side of too much as this project may be updated by a casual contributor. Please try to help keep everything understandable!
 
-An important thing to keep in mind: as long as the interfaces of the code are well structured, tangles can be undone.
+REMEMBER: as long as the interfaces of the code are well structured, tangles can be undone.
+
+RANDO: on the question of using semicolins to use or not, I went with not. Where you see them is copied code.
 
 #Incomplete
 Development Setup
