@@ -8,25 +8,12 @@ export default class NewPatient extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      patient: {
-        id: null,
-        firstName: '',
-        lastName: '',
-        dateOfBirth: new Date(),
-        dateOfAmputation: new Date(),
-        city: '',
-        country: '',
-        gender: '',
-        amputationLevel: '',
-        amputationCause: '',
-        measurements: [],
-      }
     }
   }
 
-  handleFormSubmit = (event) => {
+  handleFormSubmit = (patient) => {
     console.log('submit called back')
-    event.preventDefault()
+    console.log(patient)
   }
   
   render() {
@@ -35,8 +22,10 @@ export default class NewPatient extends React.Component {
         <div className="card round white"><div className="container padding">
           <FormBuilder
             key={'patient'}
-            inputs={patientInputs}
+            elements={patientInputs}
             onSubmit={this.handleFormSubmit}
+            submitValue={`Save`}
+            preventDefault={true}
           />
         </div></div>
       </div></div></div></div>

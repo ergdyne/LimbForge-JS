@@ -79,7 +79,7 @@ const patientInputs = [
   {accessor: `city`, label: `City`, type:`string`, input: `text`, default:''},
   {accessor: `country`, label: `Country`, type:`string`, input: `text`, default:''},
   {accessor: `gender`, label: `Gender`, type:`string`, input: `radio`, default:'', options: genders},
-  {accessor: `amputationCause`, label: `Amputation Cause`, type:`string`, input: `select`, default:'', options: amputationCauses}
+  {accessor: `amputationCause`, label: `Amputation Cause`, type:`string`, input: `select`, options: amputationCauses}
   //Amputation level and right/left are something are something special, so not on this
 ]
 

@@ -19,6 +19,7 @@ export default class Patient extends React.Component {
   }
 }
 
+//WELL, this might not be valid any longer...
 Patient.propTypes = {
   patient: PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -32,6 +33,6 @@ Patient.propTypes = {
     amputationLevel: PropTypes.string.isRequired,
     amputationCause: PropTypes.string.isRequired,
     measurements: PropTypes.array,
-  }),
+  }).isRequired,
   back: PropTypes.func.isRequired
 }

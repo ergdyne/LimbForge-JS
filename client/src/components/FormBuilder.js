@@ -1,7 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
+//A component that takes a list of elements and a submit function and generates a form
 export default class FormBuilder extends React.Component {
   constructor(props) {
     super(props)
@@ -10,7 +12,7 @@ export default class FormBuilder extends React.Component {
   }
 
   componentWillMount() {
-    this.props.inputs.map(element =>{
+    this.props.elements.map(element =>{
       var state = this.state
       state[element.accessor] = element.default
       this.setState(state)
@@ -33,7 +35,6 @@ export default class FormBuilder extends React.Component {
   }
 
   generateFormElement = (element) => {
-    console.log(element.input)
     switch (element.input) {
       case 'date': {
         return (<div key={element.accessor}>
@@ -100,17 +101,33 @@ export default class FormBuilder extends React.Component {
   render() {
     return (
       <form onSubmit={() => {
-        console.log('tying to callback')
-        console.log(this.state)
-        event.preventDefault()
-        this.props.onSubmit
+        if(this.props.preventDefault){event.preventDefault()}
+        this.props.onSubmit(this.state)
       }}>
-        {this.props.inputs.map(x => this.generateFormElement(x))}
-        <input className='FormBuilder-button' value="Submit" type="submit" />
+        {this.props.elements.map(x => this.generateFormElement(x))}
+        <input className='FormBuilder-button' value={(this.props.submitValue)?this.props.submitValue:`Submit`} type="submit" />
       </form>
     )
   }
 }
 
-//handleFormSubmit
-//inputs
+
+FormBuilder.propTypes = {
+ onSubmit: PropTypes.func.isRequired,
+ inputs: PropTypes.arrayOf(
+   PropTypes.shape({
+      accessor: PropTypes.string.isRequired, 
+      label: PropTypes.string, 
+      type: PropTypes.string.isRequired, 
+      input: PropTypes.string.isRequired, 
+      default:PropTypes.string, 
+      options: PropTypes.arrayOf(
+        PropTypes.shape({
+          label: PropTypes.string,
+          value: PropTypes.string.isRequired
+        })
+      )
+   })
+ )
+}
+
