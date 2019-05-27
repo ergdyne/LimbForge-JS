@@ -71,15 +71,15 @@ const patientColHeaders = [
 ]
 
 const patientInputs = [
-  {accessor: `firstName`, label: `First Name`, type:`string`, input: `text`},
-  {accessor: `lastName`, label: `Last Name`, type:`string`, input: `text`},
-  {accessor: `dateOfBirth`, label: `Date of Birth`, type:`date`, input: `date`},
-  {accessor: `dateOfAmputation`, label: `Amputation Date`, type:`date`, input: `date`},
+  {accessor: `firstName`, label: `First Name`, type:`string`, input: `text`, default:''},
+  {accessor: `lastName`, label: `Last Name`, type:`string`, input: `text`, default:''},
+  {accessor: `dateOfBirth`, label: `Date of Birth`, type:`date`, input: `date`, default:new Date()},
+  {accessor: `dateOfAmputation`, label: `Amputation Date`, type:`date`, input: `date`, default:new Date()},
   //There is a google library, but we will just feed a default by User and otherwise they can put what they want
-  {accessor: `city`, label: `City`, type:`string`, input: `text`},
-  {accessor: `country`, label: `Country`, type:`string`, input: `text`},
-  {accessor: `gender`, label: `Gender`, type:`string`, input: `radio`, options: genders},
-  {accessor: `amputationCause`, label: `Amputation Cause`, type:`string`, input: `select`, options: amputationCauses}
+  {accessor: `city`, label: `City`, type:`string`, input: `text`, default:''},
+  {accessor: `country`, label: `Country`, type:`string`, input: `text`, default:''},
+  {accessor: `gender`, label: `Gender`, type:`string`, input: `radio`, default:'', options: genders},
+  {accessor: `amputationCause`, label: `Amputation Cause`, type:`string`, input: `select`, default:'', options: amputationCauses}
   //Amputation level and right/left are something are something special, so not on this
 ]
 
