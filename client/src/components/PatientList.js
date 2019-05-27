@@ -46,7 +46,7 @@ PatientList.propTypes = {
   patientColHeaders: PropTypes.arrayOf(
     PropTypes.shape({
       accessor: PropTypes.string.isRequired,
-      header: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
       type: PropTypes.string.isRequired
     })
   )

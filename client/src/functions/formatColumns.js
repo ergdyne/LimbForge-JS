@@ -7,7 +7,7 @@ export default function formatColumns(columns, onClick, caption) {
   return (
     columns.map(x => {
       return ({
-        Header: x.header,
+        Header: x.label,
         accessor: x.accessor,
         Cell: props => {
           switch (x.type) {
