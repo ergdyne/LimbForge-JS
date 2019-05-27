@@ -17,7 +17,7 @@ export default class Patients extends React.Component {
         firstName: '',
         lastName: '',
         dateOfBirth: '',
-        dateOfAmpputation: '',
+        dateOfAmputation: '',
         city: '',
         country: '',
         gender: '',

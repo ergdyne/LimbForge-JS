@@ -11,8 +11,8 @@ export default class NewPatient extends React.Component {
         id: null,
         firstName: '',
         lastName: '',
-        dateOfBirth: '',
-        dateOfAmpputation: '',
+        dateOfBirth: new Date(),
+        dateOfAmputation: new Date(),
         city: '',
         country: '',
         gender: '',
@@ -26,24 +26,49 @@ export default class NewPatient extends React.Component {
   
   handleFormSubmit =  (event)=>{
     console.log('submit')
+    console.log(this.state.patient)
     event.preventDefault()
+  }
+
+  handleInputChange =(event) => {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value
+    const name = target.name
+    this.updatePatient(name,value)
+  }
+
+  updatePatient = (accessor,value)=>{
+    var newPatient = this.state.patient
+    newPatient[accessor] = value
+    this.setState({patient: newPatient})
+  }
+
+  dateChange(element){
+    return (date) =>{
+      this.updatePatient(element.accessor,date)
+    }
   }
 
   generateFormElement = (element)=>{
     switch (element.input) {
       case 'date': {
-        return(<div>
+        return(<div key={element.accessor}>
         <span>{`${element.header}: `}</span>
         <DatePicker 
           key={element.accessor}
-          selected={new Date()}
-          onChange={(x)=>{
-            this.setState({[element.accessor]:x})
-          }}
+          selected={this.state.patient[element.accessor]}
+          onChange={this.dateChange(element)}
         />
       </div>)}
-      default: return(<div>
-        <span>{`${element.header}: `}</span><input className='NewPatient-text' type='text' id={element.accessor}/>
+      default: return(<div key={element.accessor}>
+        <span>{`${element.header}: `}</span>
+        <input 
+          key={element.accessor}
+          name={element.accessor}
+          className='NewPatient-text' 
+          type='text' 
+          onChange={this.handleInputChange}
+          />
       </div>)
     }
   }

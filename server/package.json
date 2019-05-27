@@ -12,7 +12,7 @@
   },
   "events": {
     "restart": "fuser -k 3000/tcp"
-  },  
+  },
   "author": "",
   "license": "ISC",
   "nodemonConfig": {

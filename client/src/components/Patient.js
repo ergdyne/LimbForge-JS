@@ -25,7 +25,7 @@ Patient.propTypes = {
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
     dateOfBirth: PropTypes.instanceOf(Date),
-    dateOfAmpputation: PropTypes.instanceOf(Date),
+    dateOfAmputation: PropTypes.instanceOf(Date),
     city: PropTypes.string.isRequired,
     country: PropTypes.string.isRequired,
     gender: PropTypes.string.isRequired,
