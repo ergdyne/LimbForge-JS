@@ -34,8 +34,9 @@ export default class FormBuilder extends React.Component {
     }
   }
 
+  //TODO use standard form types
   generateFormElement = (element) => {
-    switch (element.input) {
+    switch (element.inputType) {
       case 'date': {
         return (<div key={element.accessor}>
           <span>{`${element.label}: `}</span>
