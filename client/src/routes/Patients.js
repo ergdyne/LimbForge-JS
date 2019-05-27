@@ -23,7 +23,6 @@ export default class Patients extends React.Component {
         gender: '',
         amputationLevel: '',
         amputationCause: '',
-        measurements: [],
       }
     }
   }

@@ -1,22 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import 'react-table/react-table.css'
-import {patientInputs} from '../testData'
-import moment from 'moment'
+import {patientInputs, measurementInputs} from '../testData'
+import formatValue from '../functions/formatValue'
 
 export default class Patient extends React.Component {
   constructor(props) {
     super(props)
   }
 
-  //Generalize
-  formatValue = (t, v) =>{
-    switch (t) {
-      case 'date': return moment(v).format('LL')
-      default: return v
-    }
-  }
-
+ 
   //Temporary
   render() {
     console.log(this.props.patient)
@@ -24,7 +17,16 @@ export default class Patient extends React.Component {
       <div>
         {(this.props.back)?<button onClick={() => this.props.back()}>{`Back`}</button>:<div/>}
         <div>{`Patient:`}</div>
-        <div>{patientInputs.map(x=>{return(<span key={x.accessor}><span>{this.formatValue(x.type,this.props.patient[x.accessor])}</span><span>{" - "}</span></span>)})}</div>
+        {/* Temporary formating */}
+        <div>{patientInputs.map(x=>{return <span key={`header-${x.accessor}`}><span>{x.label}</span><span>{" - "}</span></span>})}</div>
+        <div>{patientInputs.map(x=>{return(<span key={x.accessor}><span>{formatValue(x.type,this.props.patient[x.accessor])}</span><span>{" - "}</span></span>)})}</div>
+        <hr/>
+        <div>{(this.props.patient.measurements)?<div>{
+          <div>
+            <div>{measurementInputs.map(x=>{return <span key={`header-${x.accessor}`}><span>{x.label}</span><span>{" - "}</span></span>})}</div>
+            <div>{measurementInputs.map(x=>{return(<span key={x.accessor}><span>{formatValue(x.type,this.props.patient.measurements[x.accessor])}</span><span>{" - "}</span></span>)})}</div>
+          </div>
+        }</div>:<div></div>}</div>
       </div>
     )
   }
@@ -43,7 +45,7 @@ Patient.propTypes = {
     gender: PropTypes.string.isRequired,
     amputationLevel: PropTypes.string.isRequired,
     amputationCause: PropTypes.string.isRequired,
-    measurements: PropTypes.array,
+    measurements: PropTypes.object,
   }).isRequired,
   back: PropTypes.func
 }

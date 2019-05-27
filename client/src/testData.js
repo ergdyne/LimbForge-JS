@@ -36,6 +36,8 @@ const navData = {
   ]
 }
 
+const fooMeasures = {l1:25, l2:25, l4:18, c1:25, c2:25, c3:25, c4:25}
+
 function patient(first, last, id) {
   return {
     id: id,
@@ -48,9 +50,12 @@ function patient(first, last, id) {
     gender: randomFromList(genders).label,
     side: randomFromList(sides).label,
     amputationLevel: randomFromList(amputationLevels).label,
-    amputationCause: randomFromList(amputationCauses).label
+    amputationCause: randomFromList(amputationCauses).label,
+    measurements: fooMeasures
   }
 }
+
+
 
 const lastNames = [`Fun`, `Cat`, `Bear`, `Gerry`, `Amith`, `Dill`, `Elsworth`, `Gary`, `Goo`]
 const firstNames = [`A`, `B`, `C`, `D`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`]

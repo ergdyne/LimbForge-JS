@@ -22,15 +22,21 @@ export default class NewPatient extends React.Component {
   }
 
   measurementSubmit = (measurements) => {
-    console.log(measurements)
+    console.log('adding mints')
+    var newPatient = this.state.patient
+    newPatient.measurements = measurements
+    this.setState(newPatient)
+    this.setState({ level: 'preview' })
   }
 
   level = () => {
     switch (this.state.level) {
       case 'measurement': return (
-        <div><Patient
-          patient={this.state.patient}
-        />
+        <div>
+          <Patient
+            patient={this.state.patient}
+          />
+          <hr />
           <FormBuilder
             key='measurments'
             elements={measurementInputs}
@@ -38,6 +44,14 @@ export default class NewPatient extends React.Component {
             submitValue={`Add`}
             preventDefault={true}
           />
+        </div>
+      )
+      case 'preview': return (
+        <div>
+          <Patient
+            patient={this.state.patient}
+          />
+          <div>{`OK this preivew this stuff and get a THREE loaded`}</div>
         </div>
       )
       default: return (
