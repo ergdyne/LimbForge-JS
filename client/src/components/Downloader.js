@@ -60,20 +60,10 @@ export default class Downloader extends React.Component {
   }
 
   render() {
-    console.log(urls[0].link)
     return (
       <div>
         <button onClick={this.download}>{`Download`}</button>
-        <STLViewer
-          url={urls[0].link}
-          model={urls[0].link}
-          width={400}
-          height={400}
-          modelColor='#B92C2C'
-          backgroundColor='#EAEAEA'
-          rotate={true}
-          orbitControls={true}
-        />
+        <Canvas url={urls[0].link}/>
       </div>
     )
   }

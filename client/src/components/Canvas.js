@@ -1,68 +1,171 @@
-import React, { Component } from 'react';
+
+import React, {Component} from 'react';
+import PropTypes from 'prop-types'
+import ReactDOM from 'react-dom';
 import * as THREE from 'three';
-var STLLoader = require('three-stl-loader')(THREE)
+import STLLoaderModule from 'three-stl-loader'
+import OrbitControlsModule from 'three-orbit-controls'
+import {ScaleLoader} from 'react-spinners';
+
+const STLLoader = STLLoaderModule(THREE);
+const OrbitControls = OrbitControlsModule(THREE);
 
 export default class Canvas extends Component {
+  static propTypes = {
+      className: PropTypes.string,
+      url: PropTypes.string,
+      file: PropTypes.object,
+      width: PropTypes.number,
+      height: PropTypes.number,
+      backgroundColor: PropTypes.string,
+      modelColor: PropTypes.string,
+      sceneClassName: PropTypes.string,
+      onSceneRendered: PropTypes.func,
+  };
+
+  static defaultProps = {
+      backgroundColor: '#EAEAEA',
+      modelColor: '#B92C2C',
+      height: 400,
+      width: 400,
+      rotate: true,
+      orbitControls: true,
+      sceneClassName: '',
+  };
+
   componentDidMount() {
-    const width = this.mount.clientWidth
-    const height = this.mount.clientHeight
-    //ADD SCENE
-    this.scene = new THREE.Scene()
-    //ADD CAMERA
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      width / height,
-      0.1,
-      1000
-    )
-    this.camera.position.z = 4
-    //ADD RENDERER
-    this.renderer = new THREE.WebGLRenderer({ antialias: true })
-    this.renderer.setClearColor('#000000')
-    this.renderer.setSize(width, height)
-    this.mount.appendChild(this.renderer.domElement)
-    //ADD CUBE
-    const geometry = new THREE.BoxGeometry(1, 1, 1)
-    const material = new THREE.MeshBasicMaterial({ color: '#433F81' })
-    this.cube = new THREE.Mesh(geometry, material)
-    var loader = new STLLoader()
-    loader.load(this.props.fileLink, function (geometry) {
-      var material = new THREE.MeshPhongMaterial({ color: 0xff5533, specular: 0x111111, shininess: 200 });
-      var mesh = new THREE.Mesh(geometry, material);
-      this.scene.add(mesh)
+      this.renderModel(this.props);
+  }
 
-    })
+  renderModel(props) {
+      let camera, scene, renderer, mesh, distance, controls;
+      const {url, file, width, height, modelColor, backgroundColor, orbitControls, sceneClassName, onSceneRendered} = props;
+      let xDims, yDims, zDims;
+      let component = this;
 
-    this.scene.add(this.cube)
-    this.start()
+
+      scene = new THREE.Scene();
+      distance = 10000;
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.x = 0;
+      directionalLight.position.y = 1;
+      directionalLight.position.z = 0;
+      directionalLight.position.normalize();
+      scene.add(directionalLight);
+
+      const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+      scene.add(ambientLight);
+
+      const onLoad = geometry => {
+          geometry.computeFaceNormals();
+          geometry.computeVertexNormals();
+          geometry.center();
+
+          mesh = new THREE.Mesh(
+              geometry,
+              new THREE.MeshLambertMaterial({
+                      overdraw: true,
+                      color: modelColor,
+                  }
+              ));
+
+          geometry.computeBoundingBox();
+          xDims = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
+          yDims = geometry.boundingBox.max.y - geometry.boundingBox.min.y;
+          zDims = geometry.boundingBox.max.z - geometry.boundingBox.min.z;
+
+          scene.add(mesh);
+
+          camera = new THREE.PerspectiveCamera(30, width / height, 1, distance);
+          camera.position.set(0, 0, Math.max(xDims * 3, yDims * 3, zDims * 3));
+
+          scene.add(camera);
+
+          renderer = new THREE.WebGLRenderer({
+              preserveDrawingBuffer: true,
+              antialias: true
+          });
+          renderer.setSize(width, height);
+          renderer.setClearColor(backgroundColor, 1);
+          renderer.domElement.className = sceneClassName;
+
+
+          if (orbitControls) {
+              controls = new OrbitControls(camera, ReactDOM.findDOMNode(component));
+              controls.enableKeys = false;
+              controls.addEventListener('change', orbitRender);
+          }
+
+          ReactDOM.findDOMNode(this).replaceChild(renderer.domElement,
+              ReactDOM.findDOMNode(this).firstChild);
+
+          render();
+
+          if (typeof onSceneRendered === "function") {
+              onSceneRendered(ReactDOM.findDOMNode(renderer.domElement))
+          }
+      };
+
+      const onProgress = (xhr) => {
+          if (xhr.lengthComputable) {
+              let percentComplete = xhr.loaded / xhr.total * 100;
+          }
+      };
+
+      const loader = new STLLoader();
+
+      if (file) {
+          loader.loadFile(file, onLoad, onProgress);
+      } else {
+          loader.load(url, onLoad, onProgress);
+      }
+
+      const render = () => {
+          renderer.render(scene, camera);
+      };
+
+      const orbitRender = () => {
+          render();
+      };
   }
-  componentWillUnmount() {
-    this.stop()
-    this.mount.removeChild(this.renderer.domElement)
+
+  shouldComponentUpdate(nextProps, nextState) {
+      if (JSON.stringify(nextProps) === JSON.stringify(this.props)) {
+          return false
+      }
+      return true
   }
-  start = () => {
-    if (!this.frameId) {
-      this.frameId = requestAnimationFrame(this.animate)
-    }
+
+  componentDidUpdate(nextProps, nextState) {
+      this.renderModel(nextProps);
   }
-  stop = () => {
-    cancelAnimationFrame(this.frameId)
+
+  componentDidCatch(error, info) {
+      console.log(error, info)
   }
-  animate = () => {
-    this.cube.rotation.x += 0.01
-    this.cube.rotation.y += 0.01
-    this.renderScene()
-    this.frameId = window.requestAnimationFrame(this.animate)
-  }
-  renderScene = () => {
-    this.renderer.render(this.scene, this.camera)
-  }
+
   render() {
-    return (
-      <div
-        style={{ width: '400px', height: '400px' }}
-        ref={(mount) => { this.mount = mount }}
-      />
-    )
-  }
+      return (
+          <div
+              className={this.props.className}
+              style={{
+                  width: this.props.width,
+                  height: this.props.height,
+                  overflow: 'hidden',
+              }}
+          >
+              <div style={{
+                  height: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+              }}>
+                  <ScaleLoader
+                      color={'#123abc'}
+                      loading={true}
+                  />
+              </div>
+          </div>
+      );
+  };
 }
