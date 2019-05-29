@@ -11,27 +11,6 @@ const STLLoader = STLLoaderModule(THREE);
 const OrbitControls = OrbitControlsModule(THREE);
 
 export default class Canvas extends Component {
-  static propTypes = {
-      className: PropTypes.string,
-      url: PropTypes.string,
-      file: PropTypes.object,
-      width: PropTypes.number,
-      height: PropTypes.number,
-      backgroundColor: PropTypes.string,
-      modelColor: PropTypes.string,
-      sceneClassName: PropTypes.string,
-      onSceneRendered: PropTypes.func,
-  };
-
-  static defaultProps = {
-      backgroundColor: '#EAEAEA',
-      modelColor: '#B92C2C',
-      height: 400,
-      width: 400,
-      rotate: true,
-      orbitControls: true,
-      sceneClassName: '',
-  };
 
   componentDidMount() {
       this.renderModel(this.props);
@@ -39,7 +18,7 @@ export default class Canvas extends Component {
 
   renderModel(props) {
       let camera, scene, renderer, mesh, distance, controls;
-      const {url, file, width, height, modelColor, backgroundColor, orbitControls, sceneClassName, onSceneRendered} = props;
+      const {url, width, height, modelColor, backgroundColor, orbitControls, sceneClassName, onSceneRendered} = props;
       let xDims, yDims, zDims;
       let component = this;
 
@@ -114,11 +93,9 @@ export default class Canvas extends Component {
 
       const loader = new STLLoader();
 
-      if (file) {
-          loader.loadFile(file, onLoad, onProgress);
-      } else {
-          loader.load(url, onLoad, onProgress);
-      }
+      url.map(x=>loader.load(x, onLoad, onProgress))
+      
+      
 
       const render = () => {
           renderer.render(scene, camera);
@@ -168,4 +145,24 @@ export default class Canvas extends Component {
           </div>
       );
   };
+}
+
+Canvas.propTypes = {
+  url: PropTypes.arrayOf(PropTypes.string).isRequired,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  backgroundColor: PropTypes.string,
+  modelColor: PropTypes.string,
+  sceneClassName: PropTypes.string,
+  onSceneRendered: PropTypes.func,
+}
+
+Canvas.defaultProps = {
+  backgroundColor: '#EAEAEA',
+  modelColor: '#B92C2C',
+  height: 400,
+  width: 400,
+  rotate: true,
+  orbitControls: true,
+  sceneClassName: '',
 }

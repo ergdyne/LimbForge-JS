@@ -63,7 +63,7 @@ export default class Downloader extends React.Component {
     return (
       <div>
         <button onClick={this.download}>{`Download`}</button>
-        <Canvas url={urls[0].link}/>
+        <Canvas url={urls.map(x=>x.link)}/>
       </div>
     )
   }
