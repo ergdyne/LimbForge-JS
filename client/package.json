@@ -34,11 +34,15 @@
   },
   "dependencies": {
     "css-loader": "^2.1.1",
+    "file-saver": "^2.0.2",
+    "jszip": "^3.2.1",
+    "jszip-utils": "0.0.2",
     "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-datepicker": "^2.5.0",
     "react-dom": "^16.8.6",
     "react-table": "^6.10.0",
-    "style-loader": "^0.23.1"
+    "style-loader": "^0.23.1",
+    "three": "^0.104.0"
   }
 }

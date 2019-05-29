@@ -36,7 +36,7 @@ const navData = {
   ]
 }
 
-const fooMeasures = {l1:25, l2:25, l4:18, c1:25, c2:25, c3:25, c4:25}
+const fooMeasures = { l1: 25, l2: 25, l4: 18, c1: 25, c2: 25, c3: 25, c4: 25 }
 
 function patient(first, last, id) {
   return {
@@ -102,16 +102,39 @@ const measurements = [
 const measurementInputs = measurements.map(m => {
   return ({
     accessor: m.name.toLowerCase(),
-    label:m.name,
+    label: m.name,
     type: 'number',
-    inputType:'text',
-    default:m.default,
-    validation:{
-      min:m.min,
-      max:m.max
+    inputType: 'text',
+    default: m.default,
+    validation: {
+      min: m.min,
+      max: m.max
     }
   })
 })
+
+const forearm = {
+  name: 'Forearm r20',
+  version: 20,
+  creator: 'Limbforge',
+  component_type: 'forearm',
+  weight: '200-300g',
+  description: 'Limbforge forearm.',
+  uses: 'transradial',
+  folder: 'forearm-QTC',
+  print_time: '5-8 hours'
+}
+
+
+const urls = [
+  { link: "https://s3.amazonaws.com/limbforgestls/TD/mPTD1/r1/build/R/info_C1-150_L4-160.stl", name: "TERMINAL DEVICE_r15_C1=15_L4=16" },
+  { link: "https://s3.amazonaws.com/limbforgestls/forearm-QTC/r20/R/info_C1-150_C4-240_L1-270.stl", name: "FOREARM_r20_R_C1=15_C4=24_L1=27_nz=0.4" },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-1.stl", name: "WRIST_COUPLER_VERY_LOOSE" },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-2.stl", name: "WRIST_COUPLER_LOOSE" },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-3.stl", name: "WRIST_COUPLER_TIGHT" },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-4.stl", name: "WRIST_COUPLER_VERY_TIGHT" },
+]
+
 
 export {
   navData,
@@ -120,5 +143,7 @@ export {
   patientColHeaders,
   patientInputs,
   measurements,
-  measurementInputs
+  measurementInputs,
+  forearm,
+  urls
 }
