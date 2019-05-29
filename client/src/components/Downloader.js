@@ -1,9 +1,10 @@
 import React from 'react'
-import { STLLoader, MeshPhongMaterial } from 'three'
 import JSZipUtils from 'jszip-utils'
 import JSZip from 'jszip'
 import {saveAs} from 'file-saver'
+import Canvas from './Canvas'
 import { forearm, urls } from '../testData'
+import STLViewer from 'stl-viewer'
 
 export default class Downloader extends React.Component {
   constructor(props) {
@@ -59,9 +60,20 @@ export default class Downloader extends React.Component {
   }
 
   render() {
+    console.log(urls[0].link)
     return (
       <div>
         <button onClick={this.download}>{`Download`}</button>
+        <STLViewer
+          url={urls[0].link}
+          model={urls[0].link}
+          width={400}
+          height={400}
+          modelColor='#B92C2C'
+          backgroundColor='#EAEAEA'
+          rotate={true}
+          orbitControls={true}
+        />
       </div>
     )
   }
