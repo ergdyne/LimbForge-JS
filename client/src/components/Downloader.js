@@ -3,7 +3,7 @@ import JSZipUtils from 'jszip-utils'
 import JSZip from 'jszip'
 import {saveAs} from 'file-saver'
 import Canvas from './Canvas'
-import { forearm, urls } from '../testData'
+import { forearm, stls } from '../testData'
 import STLViewer from 'stl-viewer'
 
 export default class Downloader extends React.Component {
@@ -18,7 +18,7 @@ export default class Downloader extends React.Component {
 
   createZip=()=> {
     ///OH, another set up urls....
-    var ur = urls
+    var ur = stls
 
     function urlToPromise(url) {
       return new Promise(function (resolve, reject) {
@@ -63,7 +63,7 @@ export default class Downloader extends React.Component {
     return (
       <div>
         <button onClick={this.download}>{`Download`}</button>
-        <Canvas url={urls.map(x=>x.link)}/>
+        <Canvas stls={stls.slice(0,2)}/>
       </div>
     )
   }

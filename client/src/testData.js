@@ -126,9 +126,19 @@ const forearm = {
 }
 
 
-const urls = [
-  { link: "https://s3.amazonaws.com/limbforgestls/TD/mPTD1/r1/build/R/info_C1-150_L4-160.stl", name: "TERMINAL DEVICE_r15_C1=15_L4=16" },
-  { link: "https://s3.amazonaws.com/limbforgestls/forearm-QTC/r20/R/info_C1-150_C4-240_L1-270.stl", name: "FOREARM_r20_R_C1=15_C4=24_L1=27_nz=0.4" },
+const stls = [
+  { 
+    link: "https://s3.amazonaws.com/limbforgestls/TD/mPTD1/r1/build/R/info_C1-150_L4-160.stl", 
+    name: "TERMINAL DEVICE_r15_C1=15_L4=16",
+    position: {x:5,y:0,z:3.3},
+    type: 'device'
+  },
+  { 
+    link: "https://s3.amazonaws.com/limbforgestls/forearm-QTC/r20/R/info_C1-150_C4-240_L1-270.stl", 
+    name: "FOREARM_r20_R_C1=15_C4=24_L1=27_nz=0.4",
+    position: {x:5,y:0,z:0},
+    type: 'terminalDevice'
+  },
   { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-1.stl", name: "WRIST_COUPLER_VERY_LOOSE" },
   { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-2.stl", name: "WRIST_COUPLER_LOOSE" },
   { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-3.stl", name: "WRIST_COUPLER_TIGHT" },
@@ -145,5 +155,5 @@ export {
   measurements,
   measurementInputs,
   forearm,
-  urls
+  stls
 }

@@ -1,11 +1,11 @@
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import STLLoaderModule from 'three-stl-loader'
 import OrbitControlsModule from 'three-orbit-controls'
-import {ScaleLoader} from 'react-spinners';
+import { ScaleLoader } from 'react-spinners';
 
 const STLLoader = STLLoaderModule(THREE);
 const OrbitControls = OrbitControlsModule(THREE);
@@ -13,142 +13,122 @@ const OrbitControls = OrbitControlsModule(THREE);
 export default class Canvas extends Component {
 
   componentDidMount() {
-      this.renderModel(this.props);
+    this.renderModel(this.props);
+  }
+
+  onLoadBuilder(component, scene, camera, controls, distance, renderer) {
+    const {width, height, orbitControls, modelColor,onSceneRendered} = component.props
+    return (stl) => {
+      return (geometry) => {
+        console.log(stl.type)
+        geometry.computeFaceNormals();
+        geometry.computeVertexNormals();
+        geometry.center();
+  
+        const mesh = new THREE.Mesh(
+          geometry,
+          new THREE.MeshLambertMaterial({
+            overdraw: true,
+            color: modelColor,
+          }
+          ));
+        geometry.computeBoundingBox();
+        let xDims = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
+        let yDims = geometry.boundingBox.max.y - geometry.boundingBox.min.y;
+        let zDims = geometry.boundingBox.max.z - geometry.boundingBox.min.z;
+  
+        scene.add(mesh);
+  
+        camera = new THREE.PerspectiveCamera(30, width / height, 1, distance);
+        camera.position.set(0, 0, Math.max(xDims * 3, yDims * 3, zDims * 3));
+  
+        scene.add(camera);
+  
+  
+        if (orbitControls) {
+          controls = new OrbitControls(camera, ReactDOM.findDOMNode(component));
+          controls.enableKeys = false;
+          controls.addEventListener('change', () => renderer.render(scene, camera));
+        }
+  
+        ReactDOM.findDOMNode(this).replaceChild(renderer.domElement,
+          ReactDOM.findDOMNode(this).firstChild);
+  
+        renderer.render(scene, camera)
+  
+        if (typeof onSceneRendered === "function") {
+          onSceneRendered(ReactDOM.findDOMNode(renderer.domElement))
+        }
+      }
+    }
   }
 
   renderModel(props) {
-      let camera, scene, renderer, mesh, distance, controls;
-      const {url, width, height, modelColor, backgroundColor, orbitControls, sceneClassName, onSceneRendered} = props;
-      let xDims, yDims, zDims;
-      let component = this;
+    let camera, controls;
+    const { stls, width, height, backgroundColor, sceneClassName } = props;
+    let component = this;
 
+    let renderer = new THREE.WebGLRenderer({
+      preserveDrawingBuffer: true,
+      antialias: true
+    })
+    renderer.setSize(width, height)
+    renderer.setClearColor(backgroundColor, 1)
+    renderer.domElement.className = sceneClassName
 
-      scene = new THREE.Scene();
-      distance = 10000;
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      directionalLight.position.x = 0;
-      directionalLight.position.y = 1;
-      directionalLight.position.z = 0;
-      directionalLight.position.normalize();
-      scene.add(directionalLight);
+    let scene = new THREE.Scene();
+    let distance = 10000;
 
-      const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
-      scene.add(ambientLight);
+    //load function //curry instead?
+    let onLoad = this.onLoadBuilder(component, scene, camera, controls, distance, renderer)
+    //end onload function
 
-      const onLoad = geometry => {
-          geometry.computeFaceNormals();
-          geometry.computeVertexNormals();
-          geometry.center();
+    const loader = new STLLoader();
 
-          mesh = new THREE.Mesh(
-              geometry,
-              new THREE.MeshLambertMaterial({
-                      overdraw: true,
-                      color: modelColor,
-                  }
-              ));
+    console.log(stls)
+    stls.map(x => loader.load(x.link, onLoad(x)))
 
-          geometry.computeBoundingBox();
-          xDims = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
-          yDims = geometry.boundingBox.max.y - geometry.boundingBox.min.y;
-          zDims = geometry.boundingBox.max.z - geometry.boundingBox.min.z;
-
-          scene.add(mesh);
-
-          camera = new THREE.PerspectiveCamera(30, width / height, 1, distance);
-          camera.position.set(0, 0, Math.max(xDims * 3, yDims * 3, zDims * 3));
-
-          scene.add(camera);
-
-          renderer = new THREE.WebGLRenderer({
-              preserveDrawingBuffer: true,
-              antialias: true
-          });
-          renderer.setSize(width, height);
-          renderer.setClearColor(backgroundColor, 1);
-          renderer.domElement.className = sceneClassName;
-
-
-          if (orbitControls) {
-              controls = new OrbitControls(camera, ReactDOM.findDOMNode(component));
-              controls.enableKeys = false;
-              controls.addEventListener('change', orbitRender);
-          }
-
-          ReactDOM.findDOMNode(this).replaceChild(renderer.domElement,
-              ReactDOM.findDOMNode(this).firstChild);
-
-          render();
-
-          if (typeof onSceneRendered === "function") {
-              onSceneRendered(ReactDOM.findDOMNode(renderer.domElement))
-          }
-      };
-
-      const onProgress = (xhr) => {
-          if (xhr.lengthComputable) {
-              let percentComplete = xhr.loaded / xhr.total * 100;
-          }
-      };
-
-      const loader = new STLLoader();
-
-      url.map(x=>loader.load(x, onLoad, onProgress))
-      
-      
-
-      const render = () => {
-          renderer.render(scene, camera);
-      };
-
-      const orbitRender = () => {
-          render();
-      };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-      if (JSON.stringify(nextProps) === JSON.stringify(this.props)) {
-          return false
-      }
-      return true
+    if (JSON.stringify(nextProps) === JSON.stringify(this.props)) {
+      return false
+    }
+    return true
   }
 
   componentDidUpdate(nextProps, nextState) {
-      this.renderModel(nextProps);
+    this.renderModel(nextProps);
   }
 
   componentDidCatch(error, info) {
-      console.log(error, info)
+    console.log(error, info)
   }
 
   render() {
-      return (
-          <div
-              className={this.props.className}
-              style={{
-                  width: this.props.width,
-                  height: this.props.height,
-                  overflow: 'hidden',
-              }}
-          >
-              <div style={{
-                  height: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-              }}>
-                  <ScaleLoader
-                      color={'#123abc'}
-                      loading={true}
-                  />
-              </div>
-          </div>
-      );
+    return (
+      <div
+        className={this.props.className}
+        style={{
+          width: this.props.width,
+          height: this.props.height,
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        </div>
+      </div>
+    );
   };
 }
 
 Canvas.propTypes = {
-  url: PropTypes.arrayOf(PropTypes.string).isRequired,
+  stls: PropTypes.arrayOf(PropTypes.object).isRequired,
   width: PropTypes.number,
   height: PropTypes.number,
   backgroundColor: PropTypes.string,
