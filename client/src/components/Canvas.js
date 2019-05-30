@@ -16,48 +16,29 @@ export default class Canvas extends Component {
     this.renderModel(this.props);
   }
 
-  onLoadBuilder(component, scene, camera, controls, distance, renderer) {
-    const { width, height, orbitControls, modelColor, onSceneRendered } = component.props
+  //Curry the onLoad (adds mesh to scene) function with common aspects of the scene.
+  onLoadBuilder(component, scene, camera, renderer) {
+    const {onSceneRendered } = component.props
+    const material = new THREE.MeshPhongMaterial( { color: 0x00ff00, specular: 0x0f2045, shininess: 0 } )
+    //curry the STL object to get details such as mesh name and position/rotation
     return (stl) => {
+      //Return the standard load function which takes a geometry
       return (geometry) => {
-        console.log(stl.type)
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
         geometry.center();
 
-        let mesh = new THREE.Mesh(
-          geometry,
-          new THREE.MeshLambertMaterial({
-            overdraw: true,
-            color: modelColor,
-          }
-          ));
-        geometry.computeBoundingBox();
-        let xDims = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
-        let yDims = geometry.boundingBox.max.y - geometry.boundingBox.min.y;
-        let zDims = geometry.boundingBox.max.z - geometry.boundingBox.min.z;
-
-        mesh.position.set( stl.position.x, stl.position.y, stl.position.z )
+        let mesh = new THREE.Mesh(geometry,material)
+  
         mesh.name = stl.type
-        mesh.rotation.set(0, 0, 0)
+        mesh.rotation.set(stl.rotation.x, stl.rotation.y, stl.rotation.z )
+        mesh.position.set( stl.position.x, stl.position.y, stl.position.z )
         mesh.scale.set(.04, .04, .04)
 
         mesh.castShadow = true
         mesh.receiveShadow = false
 
         scene.add(mesh);
-
-        camera = new THREE.PerspectiveCamera(30, width / height, 1, distance);
-        camera.position.set(0, 0, Math.max(xDims * 3, yDims * 3, zDims * 3));
-
-        scene.add(camera);
-
-
-        if (orbitControls) {
-          controls = new OrbitControls(camera, ReactDOM.findDOMNode(component));
-          controls.enableKeys = false;
-          controls.addEventListener('change', () => renderer.render(scene, camera));
-        }
 
         ReactDOM.findDOMNode(this).replaceChild(renderer.domElement,
           ReactDOM.findDOMNode(this).firstChild);
@@ -72,8 +53,8 @@ export default class Canvas extends Component {
   }
 
   renderModel(props) {
-    let camera, controls;
-    const { stls, width, height, backgroundColor, sceneClassName } = props;
+    let controls;
+    const { stls, width, height, backgroundColor, sceneClassName,orbitControls } = props;
     let component = this;
 
     let renderer = new THREE.WebGLRenderer({
@@ -84,16 +65,26 @@ export default class Canvas extends Component {
     renderer.setClearColor(backgroundColor, 1)
     renderer.domElement.className = sceneClassName
 
-    let scene = new THREE.Scene();
-    let distance = 10000;
+    let scene = new THREE.Scene()
+    let distance = 500
 
-    //load function //curry instead?
-    let onLoad = this.onLoadBuilder(component, scene, camera, controls, distance, renderer)
-    //end onload function
+    let camera = new THREE.PerspectiveCamera(30, width / height, 1, distance)
+    camera.up.set( 0, 0, 1 )
+    camera.position.set(0, -44, 20)
+    scene.add( new THREE.AmbientLight( 0x999999 ) )
+    scene.add(camera);
+
+    if (orbitControls) {
+      controls = new OrbitControls(camera, ReactDOM.findDOMNode(component));
+      controls.enableKeys = false;
+      controls.addEventListener('change', () => renderer.render(scene, camera));
+    }
+
+    //curried onLoad with common elements
+    let onLoad = this.onLoadBuilder(component, scene, camera, renderer)
 
     const loader = new STLLoader();
 
-    console.log(stls)
     stls.map(x => loader.load(x.link, onLoad(x)))
 
   }
@@ -147,7 +138,7 @@ Canvas.propTypes = {
 
 Canvas.defaultProps = {
   backgroundColor: '#EAEAEA',
-  modelColor: '#B92C2C',
+  modelColor: '#11FF11',
   height: 400,
   width: 400,
   rotate: true,
