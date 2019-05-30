@@ -3,18 +3,17 @@ import JSZipUtils from 'jszip-utils'
 import JSZip from 'jszip'
 import {saveAs} from 'file-saver'
 import Canvas from './Canvas'
-import { forearm, stls } from '../testData'
-import STLViewer from 'stl-viewer'
+import {stls } from '../testData'
 
-export default class Downloader extends React.Component {
+
+export default class Download extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-     
+      preview:false
     }
   }
-
 
   createZip=()=> {
     ///OH, another set up urls....
@@ -59,11 +58,21 @@ export default class Downloader extends React.Component {
     this.createZip()
   }
 
+  preview = () =>{
+    let x = this.state.preview
+    this.setState({preview:!x})
+  }
+
   render() {
     return (
       <div>
+        <button onClick={this.preview}>{`Preview`}</button>
+        <span>{`   `}</span>
         <button onClick={this.download}>{`Download`}</button>
-        <Canvas stls={stls.filter(x=> !(x.type==='coupler'))} modelColor={`#00ff00`}/>
+        {this.state.preview?
+          <Canvas stls={stls.filter(x=> !(x.type==='coupler'))} modelColor={`#00ff00`}/>:
+          <div/>}
+        
       </div>
     )
   }

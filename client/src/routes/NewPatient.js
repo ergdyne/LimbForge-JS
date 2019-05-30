@@ -2,7 +2,7 @@ import React from 'react'
 import { patientInputs, measurementInputs } from '../testData'
 import FormBuilder from '../components/FormBuilder'
 import Patient from '../components/Patient'
-import Downloader from '../components/Downloader';
+import Download from '../components/Download';
 
 
 export default class NewPatient extends React.Component {
@@ -52,7 +52,8 @@ export default class NewPatient extends React.Component {
           <Patient
             patient={this.state.patient}
           />
-          <div>{`OK this preivew this stuff and get a THREE loaded`}</div>
+          <hr/>
+          <Download/>
         </div>
       )
       default: return (
@@ -72,7 +73,6 @@ export default class NewPatient extends React.Component {
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
           {this.level()}
-          <Downloader/>
         </div></div>
       </div></div></div></div>
     )
