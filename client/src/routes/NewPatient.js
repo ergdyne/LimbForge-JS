@@ -1,8 +1,8 @@
 import React from 'react'
-import { patientInputs, measurementInputs } from '../testData'
 import FormBuilder from '../components/FormBuilder'
 import Patient from '../components/Patient'
-import Download from '../components/Download';
+import Download from '../components/Download'
+import { patientInputs, measurementInputs } from '../testData'
 
 
 export default class NewPatient extends React.Component {
@@ -78,3 +78,5 @@ export default class NewPatient extends React.Component {
     )
   }
 }
+
+//No props yet, will come with user login.

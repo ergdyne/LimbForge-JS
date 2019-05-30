@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import 'react-table/react-table.css'
-import {patientInputs, measurementInputs} from '../testData'
 import formatValue from '../functions/formatValue'
+import {patientInputs, measurementInputs} from '../testData'
 
 export default class Patient extends React.Component {
   constructor(props) {
@@ -35,16 +35,16 @@ export default class Patient extends React.Component {
 //WELL, this might not be valid any longer...
 Patient.propTypes = {
   patient: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
     firstName: PropTypes.string.isRequired,
-    lastName: PropTypes.string.isRequired,
+    lastName: PropTypes.string,
     dateOfBirth: PropTypes.instanceOf(Date),
     dateOfAmputation: PropTypes.instanceOf(Date),
     city: PropTypes.string.isRequired,
     country: PropTypes.string.isRequired,
     gender: PropTypes.string.isRequired,
     amputationLevel: PropTypes.string.isRequired,
-    amputationCause: PropTypes.string.isRequired,
+    amputationCause: PropTypes.string,
     measurements: PropTypes.object,
   }).isRequired,
   back: PropTypes.func

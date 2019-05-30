@@ -77,3 +77,14 @@ export default class Download extends React.Component {
     )
   }
 }
+
+//TODO this will take some though about what kind of props to bring in
+/**
+ * Option 1-> bring in the amputation/sizes/gender/ect and convert to stl objects(link,filename,type, position, rotation)
+ * //Props not option 1.
+ * Option 2-> bring in the amputation/sizes/gender/ect -> send to function -> get back stl objects
+ * //I like this as I can centeralize changes
+ * Option 3 -> complete redesign and push everything serverside
+ * Option 4 -> have each stl objects stored serverside and do a query for it (this can be part of 2)
+ * //This requires the a bit of complete redesign to do upload to server + version control there.
+ */

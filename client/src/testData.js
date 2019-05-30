@@ -139,7 +139,8 @@ const stls = [
   { 
     link: "https://s3.amazonaws.com/limbforgestls/forearm-QTC/r20/R/info_C1-150_C4-240_L1-270.stl", 
     name: "FOREARM_r20_R_C1=15_C4=24_L1=27_nz=0.4",
-    position: {x:0.25,y:-0.66,z:-8.625},
+
+    position: {x:0,y:0,z:3.3},
     rotation : {x:0, y:Math.PI,z:0},
     type: 'terminalDevice'
   },

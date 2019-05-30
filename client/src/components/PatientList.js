@@ -31,15 +31,15 @@ PatientList.propTypes = {
   patients: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      firstName: PropTypes.string.isRequired,
-      lastName: PropTypes.string.isRequired,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
       dateOfBirth: PropTypes.instanceOf(Date),
       dateOfAmputation: PropTypes.instanceOf(Date),
       city: PropTypes.string.isRequired,
       country: PropTypes.string.isRequired,
       gender: PropTypes.string.isRequired,
       amputationLevel: PropTypes.string.isRequired,
-      amputationCause: PropTypes.string.isRequired
+      amputationCause: PropTypes.string
     })
   ),
   viewPatient: PropTypes.func.isRequired,
