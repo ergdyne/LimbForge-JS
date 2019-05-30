@@ -18,7 +18,7 @@ export default class Canvas extends Component {
 
   //Curry the onLoad (adds mesh to scene) function with common aspects of the scene.
   onLoadBuilder(component, scene, camera, renderer) {
-    const {onSceneRendered } = component.props
+    const { onSceneRendered } = component.props
     const material = new THREE.MeshPhongMaterial( { color: 0x00ff00, specular: 0x0f2045, shininess: 0 } )
     //curry the STL object to get details such as mesh name and position/rotation
     return (stl) => {
@@ -28,11 +28,11 @@ export default class Canvas extends Component {
         geometry.computeVertexNormals();
         geometry.center();
 
-        let mesh = new THREE.Mesh(geometry,material)
-  
+        let mesh = new THREE.Mesh(geometry, material)
+
         mesh.name = stl.type
-        mesh.rotation.set(stl.rotation.x, stl.rotation.y, stl.rotation.z )
-        mesh.position.set( stl.position.x, stl.position.y, stl.position.z )
+        mesh.rotation.set(stl.rotation.x, stl.rotation.y, stl.rotation.z)
+        mesh.position.set(stl.position.x, stl.position.y, stl.position.z)
         mesh.scale.set(.04, .04, .04)
 
         mesh.castShadow = true
@@ -54,7 +54,7 @@ export default class Canvas extends Component {
 
   renderModel(props) {
     let controls;
-    const { stls, width, height, backgroundColor, sceneClassName,orbitControls } = props;
+    const { stls, width, height, backgroundColor, sceneClassName, orbitControls } = props;
     let component = this;
 
     let renderer = new THREE.WebGLRenderer({
@@ -68,10 +68,14 @@ export default class Canvas extends Component {
     let scene = new THREE.Scene()
     let distance = 500
 
+    var spotLight = new THREE.SpotLight(0xaaaaaa);
+    spotLight.position.set(-50, -50, -50);
+    scene.add(spotLight)
+
     let camera = new THREE.PerspectiveCamera(30, width / height, 1, distance)
-    camera.up.set( 0, 0, 1 )
+    camera.up.set(0, 0, 1)
     camera.position.set(0, -44, 20)
-    scene.add( new THREE.AmbientLight( 0x999999 ) )
+    scene.add(new THREE.AmbientLight(0x999999))
     scene.add(camera);
 
     if (orbitControls) {

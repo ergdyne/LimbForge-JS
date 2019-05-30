@@ -127,6 +127,7 @@ const forearm = {
 
 
 //Make terminal device at 0,0. Move and rotate everything else relative to TD.
+//It is probably possible to do an auto packing with this based on mesh dimensions or something like that...
 const stls = [
   { 
     link: "https://s3.amazonaws.com/limbforgestls/TD/mPTD1/r1/build/R/info_C1-150_L4-160.stl", 
@@ -138,14 +139,14 @@ const stls = [
   { 
     link: "https://s3.amazonaws.com/limbforgestls/forearm-QTC/r20/R/info_C1-150_C4-240_L1-270.stl", 
     name: "FOREARM_r20_R_C1=15_C4=24_L1=27_nz=0.4",
-    position: {x:0,y:0,z:-10},
+    position: {x:0.25,y:-0.66,z:-8.625},
     rotation : {x:0, y:Math.PI,z:0},
     type: 'terminalDevice'
   },
-  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-1.stl", name: "WRIST_COUPLER_VERY_LOOSE" },
-  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-2.stl", name: "WRIST_COUPLER_LOOSE" },
-  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-3.stl", name: "WRIST_COUPLER_TIGHT" },
-  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-4.stl", name: "WRIST_COUPLER_VERY_TIGHT" },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-1.stl", name: "WRIST_COUPLER_VERY_LOOSE", type:'coupler' },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-2.stl", name: "WRIST_COUPLER_LOOSE", type:'coupler' },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-3.stl", name: "WRIST_COUPLER_TIGHT", type:'coupler' },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-4.stl", name: "WRIST_COUPLER_VERY_TIGHT", type:'coupler' },
 ]
 
 

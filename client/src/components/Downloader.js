@@ -63,7 +63,7 @@ export default class Downloader extends React.Component {
     return (
       <div>
         <button onClick={this.download}>{`Download`}</button>
-        <Canvas stls={stls.slice(0,2)} modelColor={`#00ff00`}/>
+        <Canvas stls={stls.filter(x=> !(x.type==='coupler'))} modelColor={`#00ff00`}/>
       </div>
     )
   }
