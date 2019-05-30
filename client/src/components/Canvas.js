@@ -17,15 +17,15 @@ export default class Canvas extends Component {
   }
 
   onLoadBuilder(component, scene, camera, controls, distance, renderer) {
-    const {width, height, orbitControls, modelColor,onSceneRendered} = component.props
+    const { width, height, orbitControls, modelColor, onSceneRendered } = component.props
     return (stl) => {
       return (geometry) => {
         console.log(stl.type)
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
         geometry.center();
-  
-        const mesh = new THREE.Mesh(
+
+        let mesh = new THREE.Mesh(
           geometry,
           new THREE.MeshLambertMaterial({
             overdraw: true,
@@ -36,26 +36,34 @@ export default class Canvas extends Component {
         let xDims = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
         let yDims = geometry.boundingBox.max.y - geometry.boundingBox.min.y;
         let zDims = geometry.boundingBox.max.z - geometry.boundingBox.min.z;
-  
+
+        mesh.position.set( stl.position.x, stl.position.y, stl.position.z )
+        mesh.name = stl.type
+        mesh.rotation.set(0, 0, 0)
+        mesh.scale.set(.04, .04, .04)
+
+        mesh.castShadow = true
+        mesh.receiveShadow = false
+
         scene.add(mesh);
-  
+
         camera = new THREE.PerspectiveCamera(30, width / height, 1, distance);
         camera.position.set(0, 0, Math.max(xDims * 3, yDims * 3, zDims * 3));
-  
+
         scene.add(camera);
-  
-  
+
+
         if (orbitControls) {
           controls = new OrbitControls(camera, ReactDOM.findDOMNode(component));
           controls.enableKeys = false;
           controls.addEventListener('change', () => renderer.render(scene, camera));
         }
-  
+
         ReactDOM.findDOMNode(this).replaceChild(renderer.domElement,
           ReactDOM.findDOMNode(this).firstChild);
-  
+
         renderer.render(scene, camera)
-  
+
         if (typeof onSceneRendered === "function") {
           onSceneRendered(ReactDOM.findDOMNode(renderer.domElement))
         }
