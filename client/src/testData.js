@@ -134,7 +134,7 @@ const stls = [
     name: "TERMINAL DEVICE_r15_C1=15_L4=16",
     position: {x:0,y:0,z:0},
     rotation : {x:0, y:0,z:0},
-    type: 'device'
+    type: 'terminalDevice'
   },
   { 
     link: "https://s3.amazonaws.com/limbforgestls/forearm-QTC/r20/R/info_C1-150_C4-240_L1-270.stl", 
@@ -142,7 +142,7 @@ const stls = [
 
     position: {x:0,y:0,z:3.3},
     rotation : {x:0, y:Math.PI,z:0},
-    type: 'terminalDevice'
+    type: 'device'
   },
   { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-1.stl", name: "WRIST_COUPLER_VERY_LOOSE", type:'coupler' },
   { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-2.stl", name: "WRIST_COUPLER_LOOSE", type:'coupler' },

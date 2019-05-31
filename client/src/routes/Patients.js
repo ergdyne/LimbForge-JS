@@ -86,4 +86,4 @@ export default class Patients extends React.Component {
   }
 }
 
-//No prop types yet...
+//No prop types yet...Will come with user login.

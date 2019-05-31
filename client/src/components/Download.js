@@ -4,7 +4,7 @@ import JSZip from 'jszip'
 import {saveAs} from 'file-saver'
 import Canvas from './Canvas'
 import {stls } from '../testData'
-
+import urlGenerator from '../functions/urlGenerator';
 
 export default class Download extends React.Component {
   constructor(props) {
@@ -17,7 +17,7 @@ export default class Download extends React.Component {
 
   createZip=()=> {
     ///OH, another set up urls....
-    var ur = stls
+    var ur = urlGenerator()//stls
 
     function urlToPromise(url) {
       return new Promise(function (resolve, reject) {
