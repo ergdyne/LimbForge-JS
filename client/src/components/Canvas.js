@@ -24,8 +24,8 @@ export default class Canvas extends Component {
       return (geometry) => {
         let mesh = new THREE.Mesh(geometry, material)
         mesh.name = stl.type
-        mesh.rotation.set(stl.rotation.x, stl.rotation.y, stl.rotation.z)
-        mesh.position.set(stl.position.x, stl.position.y, stl.position.z)
+        if(stl.rotation){mesh.rotation.set(stl.rotation.x, stl.rotation.y, stl.rotation.z)}
+        if(stl.position){mesh.position.set(stl.position.x, stl.position.y, stl.position.z)}
         mesh.scale.set(.04, .04, .04)
         mesh.castShadow = true
         mesh.receiveShadow = false
