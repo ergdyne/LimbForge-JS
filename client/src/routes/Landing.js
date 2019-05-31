@@ -1,5 +1,6 @@
 import React from 'react'
 
+//Will provide the login/signup page in the future and access to a demo.
 const Landing = props => {
   return (
     <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">

@@ -10,6 +10,7 @@ export default class PatientList extends React.Component {
   }
 
   render() {
+    //TODO if using ReactTable in more places, add version of formatColumns with multiple callback availability (list of callbacks?).
     const columns =
       formatColumns(
         this.props.patientColHeaders,
@@ -18,23 +19,14 @@ export default class PatientList extends React.Component {
       )
 
     return (
-      <div className="row">
-        <div className="col m12">
-          <div className="row-padding">
-            <div className="col m12">
-              <div className="card round white">
-                <div className="container padding">
-                  <ReactTable
-                    data={this.props.patients}
-                    columns={columns}
-                    filterable={true}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12"><div className="card round white"><div className="container padding">
+        {/* ReactTable provides a bunch of built in functionality for tables. */}
+        <ReactTable
+          data={this.props.patients}
+          columns={columns}
+          filterable={true}
+        />
+      </div></div></div></div></div></div>
     )
   }
 }

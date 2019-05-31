@@ -3,7 +3,7 @@ import moment from 'moment'
 
 //Format columns for use in react-table
 //Meant to be reusable on single action lists
-//Maybe make a URD version?
+//Maybe make a multiple callback function version
 export default function formatColumns(columns, onClick, caption) {
   return (
     columns.map(x => {

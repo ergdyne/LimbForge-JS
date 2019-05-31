@@ -15,12 +15,11 @@ export default class Download extends React.Component {
     }
   }
 
-
-
   createZip = () => {
     //as Forearm is always the item, it is imported from testdata
     var ur = urlGenerator(this.props.patient, forearm)
 
+    //Copied from LimbForge code
     function urlToPromise(url) {
       return new Promise(function (resolve, reject) {
         JSZipUtils.getBinaryContent(url, function (err, data) {
@@ -49,17 +48,21 @@ export default class Download extends React.Component {
     zip.generateAsync({ type: "blob" })
       .then(function callback(blob) {
         // see FileSaver.js
+        //TODO add a spinner.
         saveAs(blob, patientName + "limbforge_files.zip");
       }, function (e) {
         console.log('oh noes', e);
       });
+    //End copied from LimbForge Code.
   }
 
+  //Having this is not required as it could just be createZip() or download()
   download = () => {
     console.log('Downloading...')
     this.createZip()
   }
 
+  //Callback for preview button. When true, show the canvas.
   preview = () => {
     let x = this.state.preview
     this.setState({ preview: !x })
@@ -80,7 +83,10 @@ export default class Download extends React.Component {
   }
 }
 
-//TODO this will take some though about what kind of props to bring in
+//TODO add the PropTypes...
+
+//Right now using Option 2.
+//In the future will use Option 3/4 thing. with EC2 connected to S3.
 /**
  * Option 1-> bring in the amputation/sizes/gender/ect and convert to stl objects(link,filename,type, position, rotation)
  * //Props not option 1.

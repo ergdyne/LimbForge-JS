@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default class NavBar extends React.Component{
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
   }
 
-  /* Available links are dynamically loaded */
-  /* TODO add highlight current and convert to component*/
+  // Available links are dynamically loaded.
+  //  TODO add highlight current.
   menuItems = ()=>{
     return(
       this.props.menu.map((item)=>{
@@ -24,8 +24,8 @@ export default class NavBar extends React.Component{
     )
   }
 
-  /* TODO replace place holder and wire */
-  /*Far right Nav button.*/
+  //TODO replace placeholder and wire.
+  //Far right side of NavBar.
   accountItems = ()=>{
     return(
       <a className="bar-item button hide-small right padding-large hover-white"
@@ -38,7 +38,7 @@ export default class NavBar extends React.Component{
 
   render(){
     return(
-      // TODO add small screen functionality
+      // TODO add small screen functionality. Currently, menu items vanish.
       <div className="top">
         <div className="bar theme-d2 left-align large">
           {/* Logo Button with ability to change the page displayed on click. */}
@@ -50,7 +50,7 @@ export default class NavBar extends React.Component{
             <i className="fa fa-home margin-right"></i>
             {`Logo`}
           </a>
-
+          {/* Access to pages depends on being loggedIn */}
           {(this.props.loggedIn)?this.menuItems():''}
           {(this.props.loggedIn)?this.accountItems():''}
         
@@ -61,6 +61,7 @@ export default class NavBar extends React.Component{
 }
 
 NavBar.propTypes = {
+  //Home depends on the user access level.
   home: PropTypes.string.isRequired,
   loggedIn: PropTypes.bool.isRequired,
   menu: PropTypes.arrayOf(PropTypes.shape({

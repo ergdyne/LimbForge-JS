@@ -3,7 +3,9 @@ import PropTypes from 'prop-types'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
-//A component that takes a list of elements and a submit function and generates a form
+//A component that takes a list of elements and a submit function and generates a form.
+//TODO add validation. Two layers: in line and submit on/off.
+//TODO add css tags that can be used to wire formating.
 export default class FormBuilder extends React.Component {
   constructor(props) {
     super(props)
@@ -19,13 +21,12 @@ export default class FormBuilder extends React.Component {
       }else{
         state[element.accessor] = element.default
       }
-      
       this.setState(state)
     })
     
   }
 
-  //This is the standard react way of updating state from from elements.
+  //This is the standard react way of updating state from form elements.
   handleInputChange = (event) => {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -40,7 +41,8 @@ export default class FormBuilder extends React.Component {
     }
   }
 
-  //TODO use standard form types
+  //TODO use standard form types.
+  //Every case should be a single ReactComponent.
   generateFormElement = (element) => {
     switch (element.inputType) {
       case 'date': {
@@ -109,7 +111,9 @@ export default class FormBuilder extends React.Component {
   render() {
     return (
       <form onSubmit={() => {
+        //preventDefault stops page reload.
         if(this.props.preventDefault){event.preventDefault()}
+        //Sending the whole state back with the onSubmit.
         this.props.onSubmit(this.state)
       }}>
         {this.props.elements.map(x => this.generateFormElement(x))}
@@ -121,6 +125,7 @@ export default class FormBuilder extends React.Component {
 
 
 FormBuilder.propTypes = {
+  //onSubmit() callback should take the form's state back with it.
  onSubmit: PropTypes.func.isRequired,
  inputs: PropTypes.arrayOf(
    PropTypes.shape({
