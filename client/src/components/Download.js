@@ -1,23 +1,25 @@
 import React from 'react'
 import JSZipUtils from 'jszip-utils'
 import JSZip from 'jszip'
-import {saveAs} from 'file-saver'
+import { saveAs } from 'file-saver'
 import Canvas from './Canvas'
-import {stls } from '../testData'
-import urlGenerator from '../functions/urlGenerator';
+import { forearm } from '../testData'
+import urlGenerator from '../functions/urlGenerator'
 
 export default class Download extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      preview:false
+      preview: false,
     }
   }
 
-  createZip=()=> {
-    ///OH, another set up urls....
-    var ur = urlGenerator()//stls
+
+
+  createZip = () => {
+    //as Forearm is always the item, it is imported from testdata
+    var ur = urlGenerator(this.props.patient, forearm)
 
     function urlToPromise(url) {
       return new Promise(function (resolve, reject) {
@@ -53,14 +55,14 @@ export default class Download extends React.Component {
       });
   }
 
-  download = () =>{
+  download = () => {
     console.log('Downloading...')
     this.createZip()
   }
 
-  preview = () =>{
+  preview = () => {
     let x = this.state.preview
-    this.setState({preview:!x})
+    this.setState({ preview: !x })
   }
 
   render() {
@@ -69,10 +71,10 @@ export default class Download extends React.Component {
         <button onClick={this.preview}>{`Preview`}</button>
         <span>{`   `}</span>
         <button onClick={this.download}>{`Download`}</button>
-        {this.state.preview?
-          <Canvas stls={stls.filter(x=> !(x.type==='coupler'))} modelColor={`#00ff00`}/>:
-          <div/>}
-        
+        {this.state.preview ?
+          <Canvas stls={urlGenerator(this.props.patient, forearm).filter(x => !(x.type === 'coupler'))} modelColor={`#00ff00`} /> :
+          <div />}
+
       </div>
     )
   }

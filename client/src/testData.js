@@ -85,8 +85,9 @@ const patientInputs = [
   { accessor: `city`, label: `City`, type: `string`, inputType: `text`, default: '' },
   { accessor: `country`, label: `Country`, type: `string`, inputType: `text`, default: '' },
   { accessor: `gender`, label: `Gender`, type: `string`, inputType: `radio`, default: '', options: genders },
+  { accessor: `side`, label: `Amputation Side`, type: `string`, inputType: `radio`, default: '', options: sides },
   { accessor: `amputationCause`, label: `Amputation Cause`, type: `string`, inputType: `select`, default: amputationCauses[0].value, options: amputationCauses }
-  //Amputation level and right/left are something are something special, so not on this
+  
 ]
 
 const measurements = [
@@ -147,7 +148,7 @@ const stls = [
   { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-1.stl", name: "WRIST_COUPLER_VERY_LOOSE", type:'coupler' },
   { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-2.stl", name: "WRIST_COUPLER_LOOSE", type:'coupler' },
   { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-3.stl", name: "WRIST_COUPLER_TIGHT", type:'coupler' },
-  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-4.stl", name: "WRIST_COUPLER_VERY_TIGHT", type:'coupler' },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-4.stl", name: "WRIST_COUPLER_VERY_TIGHT", type:'coupler' }
 ]
 
 

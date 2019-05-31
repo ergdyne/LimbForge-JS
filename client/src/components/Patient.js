@@ -12,7 +12,6 @@ export default class Patient extends React.Component {
  
   //Temporary
   render() {
-    console.log(this.props.patient)
     return (
       <div>
         {(this.props.back)?<button onClick={() => this.props.back()}>{`Back`}</button>:<div/>}

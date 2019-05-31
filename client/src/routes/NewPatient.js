@@ -14,8 +14,6 @@ export default class NewPatient extends React.Component {
   }
 
   patientSubmit = (patient) => {
-    console.log('submit called back')
-    console.log(patient)
     patient.id = 85
     patient.amputationLevel = `transradial`
     this.setState({ patient: patient })
@@ -23,11 +21,11 @@ export default class NewPatient extends React.Component {
   }
 
   measurementSubmit = (measurements) => {
-    console.log('adding mints')
     var newPatient = this.state.patient
     newPatient.measurements = measurements
     this.setState(newPatient)
     this.setState({ level: 'preview' })
+    console.log(this.state)
   }
 
   level = () => {
@@ -53,7 +51,9 @@ export default class NewPatient extends React.Component {
             patient={this.state.patient}
           />
           <hr/>
-          <Download/>
+          <Download
+            patient={this.state.patient}
+          />
         </div>
       )
       default: return (
