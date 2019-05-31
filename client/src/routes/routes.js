@@ -1,9 +1,9 @@
 import Landing from './Landing'
 import Patients from './Patients'
-import NewPatient from './NewPatient'
+import Patient from './Patient'
 
 export {
   Landing,
   Patients,
-  NewPatient
+  Patient
 }

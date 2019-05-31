@@ -1,7 +1,7 @@
 import React from 'react'
 import { patientColHeaders, patients } from '../testData'
 import PatientList from '../components/PatientList';
-import Patient from '../components/Patient';
+import Patient from './Patient';
 
 //Incoming data should be only USER state
 //Patients component will connect to DB to get patient data
@@ -40,20 +40,27 @@ export default class Patients extends React.Component {
   }
 
   //umm
-  back = () => this.setState({level:'patients'})
+  back = () => this.setState({ level: 'patients' })
 
   viewPatient = (patientID) => {
-    this.setState({ level: 'patient' })
     //Temporary... will be go fetch patient info
-    this.setState({ patient: patients[patientID] })
+    this.setState(
+      { patient: patients[patientID] },
+      () => {
+        console.log(this.state.patient)
+        this.setState({ level: 'patient' })
+      }
+    )
+
   }
 
   //Content switching is zooming in and out
   level = () => {
     switch (this.state.level) {
-      case 'patient': return(
-        <Patient 
-          patient={this.state.patient}
+      case 'patient': return (
+        <Patient
+          initialLevel={(this.state.patient.measurements) ? 'preview' : 'measurement'}
+          initialPatient={this.state.patient}
           back={this.back}
         />
       )
@@ -69,19 +76,7 @@ export default class Patients extends React.Component {
 
   render() {
     return (
-      <div className="row">
-        <div className="col m12">
-          <div className="row-padding">
-            <div className="col m12">
-              <div className="card round white">
-                <div className="container padding">
-                  {this.level()}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div>{ this.level() }</div>
     )
   }
 }

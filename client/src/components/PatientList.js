@@ -5,12 +5,12 @@ import 'react-table/react-table.css'
 import formatColumns from '../functions/formatColumns'
 
 export default class PatientList extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
   }
 
   render() {
-    const columns = 
+    const columns =
       formatColumns(
         this.props.patientColHeaders,
         this.props.viewPatient,
@@ -18,11 +18,23 @@ export default class PatientList extends React.Component {
       )
 
     return (
-      <ReactTable 
-        data={this.props.patients}
-        columns={columns}
-        filterable={true}
-      />       
+      <div className="row">
+        <div className="col m12">
+          <div className="row-padding">
+            <div className="col m12">
+              <div className="card round white">
+                <div className="container padding">
+                  <ReactTable
+                    data={this.props.patients}
+                    columns={columns}
+                    filterable={true}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     )
   }
 }

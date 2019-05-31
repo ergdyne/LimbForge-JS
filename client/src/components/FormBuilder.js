@@ -12,8 +12,6 @@ export default class FormBuilder extends React.Component {
   }
 
   componentWillMount() {
-
-    console.log(this.props.elements)
     this.props.elements.map(element =>{
       var state = this.state
       if(this.props.initial){
@@ -25,7 +23,6 @@ export default class FormBuilder extends React.Component {
       this.setState(state)
     })
     
-    console.log("after Initial ",this.state)
   }
 
   //This is the standard react way of updating state from from elements.

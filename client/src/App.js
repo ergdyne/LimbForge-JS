@@ -2,7 +2,7 @@ import React from 'react'
 import style from './App.css'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
-import {Landing,Patients, NewPatient} from './routes/routes'
+import {Landing,Patients, Patient} from './routes/routes'
 import {navData} from './testData'
 
 export default class App extends React.Component {
@@ -26,7 +26,7 @@ export default class App extends React.Component {
   content = () =>{
     switch (this.state.page){
       case 'patients': return(<Patients/>)
-      case 'new-patient': return(<NewPatient/>)
+      case 'new-patient': return(<Patient/>)
       default: return(<Landing/>)
     }
   }
