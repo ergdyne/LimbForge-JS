@@ -22,6 +22,7 @@ export default class Patient extends React.Component {
         <hr/>
         <div>{(this.props.patient.measurements)?<div>{
           <div>
+            <div>{'Measurements:'}</div>
             <div>{measurementInputs.map(x=>{return <span key={`header-${x.accessor}`}><span>{x.label}</span><span>{" - "}</span></span>})}</div>
             <div>{measurementInputs.map(x=>{return(<span key={x.accessor}><span>{formatValue(x.type,this.props.patient.measurements[x.accessor])}</span><span>{" - "}</span></span>)})}</div>
           </div>

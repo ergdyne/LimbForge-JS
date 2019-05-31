@@ -2,7 +2,7 @@ import React from 'react'
 import FormBuilder from '../components/FormBuilder'
 import Patient from '../components/Patient'
 import Download from '../components/Download'
-import { patientInputs, measurementInputs } from '../testData'
+import { patientInputs, measurementInputs, patients } from '../testData'
 
 
 export default class NewPatient extends React.Component {
@@ -16,8 +16,14 @@ export default class NewPatient extends React.Component {
   patientSubmit = (patient) => {
     patient.id = 85
     patient.amputationLevel = `transradial`
+    if(this.state.patient){
+      if(this.state.patient.measurements){
+        patient.measurements = this.state.patient.measurements
+      }
+    }
     this.setState({ patient: patient })
     this.setState({ level: 'measurement' })
+
   }
 
   measurementSubmit = (measurements) => {
@@ -42,6 +48,7 @@ export default class NewPatient extends React.Component {
             onSubmit={this.measurementSubmit}
             submitValue={`Add`}
             preventDefault={true}
+            initial={patients[0].measurements}
           />
         </div>
       )
@@ -63,6 +70,7 @@ export default class NewPatient extends React.Component {
           onSubmit={this.patientSubmit}
           submitValue={`Save`}
           preventDefault={true}
+          initial={patients[0]}
         />
       )
     }

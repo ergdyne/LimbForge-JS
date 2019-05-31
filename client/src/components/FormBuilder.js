@@ -12,11 +12,20 @@ export default class FormBuilder extends React.Component {
   }
 
   componentWillMount() {
+
+    console.log(this.props.elements)
     this.props.elements.map(element =>{
       var state = this.state
-      state[element.accessor] = element.default
+      if(this.props.initial){
+        state[element.accessor] = (this.props.initial[element.accessor])?this.props.initial[element.accessor]:element.default
+      }else{
+        state[element.accessor] = element.default
+      }
+      
       this.setState(state)
     })
+    
+    console.log("after Initial ",this.state)
   }
 
   //This is the standard react way of updating state from from elements.
@@ -58,10 +67,10 @@ export default class FormBuilder extends React.Component {
               {element.options.map(o => {
                 return (
                   <option
-                    value={o.value}
-                    key={`${element.accessor}-${o.value}`}
+                    value={o}
+                    key={`${element.accessor}-${o}`}
                   >
-                    {o.label}
+                    {o}
                   </option>)
               })}
             </select>
@@ -71,15 +80,15 @@ export default class FormBuilder extends React.Component {
       case 'radio': {
         return (<div key={element.accessor}>
           {element.options.map(o => {
-            return (<label key={`${element.accessor}-${o.value}`}>
+            return (<label key={`${element.accessor}-${o}`}>
               <input
                 type="radio"
-                value={o.value}
+                value={o}
                 name={element.accessor}
-                checked={this.state[element.accessor] === o.value}
+                checked={this.state[element.accessor] === o}
                 onChange={this.handleInputChange}
               />
-              {o.label}
+              {o}
             </label>)
           })}
         </div>)
@@ -90,6 +99,7 @@ export default class FormBuilder extends React.Component {
           <input
             key={element.accessor}
             name={element.accessor}
+            value={this.state[element.accessor]}
             className='FormBuilder-text'
             type='text'
             onChange={this.handleInputChange}

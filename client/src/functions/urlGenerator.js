@@ -7,8 +7,8 @@ export default function urlGenerator(specs, component) {
   const componentVersion = component.version
 
   //Processed number
-  const revision = gender == "male" ? 1 : 17 //revision is 1 or 17... which seems like it is hard coded weird way
-  const genderChar = gender.charAt(0)
+  const genderChar = gender.charAt(0).toLowerCase()
+  const revision = genderChar === "m" ? 1 : 17 //revision is 1 or 17... which seems like it is hard coded weird way
   const sideChar = side.charAt(0).toUpperCase()
   const C_1 = roundDownNumber(c1)
   const C_4 = roundDownNumber(c4)
@@ -42,11 +42,12 @@ export default function urlGenerator(specs, component) {
   return urls
 }
 
+//Well L1 seems to be every 10, not 5... so replacing 5 with 10
 function roundUpNumber(input) {
   // removing decimal from number
   var base_num = parseFloat(parseFloat(input).toFixed(1).toString().replace(".", ""));
   // round up to nearest 5
-  var result = (Math.ceil(base_num / 5) * 5);
+  var result = (Math.ceil(base_num / 10) * 10);
   return result
 }
 

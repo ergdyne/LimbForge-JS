@@ -1,24 +1,24 @@
 //TODO move enums to enums
-//The label/value concept seems like it might be a waste, but it is easier now and feels right (can't say why). 
+
 const amputationCauses = [
-  { label: "Congenital", value: "congenital" },
-  { label: "Diabetes", value: "diabetes" },
-  { label: "Traffic accident", value: "traffic accident" },
-  { label: "Cancer", value: "cancer" },
-  { label: "Burn", value: "burn" },
-  { label: "Frostbite", value: "frostbite" },
-  { label: "Industrial accident", value: "industrial accident" },
-  { label: "Electrocution", value: "electrocution" },
-  { label: "Natural disaster", value: "natural disaster" },
-  { label: "Infection", value: "infection" },
-  { label: "Conflict", value: "conflict" },
-  { label: "Unknown", value: "unknown" },
-  { label: "Other", value: "other" }
+  "Congenital",
+  "Diabetes", 
+  "Traffic accident", 
+  "Cancer", 
+  "Burn", 
+  "Frostbite", 
+  "Industrial accident",
+  "Electrocution", 
+  "Natural disaster", 
+  "Infection", 
+  "Conflict", 
+  "Unknown",
+  "Other"
 ]
 
-const genders = [{ label: `Male`, value: `male` }, { label: `Female`, value: `female` }]
-const sides = [{ label: `Right`, value: `right` }, { label: `Left`, value: `left` }]
-const amputationLevels = [{ label: `Transradial`, value: `transradial` }]
+const genders = [`Male`, `Female`]
+const sides = [`Right`,`Left`]
+const amputationLevels = [`Transradial`]
 
 const past = new Date(1950, 1, 1)
 const amp = new Date(2012, 2, 2)
@@ -36,8 +36,20 @@ const navData = {
   ]
 }
 
-const fooMeasures = { l1: 25, l2: 25, l4: 18, c1: 25, c2: 25, c3: 25, c4: 25 }
+function randomMeasure(min, max){
+  return(Math.round(Math.random()*(max-min))+min)
+}
 
+function fooMeasures(){
+  return ({ 
+    l1: randomMeasure(18,32), 
+    l2: 25, 
+    l4: randomMeasure(13,19), 
+    c1: randomMeasure(14.5,18), 
+    c2: 25, 
+    c3: 25, 
+    c4: randomMeasure(20,28) })
+}
 function patient(first, last, id) {
   return {
     id: id,
@@ -47,11 +59,11 @@ function patient(first, last, id) {
     dateOfAmputation: amp,
     city: `Pittsburgh`,
     country: `USA`,
-    gender: randomFromList(genders).label,
-    side: randomFromList(sides).label,
-    amputationLevel: randomFromList(amputationLevels).label,
-    amputationCause: randomFromList(amputationCauses).label,
-    measurements: fooMeasures
+    gender: randomFromList(genders),
+    side: randomFromList(sides),
+    amputationLevel: randomFromList(amputationLevels),
+    amputationCause: randomFromList(amputationCauses),
+    measurements: fooMeasures()
   }
 }
 
@@ -86,19 +98,20 @@ const patientInputs = [
   { accessor: `country`, label: `Country`, type: `string`, inputType: `text`, default: '' },
   { accessor: `gender`, label: `Gender`, type: `string`, inputType: `radio`, default: '', options: genders },
   { accessor: `side`, label: `Amputation Side`, type: `string`, inputType: `radio`, default: '', options: sides },
-  { accessor: `amputationCause`, label: `Amputation Cause`, type: `string`, inputType: `select`, default: amputationCauses[0].value, options: amputationCauses }
+  { accessor: `amputationCause`, label: `Amputation Cause`, type: `string`, inputType: `select`, default: amputationCauses[0], options: amputationCauses }
   
 ]
 
 const measurements = [
   { name: 'L1', step: 0.5, min: 18, max: 32, default: 25, unit: 'cm', instruction: 'type instruction here' },
   { name: 'L2', step: 0.5, min: 20, max: 28, default: 25, unit: 'cm', instruction: 'type instruction here' },
-  { name: 'L4', step: 0.5, min: 14, max: 25, default: 18, unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C1', step: 0.5, min: 20, max: 28, default: 25, unit: 'cm', instruction: 'type instruction here' },
+  { name: 'L4', step: 0.5, min: 14, max: 19, default: 18, unit: 'cm', instruction: 'type instruction here' },
+  { name: 'C1', step: 0.5, min: 14.5, max: 18, default: 16, unit: 'cm', instruction: 'type instruction here' },
   { name: 'C2', step: 0.5, min: 20, max: 28, default: 25, unit: 'cm', instruction: 'type instruction here' },
   { name: 'C3', step: 0.5, min: 20, max: 28, default: 25, unit: 'cm', instruction: 'type instruction here' },
   { name: 'C4', step: 0.5, min: 20, max: 28, default: 25, unit: 'cm', instruction: 'type instruction here' }
 ]
+
 
 const measurementInputs = measurements.map(m => {
   return ({
