@@ -1,7 +1,7 @@
 import React from 'react'
-import { patientColHeaders, patients } from '../testData'
+import { patientColHeaders, patients } from '../testData'//TODO move patientColHeader to their own place unless doing them dynamic like too.
 import PatientList from '../components/PatientList';
-import Patient from '../components/Patient';
+import Patient from './Patient';
 
 //Incoming data should be only USER state
 //Patients component will connect to DB to get patient data
@@ -9,82 +9,64 @@ import Patient from '../components/Patient';
 export default class Patients extends React.Component {
   constructor(props) {
     super(props)
+    //Can I do a DB query in the constructor?
     this.state = {
-      level: 'patients',
+      page: 'patients',
       patients: [],
       patient: {
         id: null,
         firstName: '',
         lastName: '',
         dateOfBirth: '',
-        dateOfAmpputation: '',
+        dateOfAmputation: '',
         city: '',
         country: '',
         gender: '',
         amputationLevel: '',
         amputationCause: '',
-        measurements: [],
       }
     }
   }
 
-  componentWillMount() {
-    //It would be nice to have the columns load from Database. It would have to happen here.
-    //Why? If we would like to change the fields without rebuilding.  OK sure. But! probably not needed.
-    //Don't worry about this.
-    //Before first render
-  }
-
   componentDidMount() {
-    //After first render. Do AJAX calls here
     this.setState({ patients: patients })
   }
 
-  //umm
-  back = () => this.setState({level:'patients'})
+  //Callback for patient view/edit page.
+  back = () => this.setState({ page: 'patients' })
 
+  //Callback for view patient button in PatientList
   viewPatient = (patientID) => {
-    this.setState({ level: 'patient' })
     //Temporary... will be go fetch patient info
-    this.setState({ patient: patients[patientID] })
-  }
-
-  //Content switching is zooming in and out
-  level = () => {
-    switch (this.state.level) {
-      case 'patient': return(
-        <Patient 
-          patient={this.state.patient}
-          back={this.back}
-        />
-      )
-      default: return (
-        <PatientList
-          patientColHeaders={patientColHeaders}
-          viewPatient={this.viewPatient}
-          patients={this.state.patients}
-        />
-      )
-    }
+    this.setState(
+      { patient: patients[patientID] },
+      () => {
+        //setState has a callback function that can be used to make sure the state is set before moving on.
+        //In this case, we could probably just set the two properties at the same time.
+        this.setState({ page: 'patient' })
+      }
+    )
   }
 
   render() {
     return (
-      <div className="row">
-        <div className="col m12">
-          <div className="row-padding">
-            <div className="col m12">
-              <div className="card round white">
-                <div className="container padding">
-                  {this.level()}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div>
+        {
+          (this.state.page === 'patient') ?
+            <Patient
+              initialLevel={(this.state.patient.measurements) ? 'preview' : 'measurement'}
+              initialPatient={this.state.patient}
+              back={this.back}
+            /> :
+            <PatientList
+              patientColHeaders={patientColHeaders}
+              viewPatient={this.viewPatient}
+              patients={this.state.patients}
+            />
+        }
       </div>
     )
   }
 }
 
-//No prop types yet...
+//No prop types yet...Will come with user login.
