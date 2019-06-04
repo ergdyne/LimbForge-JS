@@ -96,8 +96,8 @@ const patientInputs = [
   //There is a google library, but we will just feed a default by User and otherwise they can put what they want
   { accessor: `city`, label: `City`, type: `string`, inputType: `text`, default: '' },
   { accessor: `country`, label: `Country`, type: `string`, inputType: `text`, default: '' },
-  { accessor: `gender`, label: `Gender`, type: `string`, inputType: `radio`, default: '', options: genders },
-  { accessor: `side`, label: `Amputation Side`, type: `string`, inputType: `radio`, default: '', options: sides },
+  { accessor: `gender`, label: `Gender`, type: `string`, inputType: `radio`, default: genders[0], options: genders },
+  { accessor: `side`, label: `Amputation Side`, type: `string`, inputType: `radio`, default: sides[0], options: sides },
   { 
     accessor: `amputationCause`, 
     label: `Amputation Cause`, 
@@ -105,20 +105,18 @@ const patientInputs = [
     inputType: `select`, 
     default: amputationCauses[0], 
     options: amputationCauses,
-    validations: ['exists'],
     form: 'patient' 
-  
   }
   
 ]
 
 const measurements = [
   { name: 'L1', step: 1.0, min: 18, max: 32,  unit: 'cm', instruction: 'type instruction here' },
-  { name: 'L2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
+  //{ name: 'L2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
   { name: 'L4', step: 0.5, min: 14, max: 19,  unit: 'cm', instruction: 'type instruction here' },
   { name: 'C1', step: 0.5, min: 14.5, max: 18,  unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C3', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
+  //{ name: 'C2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
+  //{ name: 'C3', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
   { name: 'C4', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' }
 ]
 
@@ -129,10 +127,12 @@ const measurementInputs = measurements.map(m => {
     label: m.name,
     type: 'number',
     inputType: 'text',
+    placeholder: "XX.X cm",
     validation: {
       min: m.min,
       max: m.max
-    }
+    },
+    instruction: m.instruction
   })
 })
 

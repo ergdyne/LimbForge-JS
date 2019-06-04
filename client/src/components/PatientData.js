@@ -61,7 +61,6 @@ PatientData.propTypes = {
     city: PropTypes.string.isRequired,
     country: PropTypes.string.isRequired,
     gender: PropTypes.string.isRequired,
-    amputationLevel: PropTypes.string.isRequired,
     amputationCause: PropTypes.string,
     measurements: PropTypes.object,
   }).isRequired

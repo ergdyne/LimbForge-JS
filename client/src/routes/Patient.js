@@ -26,12 +26,18 @@ export default class Patient extends React.Component {
     //To be replaced with actual ID from saving it
 
     if (!this.state.patient.id) {
+
       patient.id = 85
       patient.amputationLevel = `transradial`
     }
     if (this.state.patient.measurements) {
       patient.measurements = this.state.patient.measurements
     }
+
+    //Temporary Hack! TODO replace with validation (require!)
+    if(!this.state.patient.gender) patient.gender = 'Male'
+    if(!this.state.patient.side) patient.side = 'Right'
+    
 
     //Return data from DB then set state.
     this.setState({ patient: patient }, () => {
@@ -47,8 +53,10 @@ export default class Patient extends React.Component {
   measurementSubmit = (measurements) => {
     var newPatient = this.state.patient
     newPatient.measurements = measurements
-    this.setState(newPatient)
-    this.setState({ level: 'preview' })
+    this.setState(newPatient,()=>{
+      this.setState({ level: 'preview' })
+    })
+    
   }
 
   //Used to switch the content of the page.

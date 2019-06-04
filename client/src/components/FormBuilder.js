@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import ReactTooltip from 'react-tooltip' 
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
+import TextInput from './formElements/TextInput'
 
 //A component that takes a list of elements and a submit function and generates a form.
 //TODO add validation. Two layers: in line and submit on/off.
@@ -13,17 +15,16 @@ export default class FormBuilder extends React.Component {
     }
   }
 
+  //TODO see initial value version...
   componentWillMount() {
     this.props.elements.map(element =>{
       var state = this.state
-      if(this.props.initial){
-        state[element.accessor] = (this.props.initial[element.accessor])?this.props.initial[element.accessor]:element.default
-      }else{
-        state[element.accessor] = element.default
+      if(this.props.initial && this.props.initial[element.accessor]){
+        state[element.accessor] = this.props.initial[element.accessor]
       }
+      
       this.setState(state)
-    })
-    
+    }) 
   }
 
   //This is the standard react way of updating state from form elements.
@@ -94,14 +95,15 @@ export default class FormBuilder extends React.Component {
       }
       default: {
         return (<div key={element.accessor}>
-          <span>{`${element.label}: `}</span>
-          <input
+          <span data-tip={element.instruction}>{`${element.label}: `}</span>
+          <TextInput 
             key={element.accessor}
             name={element.accessor}
             value={this.state[element.accessor]}
             className='FormBuilder-text'
-            type='text'
+            placeholder={(element.placeholder)?element.placeholder:""} 
             onChange={this.handleInputChange}
+            validation={element.validation}
           />
         </div>)
       }
@@ -118,6 +120,7 @@ export default class FormBuilder extends React.Component {
       }}>
         {this.props.elements.map(x => this.generateFormElement(x))}
         <input className='FormBuilder-button' value={(this.props.submitValue)?this.props.submitValue:`Submit`} type="submit" />
+        <ReactTooltip/>
       </form>
     )
   }
