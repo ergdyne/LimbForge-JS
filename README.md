@@ -5,6 +5,8 @@ REMEMBER: as long as the interfaces of the code are well structured, tangles can
 RANDO: on the question of using semicolins to use or not, I went with not. Where you see them is copied code.
 
 #Incomplete
+node and npm installation
+
 Development Setup
 Install Postgres
 Clone Repo

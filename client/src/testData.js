@@ -98,18 +98,28 @@ const patientInputs = [
   { accessor: `country`, label: `Country`, type: `string`, inputType: `text`, default: '' },
   { accessor: `gender`, label: `Gender`, type: `string`, inputType: `radio`, default: '', options: genders },
   { accessor: `side`, label: `Amputation Side`, type: `string`, inputType: `radio`, default: '', options: sides },
-  { accessor: `amputationCause`, label: `Amputation Cause`, type: `string`, inputType: `select`, default: amputationCauses[0], options: amputationCauses }
+  { 
+    accessor: `amputationCause`, 
+    label: `Amputation Cause`, 
+    type: `string`, 
+    inputType: `select`, 
+    default: amputationCauses[0], 
+    options: amputationCauses,
+    validations: ['exists'],
+    form: 'patient' 
+  
+  }
   
 ]
 
 const measurements = [
-  { name: 'L1', step: 0.5, min: 18, max: 32, default: 25, unit: 'cm', instruction: 'type instruction here' },
-  { name: 'L2', step: 0.5, min: 20, max: 28, default: 25, unit: 'cm', instruction: 'type instruction here' },
-  { name: 'L4', step: 0.5, min: 14, max: 19, default: 18, unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C1', step: 0.5, min: 14.5, max: 18, default: 16, unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C2', step: 0.5, min: 20, max: 28, default: 25, unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C3', step: 0.5, min: 20, max: 28, default: 25, unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C4', step: 0.5, min: 20, max: 28, default: 25, unit: 'cm', instruction: 'type instruction here' }
+  { name: 'L1', step: 1.0, min: 18, max: 32,  unit: 'cm', instruction: 'type instruction here' },
+  { name: 'L2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
+  { name: 'L4', step: 0.5, min: 14, max: 19,  unit: 'cm', instruction: 'type instruction here' },
+  { name: 'C1', step: 0.5, min: 14.5, max: 18,  unit: 'cm', instruction: 'type instruction here' },
+  { name: 'C2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
+  { name: 'C3', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
+  { name: 'C4', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' }
 ]
 
 
@@ -119,7 +129,6 @@ const measurementInputs = measurements.map(m => {
     label: m.name,
     type: 'number',
     inputType: 'text',
-    default: m.default,
     validation: {
       min: m.min,
       max: m.max

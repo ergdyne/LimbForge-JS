@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import FormBuilder from '../components/FormBuilder'
 import PatientData from '../components/PatientData'
 import Download from '../components/Download'
-import {patientInputs, measurementInputs} from '../testData'
+import { patientInputs, measurementInputs } from '../testData'
 //TODO move Inputs Lists to their own areas or add the generated server side based on DB.
 //These two drive the construction of the patient and measurement forms respectively.
 //Having them load from the DB (along with some funky sequel) will allow for fields to be added and removed by the admin.
@@ -18,10 +18,13 @@ export default class Patient extends React.Component {
     }
   }
 
+  componentDidMount() {
+  }
   //Callback for patient Data form.
   //TODO connect to API to do actual read/write/updates.
   patientSubmit = (patient) => {
     //To be replaced with actual ID from saving it
+
     if (!this.state.patient.id) {
       patient.id = 85
       patient.amputationLevel = `transradial`
@@ -31,13 +34,13 @@ export default class Patient extends React.Component {
     }
 
     //Return data from DB then set state.
-    this.setState({ patient: patient },()=>{
-      if(this.state.patient.measurements){
+    this.setState({ patient: patient }, () => {
+      if (this.state.patient.measurements) {
         this.setState({ level: 'preview' })
-      }else{
+      } else {
         this.setState({ level: 'measurement' })
       }
-    }) 
+    })
   }
 
   //Callback for measurements form.
@@ -50,42 +53,18 @@ export default class Patient extends React.Component {
 
   //Used to switch the content of the page.
   level = () => {
-    switch (this.state.level) {
-      case 'measurement': return (
-        <div>
-          {/* The display block. */}
-          <PatientData
-            patient={this.state.patient}
-            editPatient={() => this.setState({ level: 'patient' })}
-          />
-          <hr />
-          {/* Constructs form for collecting measurements. */}
-          <FormBuilder
-            key='measurments'
-            elements={measurementInputs}
-            onSubmit={this.measurementSubmit}
-            submitValue={`Save`}
-            preventDefault={true}
-            initial={(this.state.patient.measurement) ? this.state.patient.measurement : {}}
-          />
-        </div>
-      )
-      case 'preview': return (
-        <div>
-          <PatientData
-            patient={this.state.patient}
-            editPatient={() => this.setState({ level: 'patient' })}
-            editMeasurement={() => this.setState({ level: 'measurement' })}
-          />
-          <hr />
-          {/* Provides STL preview and download functionality. */}
-          <Download
-            patient={this.state.patient}
-          />
-        </div>
-      )
-      default: return (
-        // The patient level.
+    const l = this.state.level
+    return (<div>
+      {(l === 'preview' || l === 'measurement') ?
+        <PatientData
+          patient={this.state.patient}
+          editPatient={() => this.setState({ level: 'patient' })}
+          editMeasurement={(l === 'preview') ? () => this.setState({ level: 'measurement' }) : false}
+        /> :
+        <div />
+      }
+      {/* Patient Form */}
+      {(l === 'patient') ?
         <FormBuilder
           key='patient'
           elements={patientInputs}
@@ -93,9 +72,23 @@ export default class Patient extends React.Component {
           submitValue={`Save`}
           preventDefault={true}
           initial={(this.state.patient) ? this.state.patient : {}}
-        />
-      )
-    }
+        /> :
+        <div />
+      }
+      {/* Measurement Form */}
+      {(l === 'measurement') ?
+        <FormBuilder
+          key='measurments'
+          elements={measurementInputs}
+          onSubmit={this.measurementSubmit}
+          submitValue={`Save`}
+          preventDefault={true}
+          initial={(this.state.patient.measurements) ? this.state.patient.measurements : {}}
+        /> :
+        <div />
+      }
+      {(l==='preview')?<Download patient={this.state.patient} />:<div/>}
+    </div>)
   }
 
   render() {
@@ -134,5 +127,5 @@ Patient.propTypes = {
 
 Patient.defaultProps = {
   initialLevel: 'patient',
-  initialPatient:{}
+  initialPatient: {}
 }
