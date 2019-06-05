@@ -1,6 +1,7 @@
 import React from 'react'
+import {Redirect} from "react-router-dom"
 import { patientColHeaders, patients } from '../testData'//TODO move patientColHeader to their own place unless doing them dynamic like too.
-import PatientList from '../components/PatientList';
+import PatientList from '../components/PatientList'
 import Patient from './Patient';
 
 //Incoming data should be only USER state
@@ -14,7 +15,7 @@ export default class Patients extends React.Component {
       page: 'patients',
       patients: [],
       patient: {
-        id: null,
+        pkPatient: null,
         firstName: '',
         lastName: '',
         dateOfBirth: '',
@@ -33,19 +34,11 @@ export default class Patients extends React.Component {
   }
 
   //Callback for patient view/edit page.
-  back = () => this.setState({ page: 'patients' })
+  back = () => this.props.history.push(`/patients/`)
 
   //Callback for view patient button in PatientList
   viewPatient = (patientID) => {
-    //Temporary... will be go fetch patient info
-    this.setState(
-      { patient: patients[patientID] },
-      () => {
-        //setState has a callback function that can be used to make sure the state is set before moving on.
-        //In this case, we could probably just set the two properties at the same time.
-        this.setState({ page: 'patient' })
-      }
-    )
+    this.props.history.push(`/patient/${patientID}`)
   }
 
   render() {

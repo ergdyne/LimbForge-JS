@@ -60,7 +60,7 @@ function fooMeasures(){
 }
 function patient(first, last, id) {
   return {
-    id: id,
+    pkPatient: id,
     firstName: first,
     lastName: last,
     dateOfBirth: past,
@@ -75,14 +75,16 @@ function patient(first, last, id) {
   }
 }
 
-
+const groups =[
+  {pkGroup:1, name:`Lambda`}
+]
 
 const lastNames = [`Fun`, `Cat`, `Bear`, `Gerry`, `Amith`, `Dill`, `Elsworth`, `Gary`, `Goo`]
 const firstNames = [`A`, `B`, `C`, `D`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, `G`]
 const patients = firstNames.map((x, i) => patient(x, randomFromList(lastNames), i))
 
 const patientColHeaders = [
-  { accessor: `id`, label: ``, type: `id` },
+  { accessor: `pkPatient`, label: ``, type: `id` },
   { accessor: `firstName`, label: `First Name`, type: `string` },
   { accessor: `lastName`, label: `Last Name`, type: `string` },
   { accessor: `dateOfBirth`, label: `Date of Birth`, type: `date` },

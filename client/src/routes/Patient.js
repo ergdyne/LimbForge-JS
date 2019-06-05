@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import FormBuilder from '../components/FormBuilder'
 import PatientData from '../components/PatientData'
 import Download from '../components/Download'
-import { patientInputs, measurementInputs } from '../testData'
+import { patientInputs, measurementInputs,patients } from '../testData'
 //TODO move Inputs Lists to their own areas or add the generated server side based on DB.
 //These two drive the construction of the patient and measurement forms respectively.
 //Having them load from the DB (along with some funky sequel) will allow for fields to be added and removed by the admin.
@@ -19,15 +19,21 @@ export default class Patient extends React.Component {
   }
 
   componentDidMount() {
+    const { pkPatient } = this.props.match.params
+    //well some more filtering than this...?
+    if(pkPatient && pkPatient>=0){
+      this.setState({patient:patients[pkPatient],level:'preview'})
+    }
+
   }
   //Callback for patient Data form.
   //TODO connect to API to do actual read/write/updates.
   patientSubmit = (patient) => {
     //To be replaced with actual ID from saving it
 
-    if (!this.state.patient.id) {
+    if (!this.state.patient.pkPatient) {
 
-      patient.id = 85
+      patient.pkPatient = 85
       patient.amputationLevel = `transradial`
     }
     if (this.state.patient.measurements) {
@@ -104,8 +110,7 @@ export default class Patient extends React.Component {
       // More convoluted divs from the current copied CSS.
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
-          {/* Back button provided if editing an existing patient. */}
-          {(this.props.back) ? <button onClick={() => this.props.back()}>{`Back`}</button> : <div />}
+      
           {/* level() switches the main page content. */}
           {this.level()}
         </div></div>
@@ -114,9 +119,11 @@ export default class Patient extends React.Component {
   }
 }
 
+
+//For reference, but doesn't matter anymore
 Patient.propTypes = {
   initialPatient: PropTypes.shape({
-    id: PropTypes.number,
+    pkPatient: PropTypes.number,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     dateOfBirth: PropTypes.instanceOf(Date),
@@ -129,10 +136,10 @@ Patient.propTypes = {
     amputationCause: PropTypes.string,
     measurements: PropTypes.object,
   }),
-  initialLevel: PropTypes.string,
-  back: PropTypes.func
+  initialLevel: PropTypes.string
 }
 
+//Useful for the new patient version
 Patient.defaultProps = {
   initialLevel: 'patient',
   initialPatient: {}
