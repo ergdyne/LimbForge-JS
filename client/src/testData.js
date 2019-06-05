@@ -28,12 +28,20 @@ function randomFromList(l) {
 }
 
 const navData = {
-  loggedIn: true,
-  home: `patients`,
   menu: [
-    { text: `Patients`, link: `patients` },
-    { text: `New Patient`, link: `new-patient` }
+    { text: `Patients`, link: `patients`, access: [`user`,`groupAdmin`,`admin`] },
+    { text: `New Patient`, link: `new-patient`, access: [`user`,`groupAdmin`,`admin`] },
+    { text: `Users`, link: `users`, access: [`groupAdmin`,`admin`] },
+    { text: `Groups`, link: `groups`, access: [`admin`] }
+    //Maybe add the measurement stuff too
   ]
+}
+
+const currentUser = {
+  loggedIn: true,
+  siteAccess: 'admin',
+  groups: [{fkGroup: 1,groupAccess: 'groupAdmin'}], //if admin to site, then ignore this
+  home: `patients`
 }
 
 function randomMeasure(min, max){
@@ -172,6 +180,7 @@ const stls = [
 
 export {
   navData,
+  currentUser,
   patients,
   amputationCauses,
   patientColHeaders,

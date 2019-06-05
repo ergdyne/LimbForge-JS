@@ -2,8 +2,8 @@ import React from 'react'
 import style from './App.css'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
-import {Landing,Patients, Patient} from './routes/routes'
-import {navData} from './testData' //TODO Should be spelled out here or in its own location.
+import {Landing,Patients, Patient,Groups,Users} from './routes/routes'
+import {navData, currentUser} from './testData' //TODO Should be spelled out here or in its own location.
 
 export default class App extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ export default class App extends React.Component {
     this.state = {
       //The page attribute is part of the weird replacement for doing react-router. Much of the anti-patterness of this app starts here.
       page:`patients`,
-      loggedIn: navData.loggedIn
+      user: currentUser
     }
   }
 
@@ -28,8 +28,13 @@ export default class App extends React.Component {
     switch (this.state.page){
       //Patients with an 's' lists all the user's patients (all the patients in their group(s)).
       case 'patients': return(<Patients/>)
-      //The new patient version of Patient uses default props and allows for adding a new patient.
+      //The new patient version of Patient uses default props and allows for adding a new patient. Common enough to need a tab.
       case 'new-patient': return(<Patient/>)
+      //group or site users
+      case 'users': return(<Users/>) //requires props based on user access
+
+      case 'groups': return(<Groups/>)//admin access only
+
       //Drive to landing page if not page is selected (probably not loggedin)
       default: return(<Landing/>)
     }
@@ -41,12 +46,12 @@ export default class App extends React.Component {
       <div className="theme-l5">
         <NavBar 
           menu={navData.menu}
-          home={navData.home} 
+          home={this.state.user.home} 
           updatePage={this.updatePage}
-          loggedIn={this.state.loggedIn}
+          loggedIn={this.state.user.loggedIn}
         />
         {/* Doubly drives user to Landing if not logged in. Overkill. */}
-        {this.state.loggedIn?this.content():<Landing/>}
+        {this.state.user.loggedIn?this.content():<Landing/>}
         <br />
         <Footer/>
       </div>
