@@ -6,6 +6,7 @@ import Group from './Group'
 import Users from './Users'
 import User from './User'
 
+//Routes should be the only level making calls to Rest
 export {
   Landing,
   Patients,

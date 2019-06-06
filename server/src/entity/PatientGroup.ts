@@ -1,14 +1,22 @@
-import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn} from 'typeorm'
+import {Entity, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne} from 'typeorm'
+import Patient from './Patient'
+import Group from './Group'
 
 @Entity()
 export class PatientGroup{
   @PrimaryGeneratedColumn()
-  public pkPatientGroup: number
+  public id: number
 
   @CreateDateColumn()
   public create_at: Date
-  //many to one Patient
-  //many to one group
+
+  //Many to one Patient
+  @ManyToOne(type=> Patient, patient => patient.patientGroups)
+  patient: Patient
+
+  //Many to one Group
+  @ManyToOne(type=> Group, group => group.patientGroups)
+  group: Group
 }
 
 export default PatientGroup

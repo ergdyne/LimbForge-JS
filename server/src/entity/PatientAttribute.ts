@@ -1,9 +1,10 @@
-import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn} from 'typeorm'
+import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne} from 'typeorm'
+import Patient from "./Patient"
 
 @Entity()
 export class PatientAttribute{
   @PrimaryGeneratedColumn()
-  public pkPatientAttribute: number
+  public id: number
 
   @Column() 
   public attribute: string
@@ -16,7 +17,10 @@ export class PatientAttribute{
 
   @CreateDateColumn()
   public create_at: Date
+
   //Many to one Patient
+  @ManyToOne(type=> Patient, patient => patient.patientAttributes)
+  patient: Patient
 }
 
 export default PatientAttribute

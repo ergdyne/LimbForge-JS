@@ -8,3 +8,9 @@ drop table "group_attribute";
 drop table "migrations";
 drop table "admin_access";
 drop table "site_auth";
+
+or
+
+DROP SCHEMA public CASCADE;
+grant usage on schema public to public;
+grant create on schema public to public;
