@@ -30,6 +30,7 @@ export default class Patients extends React.Component {
   }
 
   componentDidMount() {
+    //API Call
     this.setState({ patients: patients })
   }
 
@@ -55,6 +56,7 @@ export default class Patients extends React.Component {
               patientColHeaders={patientColHeaders}
               viewPatient={this.viewPatient}
               patients={this.state.patients}
+              minRows={0}
             />
         }
       </div>

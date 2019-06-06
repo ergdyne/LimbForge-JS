@@ -11,7 +11,7 @@ export default class App extends React.Component {
     this.state = {
       //The page attribute is part of the weird replacement for doing react-router. Much of the anti-patterness of this app starts here.
       page: `patients`,
-      user: currentUser
+      user: currentUser //API Call
     }
   }
 
@@ -85,7 +85,7 @@ export default class App extends React.Component {
           <Route path="/new-patient/" component={Patient} />
           <Route path="/patient/:pkPatient" component={Patient} />
           <Route path="/patients/" component={Patients} />
-          <Route path="/users/" component={Users} />
+          <Route path="/users/" render={(props)=><Users user={this.state.user} {...props}/>} />
           <Route path="/group/:pkGroup" render={(props)=><Group user={this.state.user} {...props}/>} />
           <Route path="/groups/" render={(props)=><Groups user={this.state.user} {...props}/>} />
           {/* render={(props) => <Dashboard {...props} */}

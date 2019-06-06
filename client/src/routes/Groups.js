@@ -27,7 +27,7 @@ export default class Groups extends React.Component {
   }
 
   submitGroup = (group) => {
-    //TODO connect to DB API
+    //API Call
     console.log('Group submited', group)
   }
 
@@ -43,7 +43,6 @@ export default class Groups extends React.Component {
       // More convoluted divs from the current copied CSS.
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
-          <div>{'Hello Groups'}</div>
           <FormBuilder
             key='patient'
             elements={groupInputs}
@@ -54,9 +53,10 @@ export default class Groups extends React.Component {
           />
           <br />
           <ReactTable
-            data={groups}
+            data={groups}//API Call
             columns={columns}
             filterable={true}
+            minRows={0}
           />
         </div></div>
       </div></div></div></div>

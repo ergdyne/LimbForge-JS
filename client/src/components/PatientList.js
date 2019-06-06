@@ -25,6 +25,7 @@ export default class PatientList extends React.Component {
           data={this.props.patients}
           columns={columns}
           filterable={true}
+          minRows={0}
         />
       </div></div></div></div></div></div>
     )

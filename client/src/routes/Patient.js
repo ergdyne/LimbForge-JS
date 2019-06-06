@@ -19,6 +19,7 @@ export default class Patient extends React.Component {
   }
 
   componentWillMount() {
+    //API Call
     const { pkPatient } = this.props.match.params
     //well some more filtering than this...? Also there is a 0 index, but not a 0 pkPatient. ;)
     const fkPatient = parseInt(pkPatient)
@@ -30,6 +31,7 @@ export default class Patient extends React.Component {
   //Callback for patient Data form.
   //TODO connect to API to do actual read/write/updates.
   patientSubmit = (patient) => {
+    //API Call
     //To be replaced with actual ID from saving it
 
     if (!this.state.patient.pkPatient) {
@@ -58,6 +60,7 @@ export default class Patient extends React.Component {
 
   //Callback for measurements form.
   measurementSubmit = (measurements) => {
+    //API Call
     var newPatient = this.state.patient
     newPatient.measurements = measurements
     this.setState(newPatient,()=>{

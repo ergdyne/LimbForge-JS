@@ -113,7 +113,7 @@ const users = [
     email: `groupadmin@limbforge.org`,
     loggedIn: true,
     siteAccess: 'groupAdmin',
-    groups: [{ fkGroup: 0, groupAccess: 'groupAdmin' }], //if admin to site, then ignore this
+    groups: [{ fkGroup: 0, groupAccess: 'groupAdmin' },{ fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
@@ -121,7 +121,7 @@ const users = [
     email: `user@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
-    groups: [{ fkGroup: 0, groupAccess: 'user' }], //if admin to site, then ignore this
+    groups: [{ fkGroup: 0, groupAccess: 'user' },{ fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
@@ -129,7 +129,7 @@ const users = [
     email: `user1@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
-    groups: [{ fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
+    groups: [{ fkGroup: 1, groupAccess: 'user' },{ fkGroup: 2, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
