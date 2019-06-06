@@ -90,8 +90,13 @@ const groupInputs = [
 ]
 
 
+const userColHeaders = [
+  { accessor: `email`, label: `Email`, type: `string` },
+  { accessor: `siteAccess`, label: `Level`, type: `string` },
+]
 
 const currentUser = {
+  pkUser: 0,
   email: `admin@limbforge.org`,
   loggedIn: true,
   siteAccess: 'admin',
@@ -103,6 +108,7 @@ const currentUser = {
 const users = [
   currentUser,
   {
+    pkUser: 1,
     email: `groupadmin@limbforge.org`,
     loggedIn: true,
     siteAccess: 'groupAdmin',
@@ -110,6 +116,7 @@ const users = [
     home: `patients`
   },
   {
+    pkUser: 2,
     email: `user@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
@@ -117,6 +124,7 @@ const users = [
     home: `patients`
   },
   {
+    pkUser: 3,
     email: `user1@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
@@ -124,6 +132,7 @@ const users = [
     home: `patients`
   },
   {
+    pkUser: 4,
     email: `user2@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
@@ -237,6 +246,7 @@ export {
   navData,
   currentUser,
   users,
+  userColHeaders,
   groups,
   groupColHeaders,
   groupInputs,

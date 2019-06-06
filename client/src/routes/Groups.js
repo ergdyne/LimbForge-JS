@@ -38,8 +38,7 @@ export default class Groups extends React.Component {
         this.viewGroup,
         `View`
       )
-
-    console.log(groupInputs)
+      
     return (
       // More convoluted divs from the current copied CSS.
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
@@ -50,6 +49,7 @@ export default class Groups extends React.Component {
             elements={groupInputs}
             onSubmit={this.submitGroup}
             submitValue={`Add`}
+            clearOnSubmit={true}
             preventDefault={true}
           />
           <br />

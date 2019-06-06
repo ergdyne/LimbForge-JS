@@ -1,10 +1,9 @@
 import React from 'react'
 import style from './App.css'
 import Footer from './components/Footer'
-import { Landing, Patients, Patient, Groups, Users } from './routes/routes'
+import { Landing, Patients, Patient, Groups, Group, Users } from './routes/routes'
 import { navData, currentUser } from './testData' //TODO Should be spelled out here or in its own location.
 import { BrowserRouter as Router, Route, NavLink, Link, Redirect, } from "react-router-dom"
-import { Group } from 'three';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -87,6 +86,7 @@ export default class App extends React.Component {
           <Route path="/patient/:pkPatient" component={Patient} />
           <Route path="/patients/" component={Patients} />
           <Route path="/users/" component={Users} />
+          <Route path="/group/:pkGroup" render={(props)=><Group user={this.state.user} {...props}/>} />
           <Route path="/groups/" render={(props)=><Groups user={this.state.user} {...props}/>} />
           {/* render={(props) => <Dashboard {...props} */}
           <br />

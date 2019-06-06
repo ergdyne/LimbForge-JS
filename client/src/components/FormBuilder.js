@@ -128,7 +128,7 @@ export default class FormBuilder extends React.Component {
         //Sending the whole state back with the onSubmit.
         const data = this.state
         //Clear the form and the state
-        this.clearState()
+        if(this.props.clearOnSubmit){this.clearState()}
 
         this.props.onSubmit(data)
       }}>
@@ -146,6 +146,7 @@ FormBuilder.propTypes = {
  onSubmit: PropTypes.func.isRequired,
  submitValue: PropTypes.string.isRequired,
  preventDefault: PropTypes.bool,
+ clearOnSubmit: PropTypes.bool,
  elements: PropTypes.arrayOf(
    PropTypes.shape({
       accessor: PropTypes.string.isRequired, 
