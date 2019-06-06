@@ -1,18 +1,17 @@
 import {Column,Entity, PrimaryGeneratedColumn, CreateDateColumn} from 'typeorm'
 
 @Entity()
-export class Account{
+export class SiteAuth{
   @PrimaryGeneratedColumn()
-  public id: number
+  public pkSiteAuth: number
 
   @Column()
-  public email: string
-
-  @Column()
-  public password: string
+  public hash: string
 
   @CreateDateColumn()
-	public create_at: Date;
+  public create_at: Date
+  
+  //Many siteAuth to one user
 }
 
-export default Account
+export default SiteAuth

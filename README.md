@@ -15,12 +15,13 @@ Client setup
     npm run start
 
 Install Postgres
+  Add database and username and password for db
 
 DB setup & Server setup
   from the server folder run:
     npm install
   copy ormconfig.example.json and rename as ormconfig.json
-  update DB username and password
+  update DB username and password (or env)
   in seperate terminals run two commands:
     npm run watch-ts
     npm run watch-node

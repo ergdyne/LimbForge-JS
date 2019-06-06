@@ -2,7 +2,7 @@ import express from 'express'
 import 'reflect-metadata'
 import {createConnection} from 'typeorm'
 import bodyParser from 'body-parser'
-import {User} from './entity/Account'
+import {User} from './entity/User'
 
 createConnection().then(async (connection)=>{
   await connection.synchronize()
@@ -13,7 +13,6 @@ createConnection().then(async (connection)=>{
   app.get('/create', async(req,res)=>{
     let user = new User()
     user.email = 'j@ergdyne.com'
-    user.password = 'this is a strange hash'
     return connection.manager
       .save(user)
       .then(user => res.status(201).send(user))
