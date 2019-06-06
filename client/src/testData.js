@@ -105,6 +105,7 @@ const currentUser = {
   home: `users`
 }
 
+const userAccessLevels =['user','groupAdmin','admin']
 
 const users = [
   currentUser,
@@ -113,7 +114,7 @@ const users = [
     email: `groupadmin@limbforge.org`,
     loggedIn: true,
     siteAccess: 'groupAdmin',
-    groups: [{ fkGroup: 0, groupAccess: 'groupAdmin' },{ fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
+    groups: [{ fkGroup: 0, groupAccess: 'groupAdmin' }, { fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
@@ -121,7 +122,7 @@ const users = [
     email: `user@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
-    groups: [{ fkGroup: 0, groupAccess: 'user' },{ fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
+    groups: [{ fkGroup: 0, groupAccess: 'user' }, { fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
@@ -129,7 +130,7 @@ const users = [
     email: `user1@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
-    groups: [{ fkGroup: 1, groupAccess: 'user' },{ fkGroup: 2, groupAccess: 'user' }], //if admin to site, then ignore this
+    groups: [{ fkGroup: 1, groupAccess: 'user' }, { fkGroup: 2, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
@@ -179,15 +180,7 @@ const patientInputs = [
   { accessor: `country`, label: `Country`, type: `string`, inputType: `text`, default: '' },
   { accessor: `gender`, label: `Gender`, type: `string`, inputType: `radio`, default: genders[0], options: genders },
   { accessor: `side`, label: `Amputation Side`, type: `string`, inputType: `radio`, default: sides[0], options: sides },
-  {
-    accessor: `amputationCause`,
-    label: `Amputation Cause`,
-    type: `string`,
-    inputType: `select`,
-    default: amputationCauses[0],
-    options: amputationCauses,
-    form: 'patient'
-  }
+  { accessor: `amputationCause`, label: `Amputation Cause`, type: `string`, inputType: `select`, default: amputationCauses[0], options: amputationCauses }
 
 ]
 
@@ -256,6 +249,7 @@ export {
   currentUser,
   users,
   userColHeaders,
+  userAccessLevels,
   groups,
   groupColHeaders,
   groupInputs,

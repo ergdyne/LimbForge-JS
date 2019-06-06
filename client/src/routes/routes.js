@@ -4,6 +4,7 @@ import Patient from './Patient'
 import Groups from './Groups'
 import Group from './Group'
 import Users from './Users'
+import User from './User'
 
 export {
   Landing,
@@ -11,5 +12,6 @@ export {
   Patient,
   Groups,
   Group,
-  Users
+  Users,
+  User
 }
