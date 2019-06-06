@@ -20,7 +20,7 @@ export default class Patient extends React.Component {
 
   componentDidMount() {
     const { pkPatient } = this.props.match.params
-    //well some more filtering than this...?
+    //well some more filtering than this...? Also there is a 0 index, but not a 0 pkPatient. ;)
     if(pkPatient && pkPatient>=0){
       this.setState({patient:patients[pkPatient],level:'preview'})
     }

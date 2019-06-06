@@ -2,22 +2,22 @@
 
 const amputationCauses = [
   "Congenital",
-  "Diabetes", 
-  "Traffic accident", 
-  "Cancer", 
-  "Burn", 
-  "Frostbite", 
+  "Diabetes",
+  "Traffic accident",
+  "Cancer",
+  "Burn",
+  "Frostbite",
   "Industrial accident",
-  "Electrocution", 
-  "Natural disaster", 
-  "Infection", 
-  "Conflict", 
+  "Electrocution",
+  "Natural disaster",
+  "Infection",
+  "Conflict",
   "Unknown",
   "Other"
 ]
 
 const genders = [`Male`, `Female`]
-const sides = [`Right`,`Left`]
+const sides = [`Right`, `Left`]
 const amputationLevels = [`Transradial`]
 
 const past = new Date(1950, 1, 1)
@@ -29,34 +29,29 @@ function randomFromList(l) {
 
 const navData = {
   menu: [
-    { text: `Patients`, link: `patients`, access: [`user`,`groupAdmin`,`admin`] },
-    { text: `New Patient`, link: `new-patient`, access: [`user`,`groupAdmin`,`admin`] },
-    { text: `Users`, link: `users`, access: [`groupAdmin`,`admin`] },
+    { text: `Patients`, link: `patients`, access: [`user`, `groupAdmin`, `admin`] },
+    { text: `New Patient`, link: `new-patient`, access: [`user`, `groupAdmin`, `admin`] },
+    { text: `Users`, link: `users`, access: [`groupAdmin`, `admin`] },
     { text: `Groups`, link: `groups`, access: [`admin`] }
     //Maybe add the measurement stuff too
   ]
 }
 
-const currentUser = {
-  loggedIn: true,
-  siteAccess: 'admin',
-  groups: [{fkGroup: 1,groupAccess: 'groupAdmin'}], //if admin to site, then ignore this
-  home: `patients`
+
+function randomMeasure(min, max) {
+  return (Math.round(Math.random() * (max - min)) + min)
 }
 
-function randomMeasure(min, max){
-  return(Math.round(Math.random()*(max-min))+min)
-}
-
-function fooMeasures(){
-  return ({ 
-    l1: randomMeasure(18,32), 
-    l2: 25, 
-    l4: randomMeasure(13,19), 
-    c1: randomMeasure(14.5,18), 
-    c2: 25, 
-    c3: 25, 
-    c4: randomMeasure(20,28) })
+function fooMeasures() {
+  return ({
+    l1: randomMeasure(18, 32),
+    l2: 25,
+    l4: randomMeasure(13, 19),
+    c1: randomMeasure(14.5, 18),
+    c2: 25,
+    c3: 25,
+    c4: randomMeasure(20, 28)
+  })
 }
 function patient(first, last, id) {
   return {
@@ -75,8 +70,66 @@ function patient(first, last, id) {
   }
 }
 
-const groups =[
-  {pkGroup:1, name:`Lambda`}
+
+
+const groups = [
+  { pkGroup: 0, name: `Lambda`, description: `A mathy group around Egypt` },
+  { pkGroup: 1, name: `Curry`, description: `Partial application of Ecuador` },
+  { pkGroup: 2, name: `Alonzo`, description: `Inventive peeps in Croatia` }
+]
+
+const groupColHeaders = [
+  { accessor: `pkGroup`, label: ``, type: `id` },
+  { accessor: `name`, label: `Name`, type: `string` },
+  { accessor: `description`, label: `About`, type: `string` }
+]
+
+const groupInputs = [
+  { accessor: `name`, label: `Group Name`, type: `string`, inputType: `text`, default: '' },
+  { accessor: `description`, label: `About`, type: `string`, inputType: `text`, default: '' }
+]
+
+
+
+const currentUser = {
+  email: `admin@limbforge.org`,
+  loggedIn: true,
+  siteAccess: 'admin',
+  groups: [{ fkGroup: 1, groupAccess: 'groupAdmin' }], //if admin to site, then ignore this
+  home: `users`
+}
+
+
+const users = [
+  currentUser,
+  {
+    email: `groupadmin@limbforge.org`,
+    loggedIn: true,
+    siteAccess: 'groupAdmin',
+    groups: [{ fkGroup: 0, groupAccess: 'groupAdmin' }], //if admin to site, then ignore this
+    home: `patients`
+  },
+  {
+    email: `user@limbforge.org`,
+    loggedIn: true,
+    siteAccess: 'user',
+    groups: [{ fkGroup: 0, groupAccess: 'user' }], //if admin to site, then ignore this
+    home: `patients`
+  },
+  {
+    email: `user1@limbforge.org`,
+    loggedIn: true,
+    siteAccess: 'user',
+    groups: [{ fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
+    home: `patients`
+  },
+  {
+    email: `user2@limbforge.org`,
+    loggedIn: true,
+    siteAccess: 'user',
+    groups: [{ fkGroup: 2, groupAccess: 'user' }], //if admin to site, then ignore this
+    home: `patients`
+  },
 ]
 
 const lastNames = [`Fun`, `Cat`, `Bear`, `Gerry`, `Amith`, `Dill`, `Elsworth`, `Gary`, `Goo`]
@@ -108,26 +161,26 @@ const patientInputs = [
   { accessor: `country`, label: `Country`, type: `string`, inputType: `text`, default: '' },
   { accessor: `gender`, label: `Gender`, type: `string`, inputType: `radio`, default: genders[0], options: genders },
   { accessor: `side`, label: `Amputation Side`, type: `string`, inputType: `radio`, default: sides[0], options: sides },
-  { 
-    accessor: `amputationCause`, 
-    label: `Amputation Cause`, 
-    type: `string`, 
-    inputType: `select`, 
-    default: amputationCauses[0], 
+  {
+    accessor: `amputationCause`,
+    label: `Amputation Cause`,
+    type: `string`,
+    inputType: `select`,
+    default: amputationCauses[0],
     options: amputationCauses,
-    form: 'patient' 
+    form: 'patient'
   }
-  
+
 ]
 
 const measurements = [
-  { name: 'L1', step: 1.0, min: 18, max: 32,  unit: 'cm', instruction: 'type instruction here' },
+  { name: 'L1', step: 1.0, min: 18, max: 32, unit: 'cm', instruction: 'type instruction here' },
   //{ name: 'L2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
-  { name: 'L4', step: 0.5, min: 14, max: 19,  unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C1', step: 0.5, min: 14.5, max: 18,  unit: 'cm', instruction: 'type instruction here' },
+  { name: 'L4', step: 0.5, min: 14, max: 19, unit: 'cm', instruction: 'type instruction here' },
+  { name: 'C1', step: 0.5, min: 14.5, max: 18, unit: 'cm', instruction: 'type instruction here' },
   //{ name: 'C2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
   //{ name: 'C3', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C4', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' }
+  { name: 'C4', step: 0.5, min: 20, max: 28, unit: 'cm', instruction: 'type instruction here' }
 ]
 
 
@@ -162,30 +215,34 @@ const forearm = {
 //Make terminal device at 0,0. Move and rotate everything else relative to TD.
 //It is probably possible to do an auto packing with this based on mesh dimensions or something like that...
 const stls = [
-  { 
-    link: "https://s3.amazonaws.com/limbforgestls/TD/mPTD1/r1/build/R/info_C1-150_L4-160.stl", 
+  {
+    link: "https://s3.amazonaws.com/limbforgestls/TD/mPTD1/r1/build/R/info_C1-150_L4-160.stl",
     name: "TERMINAL DEVICE_r15_C1=15_L4=16",
     type: 'terminalDevice'
   },
-  { 
-    link: "https://s3.amazonaws.com/limbforgestls/forearm-QTC/r20/R/info_C1-150_C4-240_L1-270.stl", 
+  {
+    link: "https://s3.amazonaws.com/limbforgestls/forearm-QTC/r20/R/info_C1-150_C4-240_L1-270.stl",
     name: "FOREARM_r20_R_C1=15_C4=24_L1=27_nz=0.4",
-    rotation : {x:0, y:Math.PI,z:0},
+    rotation: { x: 0, y: Math.PI, z: 0 },
     type: 'device'
   },
-  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-1.stl", name: "WRIST_COUPLER_VERY_LOOSE", type:'coupler' },
-  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-2.stl", name: "WRIST_COUPLER_LOOSE", type:'coupler' },
-  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-3.stl", name: "WRIST_COUPLER_TIGHT", type:'coupler' },
-  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-4.stl", name: "WRIST_COUPLER_VERY_TIGHT", type:'coupler' }
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-1.stl", name: "WRIST_COUPLER_VERY_LOOSE", type: 'coupler' },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-2.stl", name: "WRIST_COUPLER_LOOSE", type: 'coupler' },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-3.stl", name: "WRIST_COUPLER_TIGHT", type: 'coupler' },
+  { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-4.stl", name: "WRIST_COUPLER_VERY_TIGHT", type: 'coupler' }
 ]
 
 
 export {
   navData,
   currentUser,
-  patients,
+  users,
+  groups,
+  groupColHeaders,
+  groupInputs,
   amputationCauses,
   patientColHeaders,
+  patients,
   patientInputs,
   measurements,
   measurementInputs,

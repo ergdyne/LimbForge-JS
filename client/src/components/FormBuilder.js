@@ -15,7 +15,17 @@ export default class FormBuilder extends React.Component {
     }
   }
 
+  //TODO prevent submit if not valid.
+  //TODO have a clear form on submit option.
+
   //TODO see initial value version...
+
+  clearState = ()=>{
+    this.props.elements.map(element=>{
+      this.setState({[element.accessor]:''})
+    })
+  }
+
   componentWillMount() {
     this.props.elements.map(element =>{
       var state = this.state
@@ -116,7 +126,11 @@ export default class FormBuilder extends React.Component {
         //preventDefault stops page reload.
         if(this.props.preventDefault){event.preventDefault()}
         //Sending the whole state back with the onSubmit.
-        this.props.onSubmit(this.state)
+        const data = this.state
+        //Clear the form and the state
+        this.clearState()
+
+        this.props.onSubmit(data)
       }}>
         {this.props.elements.map(x => this.generateFormElement(x))}
         <input className='FormBuilder-button' value={(this.props.submitValue)?this.props.submitValue:`Submit`} type="submit" />
@@ -130,7 +144,9 @@ export default class FormBuilder extends React.Component {
 FormBuilder.propTypes = {
   //onSubmit() callback should take the form's state back with it.
  onSubmit: PropTypes.func.isRequired,
- inputs: PropTypes.arrayOf(
+ submitValue: PropTypes.string.isRequired,
+ preventDefault: PropTypes.bool,
+ elements: PropTypes.arrayOf(
    PropTypes.shape({
       accessor: PropTypes.string.isRequired, 
       label: PropTypes.string, 
@@ -144,6 +160,7 @@ FormBuilder.propTypes = {
         })
       )
    })
- )
+ ).isRequired,
+ initial: PropTypes.object
 }
 
