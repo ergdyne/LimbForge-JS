@@ -4,6 +4,7 @@ import React from 'react'
 //Site Admin sees all users
 //Group Admin sees group's users
 //Areas
+  //List of pending approval (i.e. no group? or "requested")
   //List of users
   //View/Edit user
     //Add list of groups access with remove/promote group admin

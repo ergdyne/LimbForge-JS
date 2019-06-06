@@ -91,6 +91,7 @@ const groupInputs = [
 
 
 const userColHeaders = [
+  { accessor: `pkUser`, label: ``, type: `id` },
   { accessor: `email`, label: `Email`, type: `string` },
   { accessor: `siteAccess`, label: `Level`, type: `string` },
 ]
@@ -137,6 +138,14 @@ const users = [
     loggedIn: true,
     siteAccess: 'user',
     groups: [{ fkGroup: 2, groupAccess: 'user' }], //if admin to site, then ignore this
+    home: `patients`
+  },
+  {
+    pkUser: 5,
+    email: `request@limbforge.org`,
+    loggedIn: false,
+    siteAccess: 'request',
+    groups: [{ fkGroup: 0, groupAccess: 'request' }], //if admin to site, then ignore this
     home: `patients`
   },
 ]

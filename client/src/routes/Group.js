@@ -7,7 +7,11 @@ import { users, userColHeaders, groups } from '../testData'
 export default class Group extends React.Component {
   constructor(props) {
     super(props)
-    this.state={}
+    this.state = {
+      group: {},
+      activeUsers: {},
+      requestUsers: {}
+    }
   }
 
   componentWillMount() {
@@ -17,35 +21,61 @@ export default class Group extends React.Component {
     if (pkGroup && !(isNaN(fkGroup))) {
       this.setState(
         { group: groups[fkGroup] },
-        ()=>{
-          const groupUsers = users.filter(u => u.groups.map(g=> g.fkGroup).includes(fkGroup))
-          this.setState({users:groupUsers})
+        () => {
+
+          const groupUsers = users.filter(u => u.groups.map(g => g.fkGroup).includes(fkGroup))
+          const activeUsers = groupUsers.filter(u => !u.groups.filter(g => g.fkGroup === fkGroup).map(g => g.groupAccess).includes("request"))
+          const requestUsers = groupUsers.filter(u => u.groups.filter(g => g.fkGroup === fkGroup).map(g => g.groupAccess).includes("request"))
+          this.setState({ activeUsers: activeUsers, requestUsers: requestUsers })
         }
       )
     }
   }
 
+  approveUser = (pkUser) => {
+    console.log('approve user', pkUser, 'for group', this.state.group)
+  }
+
   render() {
-    console.log('group', this.state.group, 'users', this.state.users)
-    const columns =
-      formatColumns(
-        userColHeaders,
-        ()=>{},
-        ``
-      )
+    console.log('group', this.state.group, 'users', this.state.activeUsers, 'request', this.state.requestUsers)
+    //TODO change these columns up.
+    const userColumns = formatColumns(userColHeaders,() => { },``)
+    const approveColumns = formatColumns(userColHeaders,this.approveUser,"approve")
     return (
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
           <div className="group-info-area">
             <h2>{this.state.group.name}</h2>
             <div>{this.state.group.description}</div>
-            <hr/>
-            <h3>{'Group Users'}</h3>
-            <ReactTable
-              columns={columns}
-              data={this.state.users}
-              filterable={true}
-            />
+            <hr />
+            {(this.state.requestUsers.length > 0) ?
+              <div>
+                <h3>{'Access Requests'}</h3>
+                <ReactTable
+                  key="access"
+                  columns={approveColumns}
+                  data={this.state.requestUsers}
+                  filterable={true}
+                  defaultPageSize={5}
+                />
+              </div> :
+              <span></span>
+            }
+            {(this.state.activeUsers.length > 0) ?
+              <div>
+                <h3>{'Users'}</h3>
+                <ReactTable
+                  key="users"
+                  columns={userColumns}
+                  data={this.state.activeUsers}
+                  filterable={true}
+                  defaultPageSize={5}
+                />
+              </div> :
+              <span></span>
+            }
+
+
           </div>
         </div></div>
       </div></div></div></div>
