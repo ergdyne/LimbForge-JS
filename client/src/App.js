@@ -1,28 +1,20 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import style from './App.css'
 import Footer from './components/Footer'
-import { Landing, Patients, Patient, Groups, Group, Users,User } from './routes/routes'
-import { navData, currentUser } from './testData' //TODO Should be spelled out here or in its own location.
+import { Landing, Patients, Patient, Groups, Group, Users, User } from './routes/routes'
+import { currentUser } from './testData' //TODO Should be spelled out here or in its own location.
 import { BrowserRouter as Router, Route, NavLink, Link, Redirect, } from "react-router-dom"
 
+@connect((store) => {
+  return ({
+    user: currentUser
+  })
+})
 export default class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      //The page attribute is part of the weird replacement for doing react-router. Much of the anti-patterness of this app starts here.
-      page: `patients`,
-      user: currentUser //API Call
-    }
+  componentWillMount(){
+    //Get user action
   }
-
-  // Two functions updatePage() and content() combine to provide page switching used in NavBar and Patient(view/edit mode).
-  //These are things that should be done with something like React-Router.
-  updatePage = (page) => {
-    //Access permissions can be added as well
-    this.setState({ page: page })
-    console.log(this.state.page)
-  }
-
   render() {
     // TODO add small screen functionality. Currently, menu items vanish.
     // TODO add security layer to the Router that isn't this goofy.
@@ -34,14 +26,14 @@ export default class App extends React.Component {
               {/* Logo Button with custom home */}
               <Link
                 className="bar-item button padding-large theme-d4"
-                to={(this.state.user.loggedIn) ? `/${this.state.user.home}/` : "/"}
+                to={(this.props.user.loggedIn) ? `/${this.props.user.home}/` : "/"}
               >
                 <i className="fa fa-home margin-right"></i>
                 {`Logo`}
               </Link>
 
 
-              {this.state.user.loggedIn ?
+              {this.props.user.loggedIn ?
                 <span>
                   <NavLink
                     className="bar-item button hide-small padding-large hover-white"
@@ -57,7 +49,7 @@ export default class App extends React.Component {
                   >
                     New Patient
                 </NavLink>
-                  {['admin', 'groupAdmin'].includes(this.state.user.siteAccess) ?
+                  {['admin', 'groupAdmin'].includes(this.props.user.siteAccess) ?
                     <span>
                       <NavLink
                         activeStyle={{ color: '#fff', backgroundColor: '#7d97a5' }}
@@ -67,7 +59,7 @@ export default class App extends React.Component {
                         Users
                   </NavLink>
 
-                      {(this.state.user.siteAccess === 'admin') ?
+                      {(this.props.user.siteAccess === 'admin') ?
                         <NavLink
                           activeStyle={{ color: '#fff', backgroundColor: '#7d97a5' }}
                           className="bar-item button hide-small padding-large hover-white"
@@ -80,15 +72,15 @@ export default class App extends React.Component {
             </div>
           </div>
           {/* Redirect can do the login and then return to where the person wanted to go. This is better as part of the restricted Router setup. */}
-          {(!this.state.user.loggedIn) ? <Redirect to="/" /> : <div />}
+          {(!this.props.user.loggedIn) ? <Redirect to="/" /> : <div />}
           <Route path="/" exact component={Landing} />
           <Route path="/new-patient/" component={Patient} />
           <Route path="/patient/:pkPatient" component={Patient} />
           <Route path="/patients/" component={Patients} />
-          <Route path="/user/:pkUser" render={(props)=><User user={this.state.user} {...props}/>} />
-          <Route path="/users/" render={(props)=><Users user={this.state.user} {...props}/>} />
-          <Route path="/group/:pkGroup" render={(props)=><Group user={this.state.user} {...props}/>} />
-          <Route path="/groups/" render={(props)=><Groups user={this.state.user} {...props}/>} />
+          <Route path="/user/:pkUser" render={(props)=><User user={this.props.user} {...props}/>} />
+          <Route path="/users/" render={(props)=><Users user={this.props.user} {...props}/>} />
+          <Route path="/group/:pkGroup" render={(props)=><Group user={this.props.user} {...props}/>} />
+          <Route path="/groups/" render={(props)=><Groups user={this.props.user} {...props}/>} />
           {/* render={(props) => <Dashboard {...props} */}
           <br />
           <Footer />

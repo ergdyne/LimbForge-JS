@@ -39,7 +39,6 @@ export default class Users extends React.Component {
   formSetup = () =>{
     //uhm.
     //API Call
-    console.log('form setup')
     const groupOptions = groups.map(g=> g.name)
     const userInputs = [
       { accessor: `email`, label: `Email`, type: `string`, inputType: `text`, default: '' },

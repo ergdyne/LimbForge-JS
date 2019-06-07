@@ -26,3 +26,8 @@ DB setup & Server setup
     npm run watch-ts
     npm run watch-node
   connecting to localhost:3000 should respond with "Welcome..."
+
+TEMP
+redux-logger
+redux-thunk //ajax middleware
+axios (axios.get and such)
