@@ -1,5 +1,5 @@
 import React from 'react'
-import {Redirect} from "react-router-dom"
+import { Redirect } from "react-router-dom"
 import { patientColHeaders, patients } from '../testData'//TODO move patientColHeader to their own place unless doing them dynamic like too.
 import PatientList from '../components/PatientList'
 import Patient from './Patient';
@@ -12,7 +12,6 @@ export default class Patients extends React.Component {
     super(props)
     //Can I do a DB query in the constructor?
     this.state = {
-      page: 'patients',
       patients: [],
       patient: {
         pkPatient: null,
@@ -44,22 +43,12 @@ export default class Patients extends React.Component {
 
   render() {
     return (
-      <div>
-        {
-          (this.state.page === 'patient') ?
-            <Patient
-              initialLevel={(this.state.patient.measurements) ? 'preview' : 'measurement'}
-              initialPatient={this.state.patient}
-              back={this.back}
-            /> :
-            <PatientList
-              patientColHeaders={patientColHeaders}
-              viewPatient={this.viewPatient}
-              patients={this.state.patients}
-              minRows={0}
-            />
-        }
-      </div>
+      <PatientList
+        patientColHeaders={patientColHeaders}
+        viewPatient={this.viewPatient}
+        patients={this.state.patients}
+        minRows={0}
+      />
     )
   }
 }

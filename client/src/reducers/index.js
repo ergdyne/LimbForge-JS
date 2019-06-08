@@ -1,7 +1,5 @@
 import {combineReducers} from 'redux'
+import session from './sessionReducer'
+import users from './usersReducer'
 
-const tempReducer = (state={hi:'Hey'}, action)=>{
-  return state
-}
-
-export default combineReducers({tempReducer})
+export default combineReducers({session,users})
