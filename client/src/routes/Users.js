@@ -20,18 +20,11 @@ import {getGroupOptions,getApprovedUsers,getRequestedUsers} from '../actions/use
   })
 })
 export default class Users extends React.Component {
+  
   componentWillMount() {
     this.props.dispatch(getGroupOptions())
     this.props.dispatch(getApprovedUsers())
     this.props.dispatch(getRequestedUsers())
-  }
-
-  getUsers = () => {
-    //API Call
-    //There is also something more that should be going on with the user's page
-    //Should filter to users in groups that the user has authority over... but meh! That will be done on the sequel side
-    
-    this.setState({ activeUsers: activeUsers, requestUsers: requestUsers })
   }
 
   addUser = (user) => {
@@ -42,14 +35,13 @@ export default class Users extends React.Component {
     console.log('create user', user)
   }
 
-  approveUser = (pkUser) => {
+  approveUser = (userId) => {
     //API Call
-    console.log('approve user', pkUser, 'for group ?')
+    console.log('approve user', userId, 'for group ?')
   }
 
-  viewUser = (pkUser) => {
-    //API Call
-    this.props.history.push(`/user/${pkUser}`)
+  viewUser = (userId) => {
+    this.props.history.push(`/user/${userId}`)
   }
 
   render() {

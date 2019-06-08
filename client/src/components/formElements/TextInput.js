@@ -9,6 +9,9 @@ export default class TextInput extends React.Component {
     }
   }
 
+  componentWillMount(){
+    if(this.props.value){this.setState({color:"black"})}
+  }
   //Optional input check path (if validation on)
   //Simple version of checking values for just our case.
   checkInput = (event) => {

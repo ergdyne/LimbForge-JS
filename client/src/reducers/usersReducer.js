@@ -2,8 +2,9 @@ import { users, groups } from '../testData'
 
 //All about the users of the site with whom the current persion using the site interacts.
 //The admin sees all users. The groupAdmin sees the users of the groups they administer.
-//The users and user page are merged
 export default function reducer(state={
+  //The outside layer is users. Each of these is accessed by state.users.item
+  //state.users.approvedUsers, state.users.user...
   approvedUsers:[],
   requestedUsers:[],
   user:{ //for looking at a particular user

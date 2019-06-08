@@ -1,30 +1,31 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import FormBuilder from '../components/FormBuilder'
 import PatientData from '../components/PatientData'
 import Download from '../components/Download'
-import { patientInputs, measurementInputs,patients } from '../testData'
+import { patientInputs, measurementInputs } from '../testData'
+import { getPatient, saveMeasurements, savePatient, updateLevel } from '../actions/patientsActions';
+import isEmpty from '../functions/isEmpty'
 //TODO move Inputs Lists to their own areas or add the generated server side based on DB.
 //These two drive the construction of the patient and measurement forms respectively.
 //Having them load from the DB (along with some funky sequel) will allow for fields to be added and removed by the admin.
 
-//TODO fix measurement defaults on new patient.
+@connect((store) => {
+  return ({
+    sessionUser: store.session.user, //matters for new patient
+    patient: store.patients.patient,
+    level: store.patients.patientFormLevel
+  })
+})
 export default class Patient extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      level: this.props.initialLevel,
-      patient: this.props.initialPatient
-    }
-  }
 
   componentWillMount() {
     //API Call
-    const { pkPatient } = this.props.match.params
-    //well some more filtering than this...? Also there is a 0 index, but not a 0 pkPatient. ;)
-    const fkPatient = parseInt(pkPatient)
-    if(pkPatient && !(isNaN(fkPatient))){
-      this.setState({patient:patients[fkPatient],level:'preview'})
+    const { patientId } = this.props.match.params
+    //well some more filtering than this...? Also there is a 0 index, but not a 0 patientId ;)
+    const id = parseInt(patientId)
+    if (patientId && !(isNaN(id))) {
+      this.props.dispatch(getPatient(id))
     }
 
   }
@@ -34,117 +35,80 @@ export default class Patient extends React.Component {
     //API Call
     //To be replaced with actual ID from saving it
 
-    if (!this.state.patient.pkPatient) {
 
-      patient.pkPatient = 85
+    if (!this.props.patient.id) {//Huh?
+
+      patient.id = 85
       patient.amputationLevel = `transradial`
     }
-    if (this.state.patient.measurements) {
-      patient.measurements = this.state.patient.measurements
+    if (!isEmpty(this.props.patient.measurements)) {
+      patient.measurements = this.props.patient.measurements
     }
 
-    //Temporary Hack! TODO replace with validation (require!)
-    if(!this.state.patient.gender) patient.gender = 'Male'
-    if(!this.state.patient.side) patient.side = 'Right'
-    
 
-    //Return data from DB then set state.
-    this.setState({ patient: patient }, () => {
-      if (this.state.patient.measurements) {
-        this.setState({ level: 'preview' })
-      } else {
-        this.setState({ level: 'measurement' })
-      }
-    })
+    //Temporary Hack! TODO replace with validation (require!)
+    if (!this.props.patient.gender) patient.gender = 'Male'
+    if (!this.props.patient.side) patient.side = 'Right'
+
+    this.props.dispatch(savePatient(patient))
+    this.props.dispatch(updateLevel(isEmpty(this.props.patient.measurements) ? 'measurement' : 'preview'))
   }
 
   //Callback for measurements form.
   measurementSubmit = (measurements) => {
     //API Call
-    var newPatient = this.state.patient
+    var newPatient = this.props.patient
     newPatient.measurements = measurements
-    this.setState(newPatient,()=>{
-      this.setState({ level: 'preview' })
-    })
-    
-  }
 
-  //Used to switch the content of the page.
-  level = () => {
-    const l = this.state.level
-    return (<div>
-      {(l === 'preview' || l === 'measurement') ?
-        <PatientData
-          patient={this.state.patient}
-          editPatient={() => this.setState({ level: 'patient' })}
-          editMeasurement={(l === 'preview') ? () => this.setState({ level: 'measurement' }) : false}
-        /> :
-        <div />
-      }
-      {/* Patient Form */}
-      {(l === 'patient') ?
-        <FormBuilder
-          key='patient'
-          elements={patientInputs}
-          onSubmit={this.patientSubmit}
-          submitValue={`Save`}
-          preventDefault={true}
-          initial={(this.state.patient) ? this.state.patient : {}}
-        /> :
-        <div />
-      }
-      {/* Measurement Form */}
-      {(l === 'measurement') ?
-        <FormBuilder
-          key='measurments'
-          elements={measurementInputs}
-          onSubmit={this.measurementSubmit}
-          submitValue={`Save`}
-          preventDefault={true}
-          initial={(this.state.patient.measurements) ? this.state.patient.measurements : {}}
-        /> :
-        <div />
-      }
-      {(l==='preview')?<Download patient={this.state.patient} />:<div/>}
-    </div>)
+    this.props.dispatch(saveMeasurements(newPatient))
+    this.props.dispatch(updateLevel('preview'))
   }
 
   render() {
+    const l = this.props.level
     return (
       // More convoluted divs from the current copied CSS.
+
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
-      
-          {/* level() switches the main page content. */}
-          {this.level()}
+
+          <div>
+            {(l === 'preview' || l === 'measurement') ?
+              <PatientData
+                patient={this.props.patient}
+                editPatient={() => { }}
+                editMeasurement={(l === 'preview') ? () => this.props.dispatch(updateLevel('measurement')) : false}
+              /> :
+              <div />
+            }
+            {/* Patient Form */}
+            {(l === 'patient') ?
+              <FormBuilder
+                key='patient'
+                elements={patientInputs}
+                onSubmit={this.patientSubmit}
+                submitValue={`Save`}
+                preventDefault={true}
+                initial={(this.props.patient) ? this.props.patient : {}}
+              /> :
+              <div />
+            }
+            {/* Measurement Form */}
+            {(l === 'measurement') ?
+              <FormBuilder
+                key='measurments'
+                elements={measurementInputs}
+                onSubmit={this.measurementSubmit}
+                submitValue={`Save`}
+                preventDefault={true}
+                initial={(this.props.patient.measurements) ? this.props.patient.measurements : {}}
+              /> :
+              <div />
+            }
+            {(l === 'preview') ? <Download patient={this.props.patient} /> : <div />}
+          </div>
         </div></div>
       </div></div></div></div>
     )
   }
-}
-
-
-//For reference, but doesn't matter anymore
-Patient.propTypes = {
-  initialPatient: PropTypes.shape({
-    pkPatient: PropTypes.number,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    dateOfBirth: PropTypes.instanceOf(Date),
-    dateOfAmputation: PropTypes.instanceOf(Date),
-    city: PropTypes.string,
-    country: PropTypes.string,
-    gender: PropTypes.string,
-    side: PropTypes.string,
-    amputationLevel: PropTypes.string,
-    amputationCause: PropTypes.string,
-    measurements: PropTypes.object,
-  }),
-  initialLevel: PropTypes.string
-}
-
-//Useful for the new patient version
-Patient.defaultProps = {
-  initialLevel: 'patient',
-  initialPatient: {}
 }

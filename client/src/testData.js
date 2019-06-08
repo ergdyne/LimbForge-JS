@@ -55,7 +55,7 @@ function fooMeasures() {
 }
 function patient(first, last, id) {
   return {
-    pkPatient: id,
+    id: id,
     firstName: first,
     lastName: last,
     dateOfBirth: past,
@@ -73,13 +73,13 @@ function patient(first, last, id) {
 
 
 const groups = [
-  { pkGroup: 0, name: `Lambda`, description: `A mathy group around Egypt` },
-  { pkGroup: 1, name: `Curry`, description: `Partial application of Ecuador` },
-  { pkGroup: 2, name: `Alonzo`, description: `Inventive peeps in Croatia` }
+  { id: 0, name: `Lambda`, description: `A mathy group around Egypt` },
+  { id: 1, name: `Curry`, description: `Partial application of Ecuador` },
+  { id: 2, name: `Alonzo`, description: `Inventive peeps in Croatia` }
 ]
 
 const groupColHeaders = [
-  { accessor: `pkGroup`, label: ``, type: `id` },
+  { accessor: `id`, label: ``, type: `id` },
   { accessor: `name`, label: `Name`, type: `string` },
   { accessor: `description`, label: `About`, type: `string` }
 ]
@@ -91,13 +91,13 @@ const groupInputs = [
 
 
 const userColHeaders = [
-  { accessor: `pkUser`, label: ``, type: `id` },
+  { accessor: `id`, label: ``, type: `id` },
   { accessor: `email`, label: `Email`, type: `string` },
   { accessor: `siteAccess`, label: `Level`, type: `string` },
 ]
 
 const currentUser = {
-  pkUser: 0,
+  id: 0,
   email: `admin@limbforge.org`,
   loggedIn: true,
   siteAccess: 'admin',
@@ -110,7 +110,7 @@ const userAccessLevels =['user','groupAdmin','admin']
 const users = [
   currentUser,
   {
-    pkUser: 1,
+    id: 1,
     email: `groupadmin@limbforge.org`,
     loggedIn: true,
     siteAccess: 'groupAdmin',
@@ -118,7 +118,7 @@ const users = [
     home: `patients`
   },
   {
-    pkUser: 2,
+    id: 2,
     email: `user@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
@@ -126,7 +126,7 @@ const users = [
     home: `patients`
   },
   {
-    pkUser: 3,
+    id: 3,
     email: `user1@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
@@ -134,7 +134,7 @@ const users = [
     home: `patients`
   },
   {
-    pkUser: 4,
+    id: 4,
     email: `user2@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
@@ -142,7 +142,7 @@ const users = [
     home: `patients`
   },
   {
-    pkUser: 5,
+    id: 5,
     email: `request@limbforge.org`,
     loggedIn: false,
     siteAccess: 'request',
@@ -156,7 +156,7 @@ const firstNames = [`A`, `B`, `C`, `D`, `E`, `F`, `G`, `E`, `F`, `G`, `E`, `F`, 
 const patients = firstNames.map((x, i) => patient(x, randomFromList(lastNames), i))
 
 const patientColHeaders = [
-  { accessor: `pkPatient`, label: ``, type: `id` },
+  { accessor: `id`, label: ``, type: `id` },
   { accessor: `firstName`, label: `First Name`, type: `string` },
   { accessor: `lastName`, label: `Last Name`, type: `string` },
   { accessor: `dateOfBirth`, label: `Date of Birth`, type: `date` },

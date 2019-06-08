@@ -8,7 +8,6 @@ import { BrowserRouter as Router, Route, NavLink, Link, Redirect} from "react-ro
 
 @connect((store) => {
   return ({
-    //user: currentUser,
     stored: store,
     sessionUser: store.session.user
   })
@@ -77,9 +76,9 @@ export default class App extends React.Component {
           {(!this.props.sessionUser.loggedIn) ? <Redirect to="/" /> : <div />}
           <Route path="/" exact component={Landing} />
           <Route path="/new-patient/" component={Patient} />
-          <Route path="/patient/:pkPatient" component={Patient} />
+          <Route path="/patient/:patientId" component={Patient} />
           <Route path="/patients/" component={Patients} />
-          <Route path="/user/:pkUser" render={(props)=><User user={this.props.sessionUser} {...props}/>} />
+          <Route path="/user/:userId" component={User} />
           <Route path="/users/" component={Users}/>
           <Route path="/group/:pkGroup" render={(props)=><Group user={this.props.sessionUser} {...props}/>} />
           <Route path="/groups/" render={(props)=><Groups user={this.props.sessionUser} {...props}/>} />

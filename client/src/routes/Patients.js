@@ -1,40 +1,21 @@
 import React from 'react'
-import { Redirect } from "react-router-dom"
-import { patientColHeaders, patients } from '../testData'//TODO move patientColHeader to their own place unless doing them dynamic like too.
+import {connect} from 'react-redux'
+import { patientColHeaders} from '../testData'//TODO move patientColHeader to their own place unless doing them dynamic like too.
 import PatientList from '../components/PatientList'
-import Patient from './Patient';
+import { getPatients } from '../actions/patientsActions'
 
-//Incoming data should be only USER state
 //Patients component will connect to DB to get patient data
 //Will store locally any loading state and do all the patient transaction with DB at this level or below.
+@connect((store) => {
+  return ({
+    sessionUser: store.session.user,
+    patients: store.patients.patients
+  })
+})
 export default class Patients extends React.Component {
-  constructor(props) {
-    super(props)
-    //Can I do a DB query in the constructor?
-    this.state = {
-      patients: [],
-      patient: {
-        pkPatient: null,
-        firstName: '',
-        lastName: '',
-        dateOfBirth: '',
-        dateOfAmputation: '',
-        city: '',
-        country: '',
-        gender: '',
-        amputationLevel: '',
-        amputationCause: '',
-      }
-    }
+  componentWillMount() {
+    this.props.dispatch(getPatients())
   }
-
-  componentDidMount() {
-    //API Call
-    this.setState({ patients: patients })
-  }
-
-  //Callback for patient view/edit page.
-  back = () => this.props.history.push(`/patients/`)
 
   //Callback for view patient button in PatientList
   viewPatient = (patientID) => {
@@ -46,11 +27,9 @@ export default class Patients extends React.Component {
       <PatientList
         patientColHeaders={patientColHeaders}
         viewPatient={this.viewPatient}
-        patients={this.state.patients}
+        patients={this.props.patients}
         minRows={0}
       />
     )
   }
 }
-
-//No prop types yet...Will come with user login.

@@ -35,7 +35,7 @@ export default class PatientList extends React.Component {
 PatientList.propTypes = {
   patients: PropTypes.arrayOf(
     PropTypes.shape({
-      pkPatient: PropTypes.number.isRequired,
+      id: PropTypes.number.isRequired,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
       dateOfBirth: PropTypes.instanceOf(Date),

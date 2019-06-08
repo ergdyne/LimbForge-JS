@@ -53,7 +53,7 @@ export default class PatientData extends React.Component {
 //WELL, this might not be valid any longer...
 PatientData.propTypes = {
   patient: PropTypes.shape({
-    pkPatient: PropTypes.number,
+    id: PropTypes.number,
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string,
     dateOfBirth: PropTypes.instanceOf(Date),
