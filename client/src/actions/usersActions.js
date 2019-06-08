@@ -18,3 +18,10 @@ export function getApprovedUsers(){
     payload:{}
   }
 }
+
+export function getUser(userId){
+  return {
+    type:"GET_USER",
+    payload:{userId:userId}
+  }
+}

@@ -18,8 +18,8 @@ export default class Group extends React.Component {
     //API Call
     const { groupId } = this.props.match.params
     const id = parseInt(groupId)
-    //well some more filtering than this...? Also there is a 0 index, but not a 0 patientId. ;)
-    if (groupId && !(isNaN(id))) {
+    
+    if (!isNaN(id)) {
       this.props.dispatch(getGroup(id))
     }
   }

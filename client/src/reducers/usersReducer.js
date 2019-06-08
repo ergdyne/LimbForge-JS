@@ -30,6 +30,16 @@ export default function reducer(state={
       const requestedUsers = users.filter(u => u.siteAccess === "request")
       return {...state, requestedUsers:requestedUsers}
     }
+    case "GET_USER":{
+      const user = users[action.payload.userId]
+      const usersGroups = user.groups.map(g=> {
+        const group = groups[g.groupId]
+        return{...g,name:group.name,description:group.description}
+      })
+      console.log('ug', usersGroups)
+
+      return {...state, user:{...user,groups:usersGroups}}
+    }
     default: return state
   }
 
