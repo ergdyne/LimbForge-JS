@@ -1,41 +1,26 @@
 //All about the person using the site
+const emptyUser = {
+  id: null,
+  siteAccess: null,
+  home: '/',
+  loggedIn: false,
+  groups: []
+}
+
+const pendingUser ={
+  id: null,
+  siteAccess: 'requested',
+  home: '/',
+  loggedIn: false,
+  groups: []
+}
+
 export default function reducer(state = {
-  user: {
-    id: null,
-    siteAccess: null,
-    home: '/',
-    loggedIn: false,
-    groups: []
-  },
+  user: emptyUser,
   patientFormLevel: 'patient'
 }, action) {
 
   console.log('user reducer', state)
-
-  //Temp sessions
-  const admin = {
-    id: 0,
-    siteAccess: 'admin',
-    home: '/users/',
-    loggedIn: true,
-    groups: []
-  }
-
-  const groupAdmin = {
-    id: 1,
-    siteAccess: 'groupAdmin',
-    home: '/patients/',
-    loggedIn: true,
-    groups: []//should call out groups
-  }
-  const user = {
-    id: 2,
-    siteAccess: 'user',
-    home: '/patients/',
-    loggedIn: true,
-    groups: []//should call out groups
-  }
-
 
   switch (action.type) {
     case "LOGIN": {
@@ -52,6 +37,37 @@ export default function reducer(state = {
       }
       return state
     }
+    case "LOGOUT": {
+      return {...state, user:emptyUser}
+    }
+    case "SIGN_UP":{
+      console.log('new one',action.payload)
+      return {...state, user:pendingUser}
+    }
     default: return state
   }
+}
+
+//Temporary Sessions
+const admin = {
+  id: 0,
+  siteAccess: 'admin',
+  home: '/users/',
+  loggedIn: true,
+  groups: []
+}
+
+const groupAdmin = {
+  id: 1,
+  siteAccess: 'groupAdmin',
+  home: '/patients/',
+  loggedIn: true,
+  groups: []//should call out groups
+}
+const user = {
+  id: 2,
+  siteAccess: 'user',
+  home: '/patients/',
+  loggedIn: true,
+  groups: []//should call out groups
 }

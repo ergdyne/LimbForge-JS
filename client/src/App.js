@@ -4,7 +4,8 @@ import style from './App.css'
 import Footer from './components/Footer'
 import { Landing, Patients, Patient, Groups, Group, Users, User } from './routes/routes'
 //import { currentUser } from './testData' //TODO Should be spelled out here or in its own location.
-import { BrowserRouter as Router, Route, NavLink, Link, Redirect} from "react-router-dom"
+import { BrowserRouter as Router, Route, NavLink, Link, Redirect } from "react-router-dom"
+import {logout} from './actions/sessionActions'
 
 @connect((store) => {
   return ({
@@ -13,13 +14,13 @@ import { BrowserRouter as Router, Route, NavLink, Link, Redirect} from "react-ro
   })
 })
 export default class App extends React.Component {
-  componentWillMount(){
+  componentWillMount() {
     //Get user action?
   }
   render() {
     // TODO add small screen functionality. Currently, menu items vanish.
     // TODO add security layer to the Router that isn't this goofy.
-    console.log('store',this.props.stored)
+    console.log('store', this.props.stored)
     return (
       <Router>
         <div className="theme-l5">
@@ -69,6 +70,12 @@ export default class App extends React.Component {
                           Groups
                   </NavLink> : <span />}
                     </span> : <span />}
+                  <button
+                    className="bar-item button hide-small padding-large hover-white right"
+                    onClick={()=>this.props.dispatch(logout())}
+                  >
+                    Logout
+                  </button>
                 </span> : <span />}
             </div>
           </div>
@@ -79,9 +86,9 @@ export default class App extends React.Component {
           <Route path="/patient/:patientId" component={Patient} />
           <Route path="/patients/" component={Patients} />
           <Route path="/user/:userId" component={User} />
-          <Route path="/users/" component={Users}/>
-          <Route path="/group/:groupId" render={(props)=><Group user={this.props.sessionUser} {...props}/>} />
-          <Route path="/groups/" render={(props)=><Groups user={this.props.sessionUser} {...props}/>} />
+          <Route path="/users/" component={Users} />
+          <Route path="/group/:groupId" render={(props) => <Group user={this.props.sessionUser} {...props} />} />
+          <Route path="/groups/" render={(props) => <Groups user={this.props.sessionUser} {...props} />} />
           {/* render={(props) => <Dashboard {...props} */}
           <br />
           <Footer />

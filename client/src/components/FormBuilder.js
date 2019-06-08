@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ReactTooltip from 'react-tooltip' 
+import ReactTooltip from 'react-tooltip'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import TextInput from './formElements/TextInput'
@@ -16,25 +16,22 @@ export default class FormBuilder extends React.Component {
   }
 
   //TODO prevent submit if not valid.
-  //TODO have a clear form on submit option.
 
-  //TODO see initial value version...
-
-  clearState = ()=>{
-    this.props.elements.map(element=>{
-      this.setState({[element.accessor]:''})
+  clearState = () => {
+    this.props.elements.map(element => {
+      this.setState({ [element.accessor]: '' })
     })
   }
 
   componentWillMount() {
-    this.props.elements.map(element =>{
+    this.props.elements.map(element => {
       var state = this.state
-      if(this.props.initial && this.props.initial[element.accessor]){
+      if (this.props.initial && this.props.initial[element.accessor]) {
         state[element.accessor] = this.props.initial[element.accessor]
       }
-      
+
       this.setState(state)
-    }) 
+    })
   }
 
   //This is the standard react way of updating state from form elements.
@@ -42,13 +39,13 @@ export default class FormBuilder extends React.Component {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
-    this.setState({[name]:value})
+    this.setState({ [name]: value })
   }
 
   //Works with react-datepicker to allow for curried accessor and multiple dates without building multiple onChanges.
   dateChange(element) {
     return (date) => {
-      this.setState({[element.accessor]:date})
+      this.setState({ [element.accessor]: date })
     }
   }
 
@@ -103,15 +100,29 @@ export default class FormBuilder extends React.Component {
           })}
         </div>)
       }
+      case 'password': {
+        return (
+          <div key={element.accessor}>
+            <span data-tip={element.instruction}>{`${element.label}: `}</span>
+            <input
+              name={element.accessor}
+              value={this.state[element.accessor]}
+              className='FormBuilder-password'
+              type='password'
+              onChange={this.handleInputChange}
+            />
+          </div>
+        )
+      }
       default: {
         return (<div key={element.accessor}>
           <span data-tip={element.instruction}>{`${element.label}: `}</span>
-          <TextInput 
+          <TextInput
             key={element.accessor}
             name={element.accessor}
             value={this.state[element.accessor]}
             className='FormBuilder-text'
-            placeholder={(element.placeholder)?element.placeholder:""} 
+            placeholder={(element.placeholder) ? element.placeholder : ""}
             onChange={this.handleInputChange}
             validation={element.validation}
           />
@@ -124,17 +135,17 @@ export default class FormBuilder extends React.Component {
     return (
       <form onSubmit={() => {
         //preventDefault stops page reload.
-        if(this.props.preventDefault){event.preventDefault()}
+        if (this.props.preventDefault) { event.preventDefault() }
         //Sending the whole state back with the onSubmit.
         const data = this.state
         //Clear the form and the state
-        if(this.props.clearOnSubmit){this.clearState()}
+        if (this.props.clearOnSubmit) { this.clearState() }
 
         this.props.onSubmit(data)
       }}>
         {this.props.elements.map(x => this.generateFormElement(x))}
-        <input className='FormBuilder-button' value={(this.props.submitValue)?this.props.submitValue:`Submit`} type="submit" />
-        <ReactTooltip/>
+        <input className='FormBuilder-button' value={(this.props.submitValue) ? this.props.submitValue : `Submit`} type="submit" />
+        <ReactTooltip />
       </form>
     )
   }
@@ -143,25 +154,25 @@ export default class FormBuilder extends React.Component {
 
 FormBuilder.propTypes = {
   //onSubmit() callback should take the form's state back with it.
- onSubmit: PropTypes.func.isRequired,
- submitValue: PropTypes.string.isRequired,
- preventDefault: PropTypes.bool,
- clearOnSubmit: PropTypes.bool,
- elements: PropTypes.arrayOf(
-   PropTypes.shape({
-      accessor: PropTypes.string.isRequired, 
-      label: PropTypes.string, 
-      type: PropTypes.string.isRequired, 
-      input: PropTypes.string.isRequired, 
-      default:PropTypes.string, 
+  onSubmit: PropTypes.func.isRequired,
+  submitValue: PropTypes.string.isRequired,
+  preventDefault: PropTypes.bool,
+  clearOnSubmit: PropTypes.bool,
+  elements: PropTypes.arrayOf(
+    PropTypes.shape({
+      accessor: PropTypes.string.isRequired,
+      label: PropTypes.string,
+      type: PropTypes.string.isRequired,
+      input: PropTypes.string.isRequired,
+      default: PropTypes.string,
       options: PropTypes.arrayOf(
         PropTypes.shape({
           label: PropTypes.string,
           value: PropTypes.string.isRequired
         })
       )
-   })
- ).isRequired,
- initial: PropTypes.object
+    })
+  ).isRequired,
+  initial: PropTypes.object
 }
 
