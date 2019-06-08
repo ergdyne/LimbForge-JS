@@ -101,7 +101,7 @@ const currentUser = {
   email: `admin@limbforge.org`,
   loggedIn: true,
   siteAccess: 'admin',
-  groups: [{ fkGroup: 1, groupAccess: 'groupAdmin' }], //if admin to site, then ignore this
+  groups: [{ groupId: 1, groupAccess: 'groupAdmin' }], //if admin to site, then ignore this
   home: `users`
 }
 
@@ -114,7 +114,7 @@ const users = [
     email: `groupadmin@limbforge.org`,
     loggedIn: true,
     siteAccess: 'groupAdmin',
-    groups: [{ fkGroup: 0, groupAccess: 'groupAdmin' }, { fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
+    groups: [{ groupId: 0, groupAccess: 'groupAdmin' }, { groupId: 1, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
@@ -122,7 +122,7 @@ const users = [
     email: `user@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
-    groups: [{ fkGroup: 0, groupAccess: 'user' }, { fkGroup: 1, groupAccess: 'user' }], //if admin to site, then ignore this
+    groups: [{ groupId: 0, groupAccess: 'user' }, { groupId: 1, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
@@ -130,7 +130,7 @@ const users = [
     email: `user1@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
-    groups: [{ fkGroup: 1, groupAccess: 'user' }, { fkGroup: 2, groupAccess: 'user' }], //if admin to site, then ignore this
+    groups: [{ groupId: 1, groupAccess: 'user' }, { groupId: 2, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
@@ -138,7 +138,7 @@ const users = [
     email: `user2@limbforge.org`,
     loggedIn: true,
     siteAccess: 'user',
-    groups: [{ fkGroup: 2, groupAccess: 'user' }], //if admin to site, then ignore this
+    groups: [{ groupId: 2, groupAccess: 'user' }], //if admin to site, then ignore this
     home: `patients`
   },
   {
@@ -146,7 +146,7 @@ const users = [
     email: `request@limbforge.org`,
     loggedIn: false,
     siteAccess: 'request',
-    groups: [{ fkGroup: 0, groupAccess: 'request' }], //if admin to site, then ignore this
+    groups: [{ groupId: 0, groupAccess: 'request' }], //if admin to site, then ignore this
     home: `patients`
   },
 ]

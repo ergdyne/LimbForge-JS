@@ -76,7 +76,7 @@ export default class Patient extends React.Component {
             {(l === 'preview' || l === 'measurement') ?
               <PatientData
                 patient={this.props.patient}
-                editPatient={() => { }}
+                editPatient={() => this.props.dispatch(updateLevel('patient'))}
                 editMeasurement={(l === 'preview') ? () => this.props.dispatch(updateLevel('measurement')) : false}
               /> :
               <div />

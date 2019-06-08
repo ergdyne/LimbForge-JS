@@ -1,29 +1,26 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
-import { groups, groupColHeaders, groupInputs } from '../testData'
+import {groupColHeaders, groupInputs } from '../testData'
 import formatColumns from '../functions/formatColumns'
-import FormBuilder from '../components/FormBuilder';
-
+import FormBuilder from '../components/FormBuilder'
+import { getGroups } from '../actions/groupsActions'
 
 //Site Admin access only
-//Views available:
-//A list of groups 
-//add group -> simple form (subset of view/edit)
-//view/edit group
-//the add group form
-//stats
-//users listing
-//patient listing?
+@connect((store) => {
+  return ({
+    sessionUser: store.session.user,
+    groups: store.groups.groups
+  })
+})
 export default class Groups extends React.Component {
-  constructor(props) {
-    super(props)
-    //State would have listing type things...
+  componentWillMount(){
+    this.props.dispatch(getGroups())
   }
 
-  viewGroup = (pkGroup) => {
-    this.props.history.push(`/group/${pkGroup}`)
+  viewGroup = (groupId) => {
+    this.props.history.push(`/group/${groupId}`)
   }
 
   submitGroup = (group) => {
@@ -53,7 +50,7 @@ export default class Groups extends React.Component {
           />
           <br />
           <ReactTable
-            data={groups}//API Call
+            data={this.props.groups}
             columns={columns}
             filterable={true}
             minRows={0}
@@ -62,9 +59,5 @@ export default class Groups extends React.Component {
       </div></div></div></div>
     )
   }
-}
-
-Groups.propTypes = {
-  user: PropTypes.object.isRequired
 }
 

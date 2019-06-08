@@ -1,42 +1,32 @@
 import React from 'react'
 import ReactTable from 'react-table'
+import { connect } from 'react-redux'
 import 'react-table/react-table.css'
 import formatColumns from '../functions/formatColumns'
-import { users, userColHeaders, groups } from '../testData'
+import {getGroup} from '../actions/groupsActions'
+import { userColHeaders } from '../testData'
 
 //TODO that access matters
+@connect((store) => {
+  return ({
+    sessionUser: store.session.user,
+    group: store.groups.group
+  })
+})
 export default class Group extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      group: {},
-      activeUsers: {},
-      requestUsers: {}
-    }
-  }
-
   componentWillMount() {
     //API Call
-    const { pkGroup } = this.props.match.params
-    const fkGroup = parseInt(pkGroup)
-    //well some more filtering than this...? Also there is a 0 index, but not a 0 pkPatient. ;)
-    if (pkGroup && !(isNaN(fkGroup))) {
-      //TEMPORARY until DB call.
-      this.setState(
-        { group: groups[fkGroup] },
-        () => {
-          const groupUsers = users.filter(u => u.groups.map(g => g.fkGroup).includes(fkGroup))
-          const activeUsers = groupUsers.filter(u => !u.groups.filter(g => g.fkGroup === fkGroup).map(g => g.groupAccess).includes("request"))
-          const requestUsers = groupUsers.filter(u => u.groups.filter(g => g.fkGroup === fkGroup).map(g => g.groupAccess).includes("request"))
-          this.setState({ activeUsers: activeUsers, requestUsers: requestUsers })
-        }
-      )
+    const { groupId } = this.props.match.params
+    const id = parseInt(groupId)
+    //well some more filtering than this...? Also there is a 0 index, but not a 0 patientId. ;)
+    if (groupId && !(isNaN(id))) {
+      this.props.dispatch(getGroup(id))
     }
   }
 
-  approveUser = (pkUser) => {
+  approveUser = (userId) => {
     //API Call
-    console.log('approve user', pkUser, 'for group', this.state.group)
+    console.log('approve user', userId, 'for group', this.props.group)
   }
 
   render() {
@@ -47,16 +37,16 @@ export default class Group extends React.Component {
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
           <div className="group-info-area">
-            <h2>{this.state.group.name}</h2>
-            <div>{this.state.group.description}</div>
+            <h2>{this.props.group.name}</h2>
+            <div>{this.props.group.description}</div>
             <hr />
-            {(this.state.requestUsers.length > 0) ?
+            {(this.props.group.requestedUsers.length > 0) ?
               <div>
                 <h3>{'Access Requests'}</h3>
                 <ReactTable
                   key="access"
                   columns={approveColumns}
-                  data={this.state.requestUsers}
+                  data={this.props.group.requestedUsers}
                   filterable={true}
                   defaultPageSize={5}
                   minRows={0}
@@ -64,13 +54,13 @@ export default class Group extends React.Component {
               </div> :
               <span></span>
             }
-            {(this.state.activeUsers.length > 0) ?
+            {(this.props.group.approvedUsers.length > 0) ?
               <div>
                 <h3>{'Users'}</h3>
                 <ReactTable
                   key="users"
                   columns={userColumns}
-                  data={this.state.activeUsers}
+                  data={this.props.group.approvedUsers}
                   filterable={true}
                   defaultPageSize={5}
                   minRows={0}

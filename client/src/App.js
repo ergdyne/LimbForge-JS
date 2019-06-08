@@ -80,7 +80,7 @@ export default class App extends React.Component {
           <Route path="/patients/" component={Patients} />
           <Route path="/user/:userId" component={User} />
           <Route path="/users/" component={Users}/>
-          <Route path="/group/:pkGroup" render={(props)=><Group user={this.props.sessionUser} {...props}/>} />
+          <Route path="/group/:groupId" render={(props)=><Group user={this.props.sessionUser} {...props}/>} />
           <Route path="/groups/" render={(props)=><Groups user={this.props.sessionUser} {...props}/>} />
           {/* render={(props) => <Dashboard {...props} */}
           <br />
