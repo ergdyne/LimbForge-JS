@@ -71,6 +71,27 @@ on l.aid = og."userId" and l.latest = og.create_at and l.gid = og."groupId";
       inner join patient_measurement as om
       on l.mid = om."measureId" and l.latest = om.create_at and l.pid = om."patientId";
 
+--user's most recent admin status... if exists
+select l.aid as "userId", oa."isAdmin" from 
+  (select 
+    "userId" as aid, 
+    max(create_at) as latest
+  from admin_access
+  group by "userId"
+  ) as l
+inner join admin_access as oa
+on l.aid = oa."userId" and l.latest = oa.create_at;
+
+--user's most recent auth... should exist. And this lets it be password or google and the site doesn't have to know which is stored.
+select l.aid as "userId", oa."hash" from 
+  (select 
+    "userId" as aid, 
+    max(create_at) as latest
+  from site_auth
+  group by "userId"
+  ) as l
+inner join site_auth as oa
+on l.aid = oa."userId" and l.latest = oa.create_at;
 
 -- Inserts for test case if I have to rebuild the DB
 insert into "patient" (create_at) values (current_timestamp);
@@ -113,3 +134,9 @@ insert into patient_measurement ("patientId","measureId","value") values (1,1,25
 insert into patient_measurement ("patientId","measureId","value") values (1,2,16.4);
 insert into patient_measurement ("patientId","measureId","value") values (1,1,26.4);
 insert into patient_measurement ("patientId","measureId","value") values (1,2,17.4);
+
+insert into admin_access ("userId","isAdmin") values (1,true);
+insert into admin_access ("userId","isAdmin") values (1,false);
+
+insert into site_auth ("userId","hash") values (1,'meow');
+insert into site_auth ("userId","hash") values (1,'moo');

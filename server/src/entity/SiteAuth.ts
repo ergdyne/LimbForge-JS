@@ -7,7 +7,7 @@ export class SiteAuth{
   public id: number
 
   @Column()
-  public hash: string
+  public hash: string //may also be oauthID
 
   @CreateDateColumn()
   public create_at: Date
