@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany} from 'typeo
 import PatientMeasurement from './PatientMeasurement'
 import MeasureAttribute from './MeasureAttribute'
 
+//Measure is the thing being measured (measurement is the value measured)
 @Entity()
 export class Measure{
   @PrimaryGeneratedColumn()

@@ -7,7 +7,7 @@ export class PatientMeasurement{
   @PrimaryGeneratedColumn()
   public id: number
 
-  @Column() 
+  @Column("decimal", { precision: 5, scale: 2 })
   public value: number
 
   @CreateDateColumn()

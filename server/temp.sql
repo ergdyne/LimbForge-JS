@@ -36,6 +36,40 @@ select l.mid as "measureId", oa.attribute, oa.value, oa.type from
 inner join measure_attribute as oa
 on l.mid = oa."measureId" and l.latest = oa.create_at and l.attribute = oa.attribute;
 
+--patient's most recent group (will really just be the one entry)
+select l.pid as "patientId", "groupId" from 
+  (select 
+    "patientId" as pid, 
+    max(create_at) as latest
+  from patient_group
+  group by "patientId"
+  ) as l
+inner join patient_group as og
+on l.pid = og."patientId" and l.latest = og.create_at;
+
+-- View that is a table of the user - group - most recent access level combo
+select l.aid as "userId", l.gid as "groupId", og.access from 
+  (select 
+    "userId" as aid, 
+    max(create_at) as latest, 
+    "groupId" as gid
+  from user_group
+  group by "userId", "groupId"
+  ) as l
+inner join user_group as og
+on l.aid = og."userId" and l.latest = og.create_at and l.gid = og."groupId";
+
+--View that gives the most recent measurement for each patient and measure
+      select l.mid as "measureId", l.pid as "patientId", om.value from 
+        (select 
+          "measureId" as mid, 
+          max(create_at) as latest, 
+          "patientId" as pid
+        from patient_measurement
+        group by "measureId", "patientId"
+        ) as l
+      inner join patient_measurement as om
+      on l.mid = om."measureId" and l.latest = om.create_at and l.pid = om."patientId";
 
 
 -- Inserts for test case if I have to rebuild the DB
@@ -44,6 +78,7 @@ insert into "patient_attribute" (attribute,value,type,"patientId") values ('hi',
 insert into "patient_attribute" (attribute,value,type,"patientId") values ('hi', '2', 'ok', 1);
 insert into "patient_attribute" (attribute,value,type,"patientId") values ('bye', 'a', 'ok', 1);
 insert into "patient_attribute" (attribute,value,type,"patientId") values ('bye', 'b', 'ok', 1);
+
 insert into "group" (create_at) values (current_timestamp);
 insert into "group" (create_at) values (current_timestamp);
 insert into "group_attribute" (attribute,value,type,"groupId") values ('name', 'first', 'ok', 1);
@@ -54,10 +89,27 @@ insert into "group_attribute" (attribute,value,type,"groupId") values ('name', '
 insert into "group_attribute" (attribute,value,type,"groupId") values ('name', 'new', 'ok', 2);
 insert into "group_attribute" (attribute,value,type,"groupId") values ('description', 'aaa', 'ok', 2);
 insert into "group_attribute" (attribute,value,type,"groupId") values ('description', 'bbb', 'ok', 2);
+
 insert into "measure" (create_at) values (current_timestamp);
 insert into "measure_attribute" (attribute,value,type,"measureId") values ('name', 'L1', 'ok', 1);
 insert into "measure_attribute" (attribute,value,type,"measureId") values ('name', 'Length 1', 'ok', 1);
 insert into "measure_attribute" (attribute,value,type,"measureId") values ('instruction', 'default', 'ok', 1);
 insert into "measure_attribute" (attribute,value,type,"measureId") values ('instruction', 'Measure from elbow to wrist.', 'ok', 1);
 
+insert into patient_group ("patientId","groupId") values (1,1);
+insert into patient_group ("patientId","groupId") values (1,2);
+
+insert into "user" ("email") values ('j@j.com');
+insert into user_group ("userId","groupId","access") values (1,1,'requested');
+insert into user_group ("userId","groupId","access") values (1,1,'groupAdmin');
 --TODO write a seed for measures and attributes
+
+insert into "measure" (create_at) values (current_timestamp);
+insert into "measure_attribute" (attribute,value,type,"measureId") values ('name', 'C1', 'ok', 2);
+insert into "measure_attribute" (attribute,value,type,"measureId") values ('name', 'Cir 1', 'ok', 2);
+insert into "measure_attribute" (attribute,value,type,"measureId") values ('instruction', 'default', 'ok', 2);
+insert into "measure_attribute" (attribute,value,type,"measureId") values ('instruction', 'Measure around the wrist.', 'ok', 2);
+insert into patient_measurement ("patientId","measureId","value") values (1,1,25.4);
+insert into patient_measurement ("patientId","measureId","value") values (1,2,16.4);
+insert into patient_measurement ("patientId","measureId","value") values (1,1,26.4);
+insert into patient_measurement ("patientId","measureId","value") values (1,2,17.4);
