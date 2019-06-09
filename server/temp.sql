@@ -137,6 +137,7 @@ insert into patient_measurement ("patientId","measureId","value") values (1,2,17
 
 insert into admin_access ("userId","isAdmin") values (1,true);
 insert into admin_access ("userId","isAdmin") values (1,false);
+insert into admin_access ("userId","isAdmin") values (1,true);
 
 insert into site_auth ("userId","hash") values (1,'meow');
 insert into site_auth ("userId","hash") values (1,'moo');

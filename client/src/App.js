@@ -10,17 +10,20 @@ import {logout} from './actions/sessionActions'
 @connect((store) => {
   return ({
     stored: store,
-    sessionUser: store.session.user
+    sessionUser: store.session.user,
+    api: store.api.link
   })
 })
 export default class App extends React.Component {
   componentWillMount() {
-    //Get user action?
+    fetch('http://localhost:3000/')
+    .then(res=>res.json())
+    .then(data=> console.log('res', data))
   }
   render() {
     // TODO add small screen functionality. Currently, menu items vanish.
     // TODO add security layer to the Router that isn't this goofy.
-    console.log('store', this.props.stored)
+    //console.log('store', this.props.stored)
     return (
       <Router>
         <div className="theme-l5">

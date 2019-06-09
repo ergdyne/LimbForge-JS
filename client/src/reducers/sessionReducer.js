@@ -20,8 +20,6 @@ export default function reducer(state = {
   patientFormLevel: 'patient'
 }, action) {
 
-  console.log('user reducer', state)
-
   switch (action.type) {
     case "LOGIN": {
       //Temp
