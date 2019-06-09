@@ -11,3 +11,11 @@ export function getGroup(groupId){
     payload:{groupId:groupId}
   }
 }
+
+export function addGroup(group){
+  return{
+    type:"ADD_GROUP",
+    payload:{group:group}
+  }
+}
+

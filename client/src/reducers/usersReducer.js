@@ -40,6 +40,16 @@ export default function reducer(state={
 
       return {...state, user:{...user,groups:usersGroups}}
     }
+    case "APPROVE_USER":{
+      //userId,groupId,groupAccess
+      console.log('approve user', action.payload)
+      return {...state}
+    }
+    case "ADD_USER":{
+      //newUser
+      console.log('add user', action.payload)
+      return {...state}
+    }
     default: return state
   }
 

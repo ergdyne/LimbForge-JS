@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import formatColumns from '../functions/formatColumns'
 import {userColHeaders, userAccessLevels} from '../testData'
 import FormBuilder from '../components/FormBuilder';
-import {getGroupOptions,getApprovedUsers,getRequestedUsers} from '../actions/usersActions'
+import {getGroupOptions,getApprovedUsers,getRequestedUsers,approveUser,addUser} from '../actions/usersActions'
 
 //Site Admin and Group Admin access
 ////Site Admin sees all users
@@ -33,11 +33,14 @@ export default class Users extends React.Component {
     if (!user.groupAccess) { user.groupAccess = 'user' }
     if (!user.group) { user.group = this.props.groupOptions[0] }
     console.log('create user', user)
+    this.props.dispatch(addUser(user))
   }
 
   approveUser = (userId) => {
-    //API Call
+    const groupId = 0
+    //TODO remap the approval table to include the group information
     console.log('approve user', userId, 'for group ?')
+    this.props.dispatch(approveUser(userId,groupId,'user'))
   }
 
   viewUser = (userId) => {
@@ -56,6 +59,7 @@ export default class Users extends React.Component {
       // More convoluted divs from the current copied CSS.
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
+          {/* TODO remap this to be based on the sessionUser as to what group options are available */}
           {(this.props.groupOptions.length > 0) ?
             <div>
               <FormBuilder

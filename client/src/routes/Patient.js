@@ -4,7 +4,7 @@ import FormBuilder from '../components/FormBuilder'
 import PatientData from '../components/PatientData'
 import Download from '../components/Download'
 import { patientInputs, measurementInputs } from '../testData'
-import { getPatient, saveMeasurements, savePatient, updateLevel } from '../actions/patientsActions';
+import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient } from '../actions/patientsActions';
 import isEmpty from '../functions/isEmpty'
 //TODO move Inputs Lists to their own areas or add the generated server side based on DB.
 //These two drive the construction of the patient and measurement forms respectively.
@@ -52,6 +52,11 @@ export default class Patient extends React.Component {
 
     this.props.dispatch(savePatient(patient))
     this.props.dispatch(updateLevel(isEmpty(this.props.patient.measurements) ? 'measurement' : 'preview'))
+  }
+
+  removePatient = (patientId)=>{
+    console.log("Would be like are you sure?")
+    this.props.dispatch(deletePatient(patientId))
   }
 
   //Callback for measurements form.

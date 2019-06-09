@@ -23,6 +23,10 @@ export default function reducer(state = {
       
       return {...state, group:{...group,approvedUsers:approvedUsers,requestedUsers:requestedUsers}}
     }
+    case "ADD_GROUP":{
+      console.log('add group', action.payload)
+      return {...state}
+    }
     default: return state
   }
 }

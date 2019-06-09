@@ -5,7 +5,7 @@ import 'react-table/react-table.css'
 import {groupColHeaders, groupInputs } from '../testData'
 import formatColumns from '../functions/formatColumns'
 import FormBuilder from '../components/FormBuilder'
-import { getGroups } from '../actions/groupsActions'
+import { getGroups, addGroup } from '../actions/groupsActions'
 
 //Site Admin access only
 @connect((store) => {
@@ -26,6 +26,7 @@ export default class Groups extends React.Component {
   submitGroup = (group) => {
     //API Call
     console.log('Group submited', group)
+    this.props.dispatch(addGroup(group))
   }
 
   render() {

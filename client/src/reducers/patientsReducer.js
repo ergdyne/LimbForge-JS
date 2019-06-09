@@ -35,6 +35,10 @@ export default function reducer(state={
       return {...state,patientFormLevel:action.payload.level}
     }
 
+    case "DELETE_PATIENT":{
+      return {...state}
+    }
+
     default: return state
   }
 

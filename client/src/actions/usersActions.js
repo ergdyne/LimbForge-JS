@@ -25,3 +25,17 @@ export function getUser(userId){
     payload:{userId:userId}
   }
 }
+
+export function approveUser(userId,groupId,groupAccess){
+  return {
+    type:"APPROVE_USER",
+    payload:{userId:userId,groupId:groupId,groupAccess:groupAccess}
+  }
+}
+
+export function addUser(newUser){
+  return {
+    type:"ADD_USER",
+    payload:{newUser:newUser}
+  }
+}

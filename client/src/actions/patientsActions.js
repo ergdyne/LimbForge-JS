@@ -33,6 +33,13 @@ export function updateLevel(level) {
   }
 }
 
+export function deletePatient(patientId){
+  return {
+    type: "DELETE_PATIENT",
+    payload: {patientId:patientId}
+  }
+}
+
 
 
 
