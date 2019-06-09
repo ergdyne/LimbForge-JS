@@ -29,14 +29,3 @@ export class PatientState {
   @ViewColumn()
   type: string
 }
-
-
-
-// {
-//   expression: (connection: Connection) => connection.createQueryBuilder()
-//     .select("patient_state.patientId", "patientId")
-//     .addSelect("patient_state.attribute", "attribute")
-//     .addSelect("patient_state.value", "value")
-//     .addSelect("patient_state.type", "type")
-//     .from("patient_state")
-// }
