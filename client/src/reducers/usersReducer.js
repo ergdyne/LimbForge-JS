@@ -36,7 +36,6 @@ export default function reducer(state={
         const group = groups[g.groupId]
         return{...g,name:group.name,description:group.description}
       })
-      console.log('ug', usersGroups)
 
       return {...state, user:{...user,groups:usersGroups}}
     }

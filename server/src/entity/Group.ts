@@ -3,6 +3,7 @@ import UserGroup from './UserGroup'
 import PatientGroup from './PatientGroup'
 import GroupAttribute from './GroupAttribute'
 
+//TODO be aware of not letting two groups have the same name
 @Entity()
 export class Group{
   @PrimaryGeneratedColumn()

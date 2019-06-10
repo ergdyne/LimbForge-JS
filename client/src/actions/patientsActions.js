@@ -40,6 +40,11 @@ export function deletePatient(patientId){
   }
 }
 
-
+export function clearPatient(){
+  return {
+    type: "CLEAR_PATIENT",
+    payload: {}
+  }
+}
 
 

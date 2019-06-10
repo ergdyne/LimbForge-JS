@@ -4,7 +4,7 @@ import FormBuilder from '../components/FormBuilder'
 import PatientData from '../components/PatientData'
 import Download from '../components/Download'
 import { patientInputs, measurementInputs } from '../testData'
-import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient } from '../actions/patientsActions';
+import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions';
 import isEmpty from '../functions/isEmpty'
 //TODO move Inputs Lists to their own areas or add the generated server side based on DB.
 //These two drive the construction of the patient and measurement forms respectively.
@@ -26,8 +26,13 @@ export default class Patient extends React.Component {
     const id = parseInt(patientId)
     if (patientId && !(isNaN(id))) {
       this.props.dispatch(getPatient(id))
+      //this.props.dispatch(updateLevel('preview'))
     }
 
+  }
+
+  componentWillUnmount(){
+    this.props.dispatch(clearPatient())
   }
   //Callback for patient Data form.
   //TODO connect to API to do actual read/write/updates.

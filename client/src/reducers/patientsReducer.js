@@ -1,15 +1,18 @@
 import { patients } from '../testData'
+import isEmpty from '../functions/isEmpty'
+
+const emptyPatient ={
+  id:null,
+    //Other attributes exists in patient but are not given defaults.
+    measurements:{}
+}
 
 export default function reducer(state={
   //The outside layer is patients. Access by state.patients.item
   //state.patients.patients, state.patients.patientFormLevel
   patientFormLevel:'patient',
   patients:[],
-  patient:{
-    id:null,
-    //Other attributes exists in patient but are not given defaults.
-    measurements:{}
-  }
+  patient:emptyPatient
 
 },action){
   switch(action.type){
@@ -18,7 +21,13 @@ export default function reducer(state={
       return {...state, patients:patients}
     }
     case "GET_PATIENT":{
-      return {...state,patient:patients[action.payload.patientId]}
+      const patient = patients[action.payload.patientId]
+
+      if(isEmpty(patient.measurements)){
+        return {...state,patient:patient,patientFormLevel:'measurement'}
+      }
+
+      return {...state,patient:patient,patientFormLevel:'preview'}
     }
 
     case "SAVE_PATIENT":{
@@ -38,6 +47,11 @@ export default function reducer(state={
     case "DELETE_PATIENT":{
       return {...state}
     }
+
+    case "CLEAR_PATIENT":{
+      return {...state,patient:emptyPatient,patientFormLevel:'patient'}
+    }
+    
 
     default: return state
   }
