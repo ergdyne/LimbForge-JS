@@ -57,6 +57,7 @@
     "style-loader": "^0.23.1",
     "three": "^0.104.0",
     "three-orbit-controls": "^82.1.0",
-    "three-stl-loader": "^1.0.6"
+    "three-stl-loader": "^1.0.6",
+    "underscore": "^1.9.1"
   }
 }

@@ -7,11 +7,26 @@ import { UserGroup } from '../entity/UserGroup'
 import { Group } from '../entity/Group'
 import { ViewSiteAuth } from '../entity/ViewSiteAuth'
 import { ViewGroups } from '../entity/ViewGroups'
+import { ViewAdminAccess } from "../entity/ViewAdminAccess"
+
+//Support functions
+function siteAccess(vg: ViewGroups[]){
+  const accessLevels = vg.map(g=>g.access)
+
+  if(accessLevels.includes('groupAdmin')){
+    return 'groupAdmin'
+  }
+
+  if(accessLevels.includes('user')){
+    return 'user'
+  }
+  return 'requested'
+}
+
 
 export default class AuthController {
   //TODO do full implimentation of security
   static signUp = async (req: Request, res: Response) => {
-    console.log('body', req.body)
     let { email, auth, groupName } = req.body
     if (!(email && auth && groupName)) {
       res.status(400).send()
@@ -62,7 +77,7 @@ export default class AuthController {
       }
     }
 
-    //Now it is the normal Signup stuff
+    //Now it is the normal Signup stuff for a user that wasn't preapproved
 
     //Confirm the group exists or is 'New Group' flag
     const isNewGroup = (groupName === 'New Group')
@@ -93,6 +108,7 @@ export default class AuthController {
         let siteAuth = new SiteAuth
         siteAuth.hash = auth
         siteAuth.user = newUser
+        //TODO ENCRYPT USING BCRYPT!!!!
         await transactionalEntityManager.save(siteAuth)
 
         //If it has a group, then we create the userGroup
@@ -118,6 +134,7 @@ export default class AuthController {
     let { email, auth } = req.body
     if (!(email && auth)) {
       res.status(400).send()
+      return
     }
 
     const userRepo = getRepository(User)
@@ -126,34 +143,44 @@ export default class AuthController {
     let user: User
     let authView: ViewSiteAuth
     try {
+      //Does the user exist?
       user = await userRepo.findOneOrFail({ where: { email } })
       authView = await authViewRepo.findOneOrFail({ userId: user.id })
     } catch (error) {
       res.status(401).send()
+      return
     }
-    console.log('user', user)
+
     if (authView.hash === auth) {
+      //If auth passes
       let viewGroups: ViewGroups[]
+      let adminAccess: ViewAdminAccess
       try {
         const viewGroupsRepo = getRepository(ViewGroups)
+        const adminAccessRepo = getRepository(ViewAdminAccess)
+        //ViewGroups can be converted into "Group" objects in a non-typesafe way on the client side.
+        //See that function for more explaination.
         viewGroups = await viewGroupsRepo.find({ where: { userId: user.id } })
-        console.log('vg', viewGroups)
-
+        adminAccess = await adminAccessRepo.findOne({where:{userId: user.id}})
       } catch (error) {
-        console.log(error)
         res.status(401).send()
+        return
       }
+
+      const admin = (adminAccess ==null)?false:adminAccess.isAdmin
 
       const userData = {
         id: user.id,
         email: user.email,
-        viewGroups: viewGroups
-        //Can be converted to a list of groups and permisions
+        viewGroups: viewGroups,
+        siteAccess: admin?'admin':siteAccess(viewGroups)
       }
       res.status(200).send(userData)
+      return
 
     } else {
       res.status(409).send({ msg: 'Authorization is not valid.' })
+      return
     }
   }
 }

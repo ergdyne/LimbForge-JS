@@ -26,11 +26,16 @@ export default class Landing extends React.Component {
   }
 
   signUpSubmit = (newUser) => {
-    if(!newUser.group){
-      newUser.group=this.props.groupOptions[0]
+    if (!newUser.group) {
+      newUser.group = this.props.groupOptions[0]
     }
     this.props.dispatch(signUp(newUser))
   }
+
+  loginSubmit = (userData) =>{
+    this.props.dispatch(login(userData))
+  }
+
   render() {
     const groupOptions = this.props.groupOptions.concat(['New Group'])
     const signUpInputs = [//PUSH IN THE NEW OPTION
@@ -48,7 +53,18 @@ export default class Landing extends React.Component {
             <button onClick={() => this.props.dispatch(login('user'))}>Login User</button>
             <button onClick={() => this.props.dispatch(login('groupAdmin'))}>Login Group Admin</button>
           </div>
-          <hr/>
+          <div>
+            <h3>Login</h3>
+            <FormBuilder
+              key='Login'
+              elements={signUpInputs.slice(0,2)}
+              onSubmit={this.loginSubmit}
+              submitValue='Login'
+              preventDefault={true}
+            />
+          </div>
+
+          <hr />
           {(this.props.groupOptions.length > 0) ?
             <div>{(this.props.sessionUser.siteAccess === 'requested') ?
               <span>{'Access Requested'}</span> :

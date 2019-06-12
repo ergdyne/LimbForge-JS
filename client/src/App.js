@@ -32,7 +32,7 @@ export default class App extends React.Component {
               {/* Logo Button with custom home */}
               <Link
                 className="bar-item button padding-large theme-d4"
-                to={(this.props.sessionUser.loggedIn) ? `/${this.props.sessionUser.home}/` : "/"}
+                to={(this.props.sessionUser.loggedIn) ? `${this.props.sessionUser.home}` : "/"}
               >
                 <i className="fa fa-home margin-right"></i>
                 {`Logo`}

@@ -27,6 +27,8 @@ function randomFromList(l) {
   return l[(Math.round(Math.random() * (l.length - 1)))]
 }
 
+
+
 const navData = {
   menu: [
     { text: `Patients`, link: `patients`, access: [`user`, `groupAdmin`, `admin`] },
@@ -105,7 +107,7 @@ const currentUser = {
   home: `users`
 }
 
-const userAccessLevels =['user','groupAdmin','admin']
+const userAccessLevels =['user','groupAdmin','admin','requested']
 
 const users = [
   currentUser,

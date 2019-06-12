@@ -1,12 +1,49 @@
 import axios from 'axios'
 
-export function login(payload) {
+//support functions
 
+function groups(viewGroups){
+  return [{hi:"meow"}]
+}
+
+function home(siteAccess){
+  switch(siteAccess){
+    case 'admin': return '/users/'
+    case 'requested': return '/'
+    default: return '/patients/'
+  }
+}
+
+
+
+export function login(payload) {
   //Can preprocess the login credentials within the axios
-  //START HERE
-  return {
-    type: "LOGIN",
-    payload: payload
+
+  console.log(payload)
+  //email: "x@b.com", password: "as"
+
+  return function (dispatch) {
+    axios.post('http://localhost:3000/auth/login', {
+      email: payload.email,
+      auth: payload.password
+    })
+      .then((response) => {
+        //can pre process this data
+        const {id, email, viewGroups,siteAccess} = response.data
+        const ourUser = {
+          id: id,
+          email: email,
+          siteAccess: siteAccess,
+          home: home(siteAccess),
+          loggedIn: true,
+          groups: groups(viewGroups)
+        }
+        console.log('oour user', ourUser)
+        dispatch({ type: "LOGIN", payload: ourUser })
+      })
+      .catch((err) => {
+        dispatch({ type: "LOGIN_REJECTED", payload: err })
+      })
   }
 }
 
@@ -29,6 +66,7 @@ export function signUp(newUser) {
       })
         .then((response) => {
           //can pre process this data
+
           dispatch({ type: "SIGN_UP", payload: response.data })
         })
         .catch((err) => {
@@ -36,9 +74,9 @@ export function signUp(newUser) {
         })
     }
   }
-  
+
   return {
-    type:"SIGN_UP_REJECTED",
-    payload:{msg:"passwords don't match"}
+    type: "SIGN_UP_REJECTED",
+    payload: { msg: "passwords don't match" }
   }
 }

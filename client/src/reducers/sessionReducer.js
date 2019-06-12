@@ -1,6 +1,7 @@
 //All about the person using the site
 const emptyUser = {
   id: null,
+  email: '',
   siteAccess: null,
   home: '/',
   loggedIn: false,
@@ -9,6 +10,7 @@ const emptyUser = {
 
 const pendingUser ={
   id: null,
+  email: '',
   siteAccess: 'requested',
   home: '/',
   loggedIn: false,
@@ -23,7 +25,6 @@ export default function reducer(state = {
   switch (action.type) {
     case "LOGIN": {
       //Temp
-      console.log(action.payload)
       if (action.payload === 'admin') {
         return { ...state, user: admin }
       }
@@ -34,17 +35,16 @@ export default function reducer(state = {
         return { ...state, user: user }
       }
 
-      return state
+      return {...state, user:action.payload}
     }
     case "LOGOUT": {
       return {...state, user:emptyUser}
     }
     case "SIGN_UP":{
-      console.log('new one',action.payload)
       //TODO, create the temporary user credential ("pending approval")
       //email: "x@a.com", id: 19, create_at: "2019-06-12T20:43:27.646Z"
 
-      return {...state, user:action.payload}
+      return {...state, user:pendingUser}
     }
 
     //signup failed and such
@@ -55,6 +55,7 @@ export default function reducer(state = {
 //Temporary Sessions
 const admin = {
   id: 0,
+  email: '',
   siteAccess: 'admin',
   home: '/users/',
   loggedIn: true,
@@ -63,6 +64,7 @@ const admin = {
 
 const groupAdmin = {
   id: 1,
+  email: '',
   siteAccess: 'groupAdmin',
   home: '/patients/',
   loggedIn: true,
@@ -70,6 +72,7 @@ const groupAdmin = {
 }
 const user = {
   id: 2,
+  email: '',
   siteAccess: 'user',
   home: '/patients/',
   loggedIn: true,
