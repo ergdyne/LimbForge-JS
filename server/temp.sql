@@ -25,3 +25,5 @@ insert into "measure_attribute" (attribute,"value", "type","measureId") values (
 insert into "measure_attribute" (attribute,"value", "type","measureId") values ('name', 'Cir 1', 'ok', 2);
 insert into "measure_attribute" (attribute,"value", "type","measureId") values ('instruction', 'default', 'ok', 2);
 insert into "measure_attribute" (attribute,"value", "type","measureId") values ('instruction', 'Measure around the wrist.', 'ok', 2);
+
+insert into user_group ("userId","groupId","access") values (13,1,'user');

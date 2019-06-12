@@ -33,6 +33,7 @@ export default function reducer(state = {
       if (action.payload === 'user') {
         return { ...state, user: user }
       }
+
       return state
     }
     case "LOGOUT": {
@@ -40,8 +41,13 @@ export default function reducer(state = {
     }
     case "SIGN_UP":{
       console.log('new one',action.payload)
-      return {...state, user:pendingUser}
+      //TODO, create the temporary user credential ("pending approval")
+      //email: "x@a.com", id: 19, create_at: "2019-06-12T20:43:27.646Z"
+
+      return {...state, user:action.payload}
     }
+
+    //signup failed and such
     default: return state
   }
 }

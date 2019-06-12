@@ -6,7 +6,7 @@ import {UserGroupState} from './ViewUserGroupState'
 @ViewEntity({
   expression: (connection: Connection) => connection.createQueryBuilder()
     .select("ugs.userId", "userId")
-    .addSelect("ugs.groupId","groupID")
+    .addSelect("ugs.groupId","groupId")
     .addSelect("ugs.access","access")
     .addSelect("gs.attribute","attribute")
     .addSelect("gs.value","value")

@@ -73,7 +73,7 @@ function patient(first, last, id) {
 
 
 const groups = [
-  { id: 0, name: `Lambda`, description: `A mathy group around Egypt` },
+  { id: 0, name: `new`, description: `A mathy group around Egypt` },
   { id: 1, name: `Curry`, description: `Partial application of Ecuador` },
   { id: 2, name: `Alonzo`, description: `Inventive peeps in Croatia` }
 ]

@@ -25,7 +25,7 @@ export default class Landing extends React.Component {
     if (this.props.sessionUser.loggedIn) { this.props.history.push(this.props.sessionUser.home) }
   }
 
-  signUp = (newUser) => {
+  signUpSubmit = (newUser) => {
     if(!newUser.group){
       newUser.group=this.props.groupOptions[0]
     }
@@ -57,7 +57,7 @@ export default class Landing extends React.Component {
                 <FormBuilder
                   key='signUp'
                   elements={signUpInputs}
-                  onSubmit={this.signUp}
+                  onSubmit={this.signUpSubmit}
                   submitValue='Sign Up'
                   preventDefault={true}
                 />
