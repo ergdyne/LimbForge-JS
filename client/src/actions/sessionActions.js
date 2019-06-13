@@ -1,4 +1,6 @@
 import axios from 'axios'
+//TEMP
+import { isString } from 'util';
 
 //support functions
 
@@ -15,12 +17,10 @@ function home(siteAccess){
 }
 
 
-
 export function login(payload) {
   //Can preprocess the login credentials within the axios
-
   console.log(payload)
-  //email: "x@b.com", password: "as"
+  if(isString(payload)){return { type: "LOGIN", payload: payload }}
 
   return function (dispatch) {
     axios.post('http://localhost:3000/auth/login', {

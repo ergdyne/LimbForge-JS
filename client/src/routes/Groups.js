@@ -25,7 +25,6 @@ export default class Groups extends React.Component {
 
   submitGroup = (group) => {
     //API Call
-    console.log('Group submited', group)
     this.props.dispatch(addGroup(group))
   }
 

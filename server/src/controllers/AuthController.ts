@@ -30,6 +30,7 @@ export default class AuthController {
     let { email, auth, groupName } = req.body
     if (!(email && auth && groupName)) {
       res.status(400).send()
+      return
     }
 
     //Does the User Exists
