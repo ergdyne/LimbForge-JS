@@ -6,6 +6,18 @@ import { GroupAttribute } from '../entity/GroupAttribute'
 
 export default class GroupController {
 
+  static getAll = async(req: Request, res: Response) => {
+    //TODO would add in a user session bit.
+    
+    try{
+      const groupStateRepo = getRepository(GroupState)
+      const groupAttributes = await groupStateRepo.find()
+      res.send({groupAttributes: groupAttributes})
+      
+    }catch{
+      res.status(400).send()
+    }
+  }
   static addGroup = async (req: Request, res: Response) => {
     let { name, description } = req.body
     if (!(name && description)) {
@@ -57,6 +69,4 @@ export default class GroupController {
       return
     }
   }
-
-  
 }

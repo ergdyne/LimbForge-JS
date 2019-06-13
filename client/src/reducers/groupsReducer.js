@@ -12,7 +12,7 @@ export default function reducer(state = {
 }, action) {
   switch (action.type) {
     case "GET_GROUPS":{
-      return {...state, groups:groups}
+      return {...state, groups:action.payload}
     }
     case "GET_GROUP":{
       const groupId = action.payload.groupId
