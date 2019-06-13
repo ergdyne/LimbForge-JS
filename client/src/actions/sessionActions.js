@@ -16,17 +16,23 @@ function home(siteAccess){
   }
 }
 
+let axiosConfig = {
+  headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      "Access-Control-Allow-Origin": "*",
+  }
+}
+
 
 export function login(payload) {
   //Can preprocess the login credentials within the axios
-  console.log(payload)
   if(isString(payload)){return { type: "LOGIN", payload: payload }}
 
   return function (dispatch) {
     axios.post('http://localhost:3000/auth/login', {
       email: payload.email,
       auth: payload.password
-    })
+    }, axiosConfig)
       .then((response) => {
         //can pre process this data
         const {id, email, viewGroups,siteAccess} = response.data

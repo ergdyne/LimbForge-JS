@@ -23,8 +23,12 @@ export default class GroupController {
 
   }
 
-  static getAll = async (_req: Request, res: Response) => {
+  static getAll = async (req: Request, res: Response) => {
     //TODO would add in a user session bit.
+    console.log('passport',req.session.passport)
+    console.log('user',req.user)
+    console.log('session', req.session)
+    console.log('sessionID', req.sessionID)
 
     try {
       const groupStateRepo = getRepository(GroupState)
@@ -46,7 +50,6 @@ export default class GroupController {
       const groupStateRepo = getRepository(GroupState)
       let groupAttribute: GroupState
       groupAttribute = await groupStateRepo.findOne({ attribute: 'name', value: name })
-      console.log('group attribute', groupAttribute)
       //if it does, then we got an error.
       if (groupAttribute != null) {
         res.status(401).send({ msg: 'group name exists' })

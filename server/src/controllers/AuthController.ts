@@ -1,4 +1,5 @@
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
+import passport from "passport"
 import { getRepository, getManager } from "typeorm"
 import { User } from '../entity/User'
 import { SiteAuth } from '../entity/SiteAuth'
@@ -7,7 +8,6 @@ import { UserGroup } from '../entity/UserGroup'
 import { Group } from '../entity/Group'
 import { ViewSiteAuth } from '../entity/ViewSiteAuth'
 import { FullUserGroup } from '../entity/ViewFullUserGroup'
-import { ViewAdminAccess } from "../entity/ViewAdminAccess"
 
 //Support functions
 function siteAccess(vg: FullUserGroup[]){
@@ -40,7 +40,7 @@ export default class AuthController {
 
     let authView: ViewSiteAuth
     try {
-      user = await userRepo.findOne({ where: { email } })
+      user = await userRepo.findOne({ where: { email: email.toLowerCase() } })
 
       //If user, then get the authView
       if (user != null) {
@@ -100,7 +100,7 @@ export default class AuthController {
 
     //Set up user and the main relations.
     let newUser = new User()
-    newUser.email = email
+    newUser.email = email.toLowerCase()
 
     //Save the data. Note: can use decorators here too.
     try {
@@ -131,57 +131,18 @@ export default class AuthController {
     //Can I create a function that takes in the response?
   }
 
-  static login = async (req: Request, res: Response) => {
+  static login = async (req: Request, res: Response, next: NextFunction) => {
+    //console.log('session',req)
     let { email, auth } = req.body
     if (!(email && auth)) {
+      //still valid
       res.status(400).send()
       return
     }
-
-    const userRepo = getRepository(User)
-    const authViewRepo = getRepository(ViewSiteAuth)
-
-    let user: User
-    let authView: ViewSiteAuth
-    try {
-      //Does the user exist?
-      user = await userRepo.findOneOrFail({ where: { email } })
-      authView = await authViewRepo.findOneOrFail({ userId: user.id })
-    } catch (error) {
-      res.status(401).send()
-      return
-    }
-
-    if (authView.hash === auth) {
-      //If auth passes
-      let viewGroups: FullUserGroup[]
-      let adminAccess: ViewAdminAccess
-      try {
-        const viewGroupsRepo = getRepository(FullUserGroup)
-        const adminAccessRepo = getRepository(ViewAdminAccess)
-        //FullUserGroup can be converted into "Group" objects in a non-typesafe way on the client side.
-        //See that function for more explaination.
-        viewGroups = await viewGroupsRepo.find({ where: { userId: user.id } })
-        adminAccess = await adminAccessRepo.findOne({where:{userId: user.id}})
-      } catch (error) {
-        res.status(401).send()
-        return
-      }
-
-      const admin = (adminAccess ==null)?false:adminAccess.isAdmin
-
-      const userData = {
-        id: user.id,
-        email: user.email,
-        viewGroups: viewGroups,
-        siteAccess: admin?'admin':siteAccess(viewGroups)
-      }
-      res.status(200).send(userData)
-      return
-
-    } else {
-      res.status(409).send({ msg: 'Authorization is not valid.' })
-      return
-    }
+    console.log('pp')
+    passport.authenticate("local", (err, user, info)=>{
+      //probs handle err too
+      res.send(user)
+    })(req, res, next)
   }
 }

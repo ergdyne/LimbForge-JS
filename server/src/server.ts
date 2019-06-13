@@ -4,7 +4,13 @@ import { createConnection } from 'typeorm'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import routes from './routes'
-import { User } from './entity/User'
+import session from 'express-session'
+import passport from 'passport'
+import {passportConfig} from './operations/passportConfig'
+
+
+const CLIENT_ORIGIN="http://localhost:8080" //TODO make https and move to env
+const SESSION_SECRET="lalalala" //TODO move to env
 
 createConnection().then(async (connection) => {
   await connection.synchronize()
@@ -12,9 +18,21 @@ createConnection().then(async (connection) => {
   const app = express()
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
-  app.use(cors())//TODO security is off
 
-  app.use("/", routes)
+  app.use(passport.initialize())
+  passportConfig()
+  app.use(cors({origin: CLIENT_ORIGIN,credentials: true}))
+  app.use(session({
+    secret: SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: true }
+  }))
+
+  
+
+
+  app.use("/", routes) 
 
   app.get('*',
     (req, res) => res.status(200)
