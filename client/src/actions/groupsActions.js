@@ -12,11 +12,25 @@ function convertAttributes(ats){
   })
 }
 
+function convertUserGroups(ugs){
+  const userSets = _.pairs(_.groupBy(ugs,(u)=>u.userId))
+  return userSets.map(s=> {
+    //Pairs makes the s a list of [id, [ugs]]
+    //We only need one of the ugs to get the user information.
+    const rawUser = s[1][0]
+    return {
+      userId: parseInt(s[0]),
+      email: rawUser.email,
+      groupAccess: rawUser.access
+    }
+  })
+
+}
+
 export function getGroups() {
   return function (dispatch) {
     axios.get('http://localhost:3000/group/all')
       .then((response) => {
-        //We don't really care about the response yet.
         const groups = convertAttributes(response.data.groupAttributes)
         dispatch({ type: "GET_GROUPS", payload: groups })
       })
@@ -27,16 +41,25 @@ export function getGroups() {
 }
 
 export function getGroup(groupId) {
-  return {
-    type: "GET_GROUP",
-    payload: { groupId: groupId }
+  return function (dispatch) {
+    axios.post('http://localhost:3000/group/one',{
+      groupId:groupId
+    })
+      .then((response) => {
+        const group = _.first(convertAttributes(response.data.groupAttributes))
+        const allUsers = convertUserGroups(response.data.userGroups)
+        group.requestedUsers = allUsers.filter(u=> u.groupAccess === 'requested')
+        group.approvedUsers = allUsers.filter(u=>u.groupAccess ==='user' || u.groupAccess === 'groupAdmin')
+        dispatch({ type: "GET_GROUP", payload: group })
+      })
+      .catch((err) => {
+        dispatch({ type: "GET_GROUP_REJECTED", payload: err })
+      })
   }
 }
 
 export function addGroup(newGroup) {
   const { name, description } = newGroup
-
-  console.log("group", newGroup)
 
   if (name.length > 0 && description.length > 0) {
     return function (dispatch) {
@@ -45,7 +68,7 @@ export function addGroup(newGroup) {
         description: description
       })
         .then((response) => {
-          //We don't really care about the response yet.
+          //We don't really care about the response yet. Only would care if going to update state.
           dispatch({ type: "ADD_GROUP", payload: response.data })
         })
         .catch((err) => {

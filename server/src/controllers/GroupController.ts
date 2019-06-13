@@ -3,18 +3,35 @@ import { getRepository, getManager } from "typeorm"
 import { GroupState } from '../entity/ViewGroupState'
 import { Group } from '../entity/Group'
 import { GroupAttribute } from '../entity/GroupAttribute'
+import {FullUserGroup} from '../entity/ViewFullUserGroup'
 
 export default class GroupController {
+  static getGroup = async (req: Request, res: Response) => {
+    let { groupId } = req.body
+    try {
+      //Get the group.
+      const groupStateRepo = getRepository(GroupState)
+      const groupAttributes = await groupStateRepo.find({ where: { groupId: groupId } })
 
-  static getAll = async(req: Request, res: Response) => {
+      const userGroupRepo = getRepository(FullUserGroup)
+      const userGroups = await userGroupRepo.find({ where: { groupId: groupId } })
+      //Get the users of the group.
+      res.send({ groupAttributes: groupAttributes, userGroups:userGroups })
+    } catch{
+      res.status(400).send()
+    }
+
+  }
+
+  static getAll = async (_req: Request, res: Response) => {
     //TODO would add in a user session bit.
-    
-    try{
+
+    try {
       const groupStateRepo = getRepository(GroupState)
       const groupAttributes = await groupStateRepo.find()
-      res.send({groupAttributes: groupAttributes})
-      
-    }catch{
+      res.send({ groupAttributes: groupAttributes })
+
+    } catch{
       res.status(400).send()
     }
   }
@@ -61,7 +78,7 @@ export default class GroupController {
         groupDescription.group = newGroup
         await transactionalEntityManager.save(groupDescription)
       })
-      
+
       res.send({ msg: "Group Saved" })
       return
     } catch (err) {

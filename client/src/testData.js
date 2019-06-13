@@ -98,6 +98,12 @@ const userColHeaders = [
   { accessor: `siteAccess`, label: `Level`, type: `string` },
 ]
 
+const userGroupColHeaders = [
+  { accessor: `id`, label: ``, type: `id` },
+  { accessor: `email`, label: `Email`, type: `string` },
+  { accessor: `groupAccess`, label: `Level`, type: `string` },
+]
+
 const currentUser = {
   id: 0,
   email: `admin@limbforge.org`,
@@ -251,6 +257,7 @@ export {
   currentUser,
   users,
   userColHeaders,
+  userGroupColHeaders,
   userAccessLevels,
   groups,
   groupColHeaders,

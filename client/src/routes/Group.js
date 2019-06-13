@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import 'react-table/react-table.css'
 import formatColumns from '../functions/formatColumns'
 import {getGroup} from '../actions/groupsActions'
-import { userColHeaders } from '../testData'
+import { userGroupColHeaders } from '../testData'
 
 //TODO that access matters
 @connect((store) => {
@@ -30,9 +30,10 @@ export default class Group extends React.Component {
   }
 
   render() {
+    console.log("group is ", this.props.group)
     //TODO change these columns up.
-    const userColumns = formatColumns(userColHeaders,() => { },``)
-    const approveColumns = formatColumns(userColHeaders,this.approveUser,"Approve")
+    const userColumns = formatColumns(userGroupColHeaders,() => { },``)
+    const approveColumns = formatColumns(userGroupColHeaders,this.approveUser,"Approve")
     return (
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">

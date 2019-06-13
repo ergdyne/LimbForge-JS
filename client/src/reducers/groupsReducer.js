@@ -15,13 +15,7 @@ export default function reducer(state = {
       return {...state, groups:action.payload}
     }
     case "GET_GROUP":{
-      const groupId = action.payload.groupId
-      const group = groups[groupId]
-      const groupUsers = users.filter(u => u.groups.map(g => g.groupId).includes(action.payload.groupId))
-      const approvedUsers = groupUsers.filter(u => !u.groups.filter(g => g.groupId === groupId).map(g => g.groupAccess).includes("request"))
-      const requestedUsers = groupUsers.filter(u => u.groups.filter(g => g.groupId === groupId).map(g => g.groupAccess).includes("request"))
-      
-      return {...state, group:{...group,approvedUsers:approvedUsers,requestedUsers:requestedUsers}}
+      return {...state, group:action.payload}
     }
     case "ADD_GROUP":{
       console.log('add group', action.payload)

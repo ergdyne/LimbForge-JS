@@ -6,11 +6,11 @@ import { GroupState } from '../entity/ViewGroupState'
 import { UserGroup } from '../entity/UserGroup'
 import { Group } from '../entity/Group'
 import { ViewSiteAuth } from '../entity/ViewSiteAuth'
-import { ViewGroups } from '../entity/ViewGroups'
+import { FullUserGroup } from '../entity/ViewFullUserGroup'
 import { ViewAdminAccess } from "../entity/ViewAdminAccess"
 
 //Support functions
-function siteAccess(vg: ViewGroups[]){
+function siteAccess(vg: FullUserGroup[]){
   const accessLevels = vg.map(g=>g.access)
 
   if(accessLevels.includes('groupAdmin')){
@@ -154,12 +154,12 @@ export default class AuthController {
 
     if (authView.hash === auth) {
       //If auth passes
-      let viewGroups: ViewGroups[]
+      let viewGroups: FullUserGroup[]
       let adminAccess: ViewAdminAccess
       try {
-        const viewGroupsRepo = getRepository(ViewGroups)
+        const viewGroupsRepo = getRepository(FullUserGroup)
         const adminAccessRepo = getRepository(ViewAdminAccess)
-        //ViewGroups can be converted into "Group" objects in a non-typesafe way on the client side.
+        //FullUserGroup can be converted into "Group" objects in a non-typesafe way on the client side.
         //See that function for more explaination.
         viewGroups = await viewGroupsRepo.find({ where: { userId: user.id } })
         adminAccess = await adminAccessRepo.findOne({where:{userId: user.id}})
