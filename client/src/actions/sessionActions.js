@@ -1,15 +1,11 @@
 import axios from 'axios'
+import {fullUserGroupsToGroups } from '../functions/convertView'
 //TEMP
 import { isString } from 'util';
 
 //support functions
-
-function groups(viewGroups){
-  return [{hi:"meow"}]
-}
-
-function home(siteAccess){
-  switch(siteAccess){
+function home(siteAccess) {
+  switch (siteAccess) {
     case 'admin': return '/users/'
     case 'requested': return '/'
     default: return '/patients/'
@@ -18,31 +14,55 @@ function home(siteAccess){
 
 let axiosConfig = {
   headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      "Access-Control-Allow-Origin": "*",
+    'Content-Type': 'application/json;charset=UTF-8',
+    "Access-Control-Allow-Origin": "*",
   }
 }
 
-
 export function login(payload) {
   //Can preprocess the login credentials within the axios
-  if(isString(payload)){return { type: "LOGIN", payload: payload }}
+  //TEMP quick login
+  var email = ''
+  var password = ''
+  if (isString(payload)) {
+    switch (payload) {
+      case 'admin': {
+        email = 'admin@admin.com'
+        password = 'a'
+        break
+      }
+      case 'groupAdmin': {
+        email = 'j@j.com'
+        password = 'moo'
+        break
+      }
+      case 'user': {
+        email = 'x@b.com'
+        password = 'as'
+        break
+      }
+    }
+  }else{
+    email = payload.email
+    password = payload.password
+  }
 
   return function (dispatch) {
     axios.post('http://localhost:3000/auth/login', {
-      email: payload.email,
-      auth: payload.password
+      email: email,
+      auth: password
     }, axiosConfig)
       .then((response) => {
         //can pre process this data
-        const {id, email, viewGroups,siteAccess} = response.data
+        const { id, email, viewGroups, siteAccess } = response.data
+        console.log('response got')
         const ourUser = {
           id: id,
           email: email,
           siteAccess: siteAccess,
           home: home(siteAccess),
           loggedIn: true,
-          groups: groups(viewGroups)
+          groups: fullUserGroupsToGroups(viewGroups)
         }
         console.log('oour user', ourUser)
         dispatch({ type: "LOGIN", payload: ourUser })

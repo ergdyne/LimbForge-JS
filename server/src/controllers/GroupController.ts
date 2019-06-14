@@ -25,10 +25,6 @@ export default class GroupController {
 
   static getAll = async (req: Request, res: Response) => {
     //TODO would add in a user session bit.
-    console.log('passport',req.session.passport)
-    console.log('user',req.user)
-    console.log('session', req.session)
-    console.log('sessionID', req.sessionID)
 
     try {
       const groupStateRepo = getRepository(GroupState)

@@ -25,15 +25,7 @@ export default function reducer(state = {
   switch (action.type) {
     case "LOGIN": {
       //Temp
-      if (action.payload === 'admin') {
-        return { ...state, user: admin }
-      }
-      if (action.payload === 'groupAdmin') {
-        return { ...state, user: groupAdmin }
-      }
-      if (action.payload === 'user') {
-        return { ...state, user: user }
-      }
+      
 
       return {...state, user:action.payload}
     }
