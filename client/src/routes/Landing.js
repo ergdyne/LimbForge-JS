@@ -13,7 +13,7 @@ import FormBuilder from '../components/FormBuilder';
   return ({
     stored: store,
     sessionUser: store.session.user,
-    groupOptions: store.users.groupOptions
+    groupOptions: store.users.publicGroupOptions
   })
 })
 
@@ -26,6 +26,10 @@ export default class Landing extends React.Component {
   }
 
   signUpSubmit = (newUser) => {
+
+    //TODO everywhere there is a dropDown, make sure the default is actual the value
+    //Or force a selection
+    
     if (!newUser.group) {
       newUser.group = this.props.groupOptions[0]
     }
@@ -37,7 +41,7 @@ export default class Landing extends React.Component {
   }
 
   render() {
-    const groupOptions = this.props.groupOptions.concat(['New Group'])
+    const groupOptions = this.props.groupOptions
     const signUpInputs = [//PUSH IN THE NEW OPTION
       { accessor: `email`, label: `Email`, type: `string`, inputType: `text`, default: '' },
       { accessor: `password`, label: `Password`, type: `string`, inputType: `password`, default: '' },

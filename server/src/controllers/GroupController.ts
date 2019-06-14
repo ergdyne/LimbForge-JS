@@ -7,28 +7,38 @@ import {FullUserGroup} from '../entity/ViewFullUserGroup'
 
 export default class GroupController {
   static getGroup = async (req: Request, res: Response) => {
+    //Also requires user session bit
     let { groupId } = req.body
     try {
-      //Get the group.
-      const groupStateRepo = getRepository(GroupState)
-      const groupAttributes = await groupStateRepo.find({ where: { groupId: groupId } })
+      //Get the group. 
+      const groupAttributes = await getRepository(GroupState).find({ where: { groupId: groupId } })
 
-      const userGroupRepo = getRepository(FullUserGroup)
-      const userGroups = await userGroupRepo.find({ where: { groupId: groupId } })
+      const fullUserGroups = await getRepository(FullUserGroup).find({ where: { groupId: groupId } })
       //Get the users of the group.
-      res.send({ groupAttributes: groupAttributes, userGroups:userGroups })
+      res.send({ groupAttributes: groupAttributes, userGroups:fullUserGroups })
     } catch{
       res.status(400).send()
     }
 
   }
 
+  static getGroupOptions = async (req: Request, res: Response) => {
+    //Maybe some filtering here...
+    try {
+      getRepository(GroupState).find({where:{attribute:'name'}})
+      .then(gss => 
+        res.send({ groupNames: gss.map(g=>g.value) })
+      )
+      
+    } catch{
+      res.status(400).send()
+    }
+  }
+
   static getAll = async (req: Request, res: Response) => {
     //TODO would add in a user session bit.
-
     try {
-      const groupStateRepo = getRepository(GroupState)
-      const groupAttributes = await groupStateRepo.find()
+      const groupAttributes = await getRepository(GroupState).find()
       res.send({ groupAttributes: groupAttributes })
 
     } catch{

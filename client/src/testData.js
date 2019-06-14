@@ -113,7 +113,7 @@ const currentUser = {
   home: `users`
 }
 
-const userAccessLevels =['user','groupAdmin','admin','requested']
+const userAccessLevels =['user','groupAdmin','admin','requested','none']
 
 const users = [
   currentUser,

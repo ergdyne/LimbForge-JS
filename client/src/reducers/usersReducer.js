@@ -1,4 +1,5 @@
 import { users, groups } from '../testData'
+import { approveUser } from '../actions/usersActions';
 
 //All about the users of the site with whom the current persion using the site interacts.
 //The admin sees all users. The groupAdmin sees the users of the groups they administer.
@@ -10,34 +11,28 @@ export default function reducer(state={
   user:{ //for looking at a particular user
     id:null,
     email:'',
-    siteAccess:'',
+    isAdmin:'',
     groups:[]
   },
-  groupOptions:[]
+  groupOptions:[],
+  publicGroupOptions:['New Group']
 },action){
 
   switch (action.type){
     case "GET_GROUP_OPTIONS":{
-      const groupOptions = groups.map(g=>g.name)
-      return{...state, groupOptions:groupOptions}
+      const groups = action.payload
+      const pubGroups = groups.concat(['New Group'])
+      return{...state, groupOptions:groups,publicGroupOptions:pubGroups }
     }
-    case "GET_APPROVED_USERS":{
+    case "GET_USERS":{
+      const {approvedUsers, requestedUsers} = action.payload
 
-      const approvedUsers = users.filter(u => u.siteAccess !== "request")//Truth is not quite right here.
-      return{...state, approvedUsers:approvedUsers}
+      return{...state, approvedUsers:approvedUsers, requestedUsers:requestedUsers}
     }
-    case "GET_REQUESTED_USERS":{
-      const requestedUsers = users.filter(u => u.siteAccess === "request")
-      return {...state, requestedUsers:requestedUsers}
-    }
+    
     case "GET_USER":{
-      const user = users[action.payload.userId]
-      const usersGroups = user.groups.map(g=> {
-        const group = groups[g.groupId]
-        return{...g,name:group.name,description:group.description}
-      })
 
-      return {...state, user:{...user,groups:usersGroups}}
+      return {...state, user:action.payload}
     }
     case "APPROVE_USER":{
       //userId,groupId,groupAccess

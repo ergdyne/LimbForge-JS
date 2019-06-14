@@ -7,7 +7,7 @@ import { GroupState } from '../entity/ViewGroupState'
 import { UserGroup } from '../entity/UserGroup'
 import { Group } from '../entity/Group'
 import { ViewSiteAuth } from '../entity/ViewSiteAuth'
-import { FullUserGroup } from '../entity/ViewFullUserGroup'
+import {FullUserGroup } from '../entity/ViewFullUserGroup'
 
 //Support functions
 function siteAccess(vg: FullUserGroup[]){
@@ -126,6 +126,7 @@ export default class AuthController {
       res.status(409).send({ msg: 'email is already registered' })
       return
     }
+    //TODO move this around and do the log the person in.
     res.send({msg: 'would return temporary login stuff'})
 
     //Can I create a function that takes in the response?

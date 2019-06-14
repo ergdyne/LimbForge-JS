@@ -30,7 +30,7 @@ function fullUserGroupsToUsers(ugs){
     //We only need one of the ugs to get the user information.
     const rawUser = s[1][0]
     return {
-      userId: parseInt(s[0]),
+      id: parseInt(s[0]),
       email: rawUser.email,
       groupAccess: rawUser.access
     }

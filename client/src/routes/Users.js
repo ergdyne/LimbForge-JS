@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import formatColumns from '../functions/formatColumns'
 import {userColHeaders, userAccessLevels} from '../testData'
 import FormBuilder from '../components/FormBuilder';
-import {getGroupOptions,getApprovedUsers,getRequestedUsers,approveUser,addUser} from '../actions/usersActions'
+import {getGroupOptions,getUsers,approveUser,addUser} from '../actions/usersActions'
 
 //Site Admin and Group Admin access
 ////Site Admin sees all users
@@ -23,15 +23,14 @@ export default class Users extends React.Component {
   
   componentWillMount() {
     this.props.dispatch(getGroupOptions())
-    this.props.dispatch(getApprovedUsers())
-    this.props.dispatch(getRequestedUsers())
+    this.props.dispatch(getUsers())
   }
 
   addUser = (user) => {
     //API Call
     //to be replace by fixing it at the form level
     if (!user.groupAccess) { user.groupAccess = 'user' }
-    if (!user.group) { user.group = this.props.groupOptions[0] }
+    if (!user.groupName) { user.groupName = this.props.groupOptions[0] }
     console.log('create user', user)
     this.props.dispatch(addUser(user))
   }
@@ -52,7 +51,7 @@ export default class Users extends React.Component {
     const approveColumns = formatColumns(userColHeaders.slice(0, 2), this.approveUser, "Approve")
     const userInputs = [
       { accessor: `email`, label: `Email`, type: `string`, inputType: `text`, default: '' },
-      { accessor: `group`, label: `Group`, type: `string`, inputType: `select`, default: this.props.groupOptions[0], options: this.props.groupOptions },
+      { accessor: `groupName`, label: `Group`, type: `string`, inputType: `select`, default: this.props.groupOptions[0], options: this.props.groupOptions },
       { accessor: `groupAccess`, label: `Permission`, type: `string`, inputType: `select`, default: userAccessLevels[0], options: userAccessLevels.slice(0, 2) }
     ]
     return (

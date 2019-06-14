@@ -43,9 +43,8 @@ export const passportConfig = () => {
     passwordField: 'auth'
   },(email, auth, done) => {
     console.log('pp inside')
-    const userRepo = getRepository(User)
     //Check if user exits
-    userRepo.findOneOrFail({ where: { email: email.toLowerCase() } })
+    getRepository(User).findOneOrFail({ where: { email: email.toLowerCase() } })
       .then(user => {
         //check if authoerized
         const authViewRepo = getRepository(ViewSiteAuth)
