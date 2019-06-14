@@ -39,23 +39,18 @@ export default class Patient extends React.Component {
   patientSubmit = (patient) => {
     //API Call
     //To be replaced with actual ID from saving it
-
-
-    if (!this.props.patient.id) {//Huh?
-
-      patient.id = 85
+    if (!this.props.patient.amputationLevel) {
       patient.amputationLevel = `transradial`
     }
     if (!isEmpty(this.props.patient.measurements)) {
       patient.measurements = this.props.patient.measurements
     }
 
-
     //Temporary Hack! TODO replace with validation (require!)
-    if (!this.props.patient.gender) patient.gender = 'Male'
-    if (!this.props.patient.side) patient.side = 'Right'
+    // if (!this.props.patient.gender) patient.gender = 'Male'
+    // if (!this.props.patient.side) patient.side = 'Right'
 
-    this.props.dispatch(savePatient(patient))
+    this.props.dispatch(savePatient(patient, patientInputs))
     this.props.dispatch(updateLevel(isEmpty(this.props.patient.measurements) ? 'measurement' : 'preview'))
   }
 
@@ -95,7 +90,7 @@ export default class Patient extends React.Component {
             {(l === 'patient') ?
               <FormBuilder
                 key='patient'
-                elements={patientInputs}
+                elements={patientInputs.slice(0,9)}
                 onSubmit={this.patientSubmit}
                 submitValue={`Save`}
                 preventDefault={true}

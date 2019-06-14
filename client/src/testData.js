@@ -188,8 +188,9 @@ const patientInputs = [
   { accessor: `country`, label: `Country`, type: `string`, inputType: `text`, default: '' },
   { accessor: `gender`, label: `Gender`, type: `string`, inputType: `radio`, default: genders[0], options: genders },
   { accessor: `side`, label: `Amputation Side`, type: `string`, inputType: `radio`, default: sides[0], options: sides },
-  { accessor: `amputationCause`, label: `Amputation Cause`, type: `string`, inputType: `select`, default: amputationCauses[0], options: amputationCauses }
-
+  { accessor: `amputationCause`, label: `Amputation Cause`, type: `string`, inputType: `select`, default: amputationCauses[0], options: amputationCauses },
+  { accessor: `amputationLevel`, label: `Amputation Level`, type: `string`, inputType: `text`, default: 'Transradial' }
+//TODO deal with any issues with caps Transradial
 ]
 
 const measurements = [

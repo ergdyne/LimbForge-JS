@@ -82,7 +82,6 @@ export default class AuthController {
 
     //Confirm the group exists or is 'New Group' flag
     const isNewGroup = (groupName === 'New Group')
-    const groupRepo = getRepository(Group)
     let group: Group
 
     //Only care to look for a group if not 'New Group.'
@@ -91,7 +90,7 @@ export default class AuthController {
         const groupStateRepo = getRepository(GroupState)
         let groupAttribute: GroupState
         groupAttribute = await groupStateRepo.findOneOrFail({ attribute: 'name', value: groupName })
-        group = await groupRepo.findOneOrFail(groupAttribute.groupId)
+        group = await getRepository(Group).findOneOrFail(groupAttribute.groupId)
       } catch (error) {
         res.status(401).send({ msg: 'group not found' })
         return
