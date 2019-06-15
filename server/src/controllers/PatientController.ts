@@ -4,9 +4,9 @@ import { Group } from '../entity/Group'
 import { PatientGroup } from '../entity/PatientGroup'
 import { PatientAttribute } from '../entity/PatientAttribute'
 import { PatientState } from '../entity/ViewPatientState'
-import {Measure} from '../entity/Measure'
-import {MeasureState} from '../entity/ViewMeasureState'
-import {PatientMeasurement} from '../entity/PatientMeasurement'
+import { Measure } from '../entity/Measure'
+import { MeasureState } from '../entity/ViewMeasureState'
+import { PatientMeasurement } from '../entity/PatientMeasurement'
 
 import { getManager, getRepository } from "typeorm"
 
@@ -22,32 +22,32 @@ function patientInputsToAttributes(p: Patient, inputs: { attribute: string; valu
 }
 
 export default class PatientController {
+  static getAllPatients =async (req: Request, res: Response) => {
+    
+
+  }
+
   static saveMeasurement = async (req: Request, res: Response) => {
     let { measurements, patientId } = req.body
     //Going to create Patient Measurements
-    console.log("measurements", measurements)
     try {
       //Get the patient
       getRepository(Patient).findOneOrFail(patientId).then(patient => {
-        getManager().transaction(async transactionalEntityManager => {
-          const patientMeasurements = measurements.map((m: { accessor: string; value: number; })=>{
-            let measurement = new PatientMeasurement()
-            getRepository(MeasureState).findOne({where:{attribute :'accessor',value: m.accessor}})
-            .then(ms=>{
-              getRepository(Measure).findOne({where:{id:ms.measureId}})
-              .then(measure =>{
+        measurements.forEach((m: { accessor: string; value: string; })=>{
+          let measurement = new PatientMeasurement()
+          getRepository(MeasureState).findOne({ where: { attribute: 'accessor', value: m.accessor } })
+          .then(ms => {
+            getRepository(Measure).findOne({ where: { id: ms.measureId } })
+              .then(measure => {
                 measurement.patient = patient
                 measurement.measure = measure
-                measurement.value = m.value
-                return measurement
+                measurement.value = parseFloat(m.value)//not safe
+                getRepository(PatientMeasurement).save(measurement)//.then(x=>{console.log('ok...',x)})
               })
-            })
-            .catch(_=> {return measurement})
-          }).filter((m: PatientMeasurement)=> m.value>0)
-//START HERE --> try it out?
-          console.log('uhhh', patientMeasurements)
-        }).then(_ => res.send({ patientId: patientId, msg:'updated' }))
+          })
+        })
       })
+      res.send({patientId:patientId,msg:'measurements saved'})
     } catch (err) {
       res.status(400).send(err)
     }
@@ -59,10 +59,10 @@ export default class PatientController {
     if (patientId != null) {
       try {
         getRepository(Patient).findOneOrFail(patientId).then(patient => {
+            let patientAttributes = patientInputsToAttributes(patient, patientInputs).filter(p=>p.value!=null)
           getManager().transaction(async transactionalEntityManager => {
-            let patientAttributes = patientInputsToAttributes(patient, patientInputs)
             await transactionalEntityManager.save(patientAttributes)
-          }).then(_ => res.send({ patientId: patientId, msg:'updated' }))
+          }).then(_ => res.send({ patientId: patientId, msg: 'updated' }))
         })
       } catch (err) {
         res.status(400).send(err)
@@ -81,11 +81,11 @@ export default class PatientController {
             patientGroup.group = group
             await transactionalEntityManager.save(patientGroup)
 
-            let patientAttributes = patientInputsToAttributes(newPatient, patientInputs)
-
+            let patientAttributes = patientInputsToAttributes(newPatient, patientInputs).filter(p=>p.value!=null)
+     
             await transactionalEntityManager.save(patientAttributes)
 
-          }).then(_ => res.send({ patientId: newPatient.id, msg:'new patient' }))
+          }).then(_ => res.send({ patientId: newPatient.id, msg: 'new patient' }))
         })
       } catch (err) {
         res.status(400).send(err)

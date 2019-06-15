@@ -31,12 +31,13 @@ export default function reducer(state={
     }
 
     case "SAVE_PATIENT":{
+      console.log("saving patient to store", action.payload)
       return {...state,patient:action.payload}
     }
 
     case "SAVE_MEASUREMENTS":{
       //would only save the measurements to the db based on the patient information
-      console.log('me', action.payload)
+      console.log('saving me to store', action.payload)
       return {...state,measurements:action.payload}
     }
 
@@ -49,7 +50,7 @@ export default function reducer(state={
     }
 
     case "CLEAR_PATIENT":{
-      return {...state,patient:emptyPatient,patientFormLevel:'patient'}
+      return {...state,patient:emptyPatient,measurements:{},patientFormLevel:'patient'}
     }
     
 

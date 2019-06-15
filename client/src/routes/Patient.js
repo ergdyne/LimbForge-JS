@@ -63,7 +63,7 @@ export default class Patient extends React.Component {
 
   //Callback for measurements form.
   measurementSubmit = (measurements) => {
-    this.props.dispatch(saveMeasurements(measurements))
+    this.props.dispatch(saveMeasurements(measurements,measurementInputs,this.props.patient.id))
     this.props.dispatch(updateLevel('preview'))
   }
 
