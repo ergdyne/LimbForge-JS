@@ -4,7 +4,6 @@ import isEmpty from '../functions/isEmpty'
 const emptyPatient ={
   id:null,
     //Other attributes exists in patient but are not given defaults.
-    measurements:{}
 }
 
 export default function reducer(state={
@@ -12,7 +11,8 @@ export default function reducer(state={
   //state.patients.patients, state.patients.patientFormLevel
   patientFormLevel:'patient',
   patients:[],
-  patient:emptyPatient
+  patient:emptyPatient,
+  measurements:{}
 
 },action){
   switch(action.type){
@@ -23,7 +23,7 @@ export default function reducer(state={
     case "GET_PATIENT":{
       const patient = patients[action.payload.patientId]
 
-      if(isEmpty(patient.measurements)){
+      if(isEmpty(measurements)){
         return {...state,patient:patient,patientFormLevel:'measurement'}
       }
 
@@ -31,13 +31,13 @@ export default function reducer(state={
     }
 
     case "SAVE_PATIENT":{
-      //would also do save to db... but for now
-      return {...state,patient:action.payload.patient}
+      return {...state,patient:action.payload}
     }
 
     case "SAVE_MEASUREMENTS":{
       //would only save the measurements to the db based on the patient information
-      return {...state,patient:action.payload.patient}
+      console.log('me', action.payload)
+      return {...state,measurements:action.payload}
     }
 
     case "UPDATE_FORM_LEVEL":{

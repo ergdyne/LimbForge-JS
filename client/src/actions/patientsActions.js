@@ -1,4 +1,4 @@
-import isEmpty from '../functions/isEmpty'
+import axios from 'axios'
 
 export function getPatients(payload) {
   return {
@@ -14,31 +14,49 @@ export function getPatient(patientId) {
   }
 }
 
-export function savePatient(patient, inputs) {
+export function savePatient(patient, inputs, groupId) {
   console.log('saving', patient)
   console.log(inputs)
-  const patientAttributes = inputs.map(i =>(
-      {
-        attribute: i.accessor,
-        value: patient[i.accessor],
-        type: i.type
-      }
-    )
-  ).filter(a=>a.value != null)
+  const patientAttributes = inputs.map(i => (
+    {
+      attribute: i.accessor,
+      value: patient[i.accessor],
+      type: i.type
+    }
+  )
+  ).filter(a => a.value != null)
   console.log('pats', patientAttributes)
 
-  //START HERE with connect up
-  //TODO seperate measurements from the patient item
-  return {
-    type: "SAVE_PATIENT",
-    payload: { patient: patient }
+  //TODO check if changes
+  if (patientAttributes.length > 0) {
+    return function (dispatch) {
+      axios.post('http://localhost:3000/patient/save', {
+        patientId: patient.id,
+        patientInputs: patientAttributes,
+        groupId: groupId //TODO make it come from somewhere else
+      })
+        .then((response) => {
+          //We only need the patient id
+          patient.id = response.data.patientId
+          console.log(response.data.patientId)
+          dispatch({ type: "SAVE_PATIENT", payload: patient })
+        })
+        .catch((err) => {
+          dispatch({ type: "SAVE_PATIENT_REJECTED", payload: err })
+        })
+    }
   }
+  return {
+    type: "SAVE_PATIENT_REJECTED",
+    payload: {}
+  }
+  //let { patientInputs, groupId, patientId } = req.body
 }
 
-export function saveMeasurements(patient) {
+export function saveMeasurements(measurements) {
   return {
     type: "SAVE_MEASUREMENTS",
-    payload: { patient: patient }
+    payload: measurements
   }
 }
 

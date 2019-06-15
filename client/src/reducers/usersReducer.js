@@ -40,8 +40,6 @@ export default function reducer(state={
       return {...state}
     }
     case "ADD_USER":{
-      //newUser
-      console.log('add user', action.payload)
       return {...state}
     }
     default: return state

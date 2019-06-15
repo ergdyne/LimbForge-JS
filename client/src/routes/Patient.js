@@ -14,6 +14,7 @@ import isEmpty from '../functions/isEmpty'
   return ({
     sessionUser: store.session.user, //matters for new patient
     patient: store.patients.patient,
+    measurements: store.patients.measurements,
     level: store.patients.patientFormLevel
   })
 })
@@ -38,20 +39,21 @@ export default class Patient extends React.Component {
   //TODO connect to API to do actual read/write/updates.
   patientSubmit = (patient) => {
     //API Call
-    //To be replaced with actual ID from saving it
+    
+    //This might be ok without a check?
+    if(this.props.patient.id){
+      patient.id = this.props.patient.id
+    }
+
     if (!this.props.patient.amputationLevel) {
       patient.amputationLevel = `transradial`
     }
-    if (!isEmpty(this.props.patient.measurements)) {
-      patient.measurements = this.props.patient.measurements
-    }
-
     //Temporary Hack! TODO replace with validation (require!)
     // if (!this.props.patient.gender) patient.gender = 'Male'
     // if (!this.props.patient.side) patient.side = 'Right'
-
-    this.props.dispatch(savePatient(patient, patientInputs))
-    this.props.dispatch(updateLevel(isEmpty(this.props.patient.measurements) ? 'measurement' : 'preview'))
+    //TODO change to actual groupId instead of 1
+    this.props.dispatch(savePatient(patient, patientInputs, 1))
+    this.props.dispatch(updateLevel(isEmpty(this.props.measurements) ? 'measurement' : 'preview'))
   }
 
   removePatient = (patientId)=>{
@@ -61,11 +63,7 @@ export default class Patient extends React.Component {
 
   //Callback for measurements form.
   measurementSubmit = (measurements) => {
-    //API Call
-    var newPatient = this.props.patient
-    newPatient.measurements = measurements
-
-    this.props.dispatch(saveMeasurements(newPatient))
+    this.props.dispatch(saveMeasurements(measurements))
     this.props.dispatch(updateLevel('preview'))
   }
 
@@ -81,6 +79,7 @@ export default class Patient extends React.Component {
             {(l === 'preview' || l === 'measurement') ?
               <PatientData
                 patient={this.props.patient}
+                measurements={this.props.measurements}
                 editPatient={() => this.props.dispatch(updateLevel('patient'))}
                 editMeasurement={(l === 'preview') ? () => this.props.dispatch(updateLevel('measurement')) : false}
               /> :
@@ -106,7 +105,7 @@ export default class Patient extends React.Component {
                 onSubmit={this.measurementSubmit}
                 submitValue={`Save`}
                 preventDefault={true}
-                initial={(this.props.patient.measurements) ? this.props.patient.measurements : {}}
+                initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
               /> :
               <div />
             }
