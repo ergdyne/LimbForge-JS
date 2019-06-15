@@ -178,6 +178,8 @@ const patientColHeaders = [
 ]
 
 //I am ok with type being type
+//Patient Inputs are currently saved int a weaker state than measurements (the accessor matters)
+//When building a fully dynamic form, the data will have to be converted to follow the same process as measures.
 const patientInputs = [
   { accessor: `firstName`, label: `First Name`, type: `string`, inputType: `text`, default: '' },
   { accessor: `lastName`, label: `Last Name`, type: `string`, inputType: `text`, default: '' },
@@ -194,13 +196,14 @@ const patientInputs = [
 ]
 
 const measurements = [
-  { name: 'L1', step: 1.0, min: 18, max: 32, unit: 'cm', instruction: 'type instruction here' },
+  //ID refers to the current test state of the database, in the future this table will come from there.
+  { id: 1, name: 'L1', step: 1.0, min: 18, max: 32, unit: 'cm', instruction: 'type instruction here' },
   //{ name: 'L2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
-  { name: 'L4', step: 0.5, min: 14, max: 19, unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C1', step: 0.5, min: 14.5, max: 18, unit: 'cm', instruction: 'type instruction here' },
+  { id: 2, name: 'L4', step: 0.5, min: 14, max: 19, unit: 'cm', instruction: 'type instruction here' },
+  { id: 3, name: 'C1', step: 0.5, min: 14.5, max: 18, unit: 'cm', instruction: 'type instruction here' },
   //{ name: 'C2', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
   //{ name: 'C3', step: 0.5, min: 20, max: 28,  unit: 'cm', instruction: 'type instruction here' },
-  { name: 'C4', step: 0.5, min: 20, max: 28, unit: 'cm', instruction: 'type instruction here' }
+  { id: 4, name: 'C4', step: 0.5, min: 20, max: 28, unit: 'cm', instruction: 'type instruction here' }
 ]
 
 

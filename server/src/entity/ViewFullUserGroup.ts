@@ -1,21 +1,33 @@
-import { ViewEntity, ViewColumn, Connection} from "typeorm"
-import {GroupState} from './ViewGroupState'
-import {UserGroupState} from './ViewUserGroupState'
-import { User } from "./User";
+import { ViewEntity, ViewColumn} from "typeorm"
 
 //Results in an entry for each userID, groupId, and attribute, which must be merged into a single group-access object.
+//TODO replace with direct query from primary tables
 @ViewEntity({
-  expression: (connection: Connection) => connection.createQueryBuilder()
-    .select("ugs.userId", "userId")
-    .addSelect("ugs.groupId","groupId")
-    .addSelect("ugs.access","access")
-    .addSelect("gs.attribute","attribute")
-    .addSelect("gs.value","value")
-    .addSelect("gs.type","type")
-    .addSelect("u.email","email")
-    .from(UserGroupState,"ugs")
-    .leftJoin(GroupState,"gs", "gs.groupId = ugs.groupId")
-    .leftJoin(User,"u", "u.id = ugs.userId")
+  expression: `
+    select og."userId","email",og."groupId",og."access",ga."attribute",ga."value",ga."type" from
+      (select 
+        "userId" as aid, 
+        max(create_at) as latest, 
+        "groupId" as gid
+      from user_group
+      group by "userId", "groupId"
+      ) as l
+    inner join user_group as og
+    on l.aid = og."userId" and l.latest = og.create_at and l.gid = og."groupId"
+    inner join (select l.gid as "groupId", oa.attribute, oa.value, oa.type from 
+        (
+          select 
+            "groupId" as gid, 
+            max(create_at) as latest, 
+            attribute
+          from group_attribute
+          group by "groupId", attribute
+        ) as l
+      inner join group_attribute as oa
+      on l.gid = oa."groupId" and l.latest = oa.create_at and l.attribute = oa.attribute) as ga
+      on ga."groupId" = og."groupId"
+    inner join "user" as u on u.id = og."userId" 
+  `
 })
 export class FullUserGroup{
   @ViewColumn()
