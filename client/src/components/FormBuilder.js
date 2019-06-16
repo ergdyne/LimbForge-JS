@@ -159,19 +159,7 @@ FormBuilder.propTypes = {
   preventDefault: PropTypes.bool,
   clearOnSubmit: PropTypes.bool,
   elements: PropTypes.arrayOf(
-    PropTypes.shape({
-      accessor: PropTypes.string.isRequired,
-      label: PropTypes.string,
-      type: PropTypes.string.isRequired,
-      input: PropTypes.string.isRequired,
-      default: PropTypes.string,
-      options: PropTypes.arrayOf(
-        PropTypes.shape({
-          label: PropTypes.string,
-          value: PropTypes.string.isRequired
-        })
-      )
-    })
+    PropTypes.object
   ).isRequired,
   initial: PropTypes.object
 }

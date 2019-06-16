@@ -48,12 +48,14 @@ export default class Landing extends React.Component {
     return (
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
+          {/* TEMPORARY */}
           <div className="button block theme-l1 left-align">
             <i className="fa fa-circle-o-notch fa-fw margin-right" />
             <button onClick={() => this.props.dispatch(login('admin'))}>Login Admin</button>
             <button onClick={() => this.props.dispatch(login('user'))}>Login User</button>
             <button onClick={() => this.props.dispatch(login('groupAdmin'))}>Login Group Admin</button>
           </div>
+          {/* END TEMPORARY */}
           <div>
             <h3>Login</h3>
             <FormBuilder

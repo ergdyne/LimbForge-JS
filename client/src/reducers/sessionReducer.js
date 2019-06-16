@@ -8,15 +8,6 @@ const emptyUser = {
   groups: []
 }
 
-const pendingUser ={
-  id: null,
-  email: '',
-  siteAccess: 'requested',
-  home: '/',
-  loggedIn: false,
-  groups: []
-}
-
 export default function reducer(state = {
   user: emptyUser,
   patientFormLevel: 'patient'
@@ -25,17 +16,14 @@ export default function reducer(state = {
   switch (action.type) {
     case "LOGIN": {
       //Temp
-      
-
       return {...state, user:action.payload}
     }
     case "LOGOUT": {
       return {...state, user:emptyUser}
     }
     case "SIGN_UP":{
-      return {...state, user:pendingUser}
+      return {...state, user:action.payload}
     }
-
     //signup failed and such
     default: return state
   }

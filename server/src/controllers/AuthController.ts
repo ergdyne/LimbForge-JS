@@ -77,7 +77,24 @@ export default class AuthController {
               //BCRYPT HERE
               siteAuth.hash = hash
               await transactionalEntityManager.save(siteAuth)
-            }).then(_result => res.send({ msg: "Set login and password - should return what you need to login" }))
+            }).then(_result => {
+              //need viewGroups and admin access even though it should be rare.
+              //TODO part of the functionalize code todo (this is repeated code)
+              getRepository(FullUserGroup).find({ where: { userId: user.id } })
+                .then(viewGroups => {
+                  getRepository(ViewAdminAccess).findOne({ where: { userId: user.id } })
+                    .then(adminAccess => {
+                      const admin = (adminAccess == null) ? false : adminAccess.isAdmin
+                      const userData = {
+                        id: user.id,
+                        email: user.email,
+                        viewGroups: viewGroups,
+                        siteAccess: admin ? 'admin' : siteAccess(viewGroups)
+                      }
+                      res.send(userData)
+                    })
+                })
+            })
           } catch (err) {
             res.send({ msg: "Failed to Save SiteAuth" })
             return
@@ -134,7 +151,17 @@ export default class AuthController {
               await transactionalEntityManager.save(userGroup)
             }
             //If it is a new group, we created a request with not group. This will be handled in the front end?
-          }).then(_result => res.send({ msg: 'would return temporary login stuff' }))
+          }).then(_result => {
+            //For the result, we don't need to check on anything else
+            const viewGroups:FullUserGroup[]=[]
+            const userData = {
+              id: newUser.id,
+              email: newUser.email,
+              viewGroups: viewGroups,
+              siteAccess: 'requested'
+            }
+            res.send(userData)
+          })
         } catch (error) {
           res.status(409).send({ msg: 'email is already registered' })
           return
@@ -143,10 +170,6 @@ export default class AuthController {
         res.send({ msg: 'bcrypt error' })
       }
     })
-    //TODO move this around and do the log the person in.
-
-
-    //Can I create a function that takes in the response?
   }
 
   static login = async (req: Request, res: Response) => {

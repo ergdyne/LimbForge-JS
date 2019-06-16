@@ -8,6 +8,7 @@ import { axiosConfig } from '../testData'
 import { isString } from 'util';
 
 //support functions
+//ENUM?
 function home(siteAccess) {
   switch (siteAccess) {
     case 'admin': return '/users/'
@@ -16,11 +17,27 @@ function home(siteAccess) {
   }
 }
 
+function userDataToUser(response) {
+  const { id, email, viewGroups, siteAccess } = response.data
+  console.log('response got')
+  const ourUser = {
+    id: id,
+    email: email,
+    siteAccess: siteAccess,
+    home: home(siteAccess),
+    loggedIn: true,
+    groups: fullUserGroupsToGroups(viewGroups)
+  }
+  console.log('oour user', ourUser)
+  return ourUser
+}
+
 export function login(payload) {
   //Can preprocess the login credentials within the axios
   //TEMP quick login
   var email = ''
   var password = ''
+  // TEMPORARY
   if (isString(payload)) {
     switch (payload) {
       case 'admin': {
@@ -39,7 +56,7 @@ export function login(payload) {
         break
       }
     }
-  } else {
+  } else { //END TEMPORARY
     email = payload.email
     password = payload.password
   }
@@ -50,24 +67,7 @@ export function login(payload) {
       auth: password
     }, axiosConfig)
       .then((response) => {
-
-        //can pre process this data
-        // axios.post('http://localhost:3000/auth/meep',
-        //   { user: response.data }, axiosConfig).then(() => {
-        const { id, email, viewGroups, siteAccess } = response.data
-        console.log('response got')
-        const ourUser = {
-          id: id,
-          email: email,
-          siteAccess: siteAccess,
-          home: home(siteAccess),
-          loggedIn: true,
-          groups: fullUserGroupsToGroups(viewGroups)
-        }
-        console.log('oour user', ourUser)
-        dispatch({ type: "LOGIN", payload: ourUser })
-        // })
-
+        dispatch({ type: "LOGIN", payload: userDataToUser(response) })
       })
       .catch((err) => {
         dispatch({ type: "LOGIN_REJECTED", payload: err })
@@ -91,7 +91,6 @@ export function logout() {
 
 export function signUp(newUser) {
   const { email, password, passwordConfirm, group } = newUser
-
   if (password === passwordConfirm) {
     return function (dispatch) {
       axios.post('http://localhost:3000/auth/signup', {
@@ -100,9 +99,7 @@ export function signUp(newUser) {
         groupName: group
       }, axiosConfig)
         .then((response) => {
-          //can pre process this data
-
-          dispatch({ type: "SIGN_UP", payload: response.data })
+          dispatch({ type: "SIGN_UP", payload: userDataToUser(response) })
         })
         .catch((err) => {
           dispatch({ type: "SIGN_UP_REJECTED", payload: err })

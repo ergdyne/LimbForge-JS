@@ -105,7 +105,7 @@ export default class Patient extends React.Component {
               /> :
               <div />
             }
-            {(l === 'preview') ? <Download patient={this.props.patient} /> : <div />}
+            {(l === 'preview') ? <Download patient={this.props.patient} measurements={this.props.measurements}/> : <div />}
           </div>
         </div></div>
       </div></div></div></div>
