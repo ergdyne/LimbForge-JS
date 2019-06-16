@@ -19,18 +19,19 @@ createConnection().then(async (connection) => {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
 
-  app.use(passport.initialize())
-  passportConfig()
+  //app.use(passport.initialize())
+  //passportConfig()
   app.use(cors({origin: CLIENT_ORIGIN,credentials: true}))
   app.use(session({
     secret: SESSION_SECRET,
-    resave: true,
+    name: 'limbforge',
+    resave: false,
     saveUninitialized: true,
-    cookie: { secure: true }
+    cookie: { 
+      maxAge: 1000*60*60*24,
+      secure: false //temporary before https
+    } 
   }))
-
-  
-
 
   app.use("/", routes) 
 

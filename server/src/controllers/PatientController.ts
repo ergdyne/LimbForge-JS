@@ -39,7 +39,7 @@ export default class PatientController {
 
   static getAllPatients = async (req: Request, res: Response) => {
     //Auth stuff and limit to user's groups, or no limit if admin
-
+    console.log('user',req.session, req.sessionID)
     getRepository(PatientState).find()
       .then(patients => {
         res.send(patients)

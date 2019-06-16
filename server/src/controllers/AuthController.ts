@@ -7,17 +7,19 @@ import { GroupState } from '../entity/ViewGroupState'
 import { UserGroup } from '../entity/UserGroup'
 import { Group } from '../entity/Group'
 import { ViewSiteAuth } from '../entity/ViewSiteAuth'
-import {FullUserGroup } from '../entity/ViewFullUserGroup'
+import { FullUserGroup } from '../entity/ViewFullUserGroup'
+import { ViewAdminAccess } from '../entity/ViewAdminAccess'
+import { meow } from "../operations/temp"
 
 //Support functions
-function siteAccess(vg: FullUserGroup[]){
-  const accessLevels = vg.map(g=>g.access)
+function siteAccess(vg: FullUserGroup[]) {
+  const accessLevels = vg.map(g => g.access)
 
-  if(accessLevels.includes('groupAdmin')){
+  if (accessLevels.includes('groupAdmin')) {
     return 'groupAdmin'
   }
 
-  if(accessLevels.includes('user')){
+  if (accessLevels.includes('user')) {
     return 'user'
   }
   return 'requested'
@@ -126,23 +128,75 @@ export default class AuthController {
       return
     }
     //TODO move this around and do the log the person in.
-    res.send({msg: 'would return temporary login stuff'})
+    res.send({ msg: 'would return temporary login stuff' })
 
     //Can I create a function that takes in the response?
   }
 
-  static login = async (req: Request, res: Response, next: NextFunction) => {
-    //console.log('session',req)
+  // static meep = async (req: Request, res: Response) => {
+  //   let { user } = req.body
+  //   console.log('meep',req.session)
+  //   req.session.user = user
+  //   req.session.save(() => {
+  //     res.send({msg:'ok'})
+  //   })
+  // }
+  static login = async (req: Request, res: Response) => {
     let { email, auth } = req.body
     if (!(email && auth)) {
-      //still valid
       res.status(400).send()
       return
     }
-    console.log('pp')
-    passport.authenticate("local", (err, user, info)=>{
-      //probs handle err too
-      res.send(user)
-    })(req, res, next)
+
+    const userRepo = getRepository(User)
+    const authViewRepo = getRepository(ViewSiteAuth)
+
+    let user: User
+    let authView: ViewSiteAuth
+    try {
+      //Does the user exist?
+      user = await userRepo.findOneOrFail({ where: { email } })
+      authView = await authViewRepo.findOneOrFail({ userId: user.id })
+    } catch (error) {
+      res.status(401).send()
+      return
+    }
+
+    if (authView.hash === auth) {
+      //If auth passes
+      let viewGroups: FullUserGroup[]
+      let adminAccess: ViewAdminAccess
+      try {
+        const viewGroupsRepo = getRepository(FullUserGroup)
+        const adminAccessRepo = getRepository(ViewAdminAccess)
+        //FullUserGroup can be converted into "Group" objects in a non-typesafe way on the client side.
+        //See that function for more explaination.
+        viewGroups = await viewGroupsRepo.find({ where: { userId: user.id } })
+        adminAccess = await adminAccessRepo.findOne({ where: { userId: user.id } })
+      } catch (error) {
+        res.status(401).send()
+        return
+      }
+
+      const admin = (adminAccess == null) ? false : adminAccess.isAdmin
+
+      const userData = {
+        id: user.id,
+        email: user.email,
+        viewGroups: viewGroups,
+        siteAccess: admin ? 'admin' : siteAccess(viewGroups)
+      }
+
+
+      req.session.user = userData
+      req.session.save(() => {
+        console.log('and again', req.session, req.sessionID)
+        return res.status(200).send(userData)
+      })
+
+    } else {
+      res.status(409).send({ msg: 'Authorization is not valid.' })
+      return
+    }
   }
 }

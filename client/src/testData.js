@@ -255,6 +255,13 @@ const stls = [
   { link: "https://s3.amazonaws.com/limbforgestls/QTC-coupler/r12/info_PL-4.stl", name: "WRIST_COUPLER_VERY_TIGHT", type: 'coupler' }
 ]
 
+let axiosConfig = {
+  headers: {
+    'Content-Type': 'application/json;charset=UTF-8',
+    "Access-Control-Allow-Origin": "*",
+  },
+  withCredentials: true
+}
 
 export {
   navData,
@@ -273,5 +280,6 @@ export {
   measurements,
   measurementInputs,
   forearm,
-  stls
+  stls,
+  axiosConfig
 }

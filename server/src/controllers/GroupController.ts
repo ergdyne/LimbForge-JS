@@ -36,6 +36,7 @@ export default class GroupController {
   }
 
   static getAll = async (req: Request, res: Response) => {
+    console.log('session',req.sessionID,req.session)
     //TODO would add in a user session bit.
     try {
       const groupAttributes = await getRepository(GroupState).find()

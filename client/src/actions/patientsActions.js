@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { patientStatesToPatients, patientMeasurementStatesToMeasurements } from '../functions/convertView'
 import {measurements as ms} from '../testData'
+import {axiosConfig} from '../testData'
 
 export function getPatients() {
   return function (dispatch) {
     console.log('getting them')
-    axios.get('http://localhost:3000/patient/all')
+    axios.get('http://localhost:3000/patient/all',axiosConfig)
       .then((response) => {
         const patients = patientStatesToPatients(response.data)
         dispatch({ type: "GET_PATIENTS", payload: patients })
@@ -20,7 +21,7 @@ export function getPatient(patientId) {
   return function (dispatch) {
     axios.post('http://localhost:3000/patient/one', {
       patientId: patientId
-    })
+    },axiosConfig)
       .then((response) => {
         //Well really just one patient
         const patients = patientStatesToPatients(response.data.patientStates)
@@ -56,7 +57,7 @@ export function savePatient(patient, inputs, groupId) {
         patientId: patient.id,
         patientInputs: patientAttributes,
         groupId: groupId //TODO make it come from somewhere else
-      })
+      }, axiosConfig)
         .then((response) => {
           //We only need the patient id
 
@@ -92,7 +93,7 @@ export function saveMeasurements(measurements, inputs, patientId) {
       axios.post('http://localhost:3000/patient/save_measurements', {
         patientId: patientId,
         measurements: patientMeasurements
-      })
+      },axiosConfig)
         .then((response) => {
           //The response doesn't matter much...
           console.log('resp', response.data.patientId)

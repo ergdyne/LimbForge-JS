@@ -1,9 +1,11 @@
 import axios from 'axios'
 import{fullUserGroupsToUsers, fullUserGroupsToGroups} from '../functions/convertView'
+import {axiosConfig} from '../testData'
+
 
 export function getGroupOptions(){
   return function (dispatch) {
-    axios.get('http://localhost:3000/group/options')
+    axios.get('http://localhost:3000/group/options',axiosConfig)
       .then((response) => {
         dispatch({ type: "GET_GROUP_OPTIONS", payload: response.data.groupNames })
       })
@@ -15,7 +17,7 @@ export function getGroupOptions(){
 
 export function getUsers(){
   return function (dispatch) {
-    axios.get('http://localhost:3000/user/all')
+    axios.get('http://localhost:3000/user/all',axiosConfig)
       .then((response) => {
         const allUsers = fullUserGroupsToUsers(response.data.fullUserGroups)
         const requestedUsers = allUsers.filter(u=> u.groupAccess === 'requested')
@@ -32,7 +34,7 @@ export function getUser(userId){
   return function (dispatch) {
     axios.post('http://localhost:3000/user/one',{
       userId:userId
-    })
+    },axiosConfig)
       .then((response) => {
         const data = response.data
         const ourUser ={
@@ -65,7 +67,7 @@ export function addUser(newUser){
         email:email, 
         groupAccess:groupAccess, 
         groupName:groupName
-      })
+      },axiosConfig)
         .then((response) => {
           //We don't really care about the response yet. Only would care if going to update state.
           dispatch({ type: "ADD_USER", payload: response.data })

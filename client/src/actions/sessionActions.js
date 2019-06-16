@@ -1,5 +1,7 @@
 import axios from 'axios'
-import {fullUserGroupsToGroups } from '../functions/convertView'
+import { fullUserGroupsToGroups } from '../functions/convertView'
+import {axiosConfig} from '../testData'
+
 //TEMP
 import { isString } from 'util';
 
@@ -12,12 +14,7 @@ function home(siteAccess) {
   }
 }
 
-let axiosConfig = {
-  headers: {
-    'Content-Type': 'application/json;charset=UTF-8',
-    "Access-Control-Allow-Origin": "*",
-  }
-}
+
 
 export function login(payload) {
   //Can preprocess the login credentials within the axios
@@ -42,7 +39,7 @@ export function login(payload) {
         break
       }
     }
-  }else{
+  } else {
     email = payload.email
     password = payload.password
   }
@@ -53,19 +50,24 @@ export function login(payload) {
       auth: password
     }, axiosConfig)
       .then((response) => {
+
         //can pre process this data
-        const { id, email, viewGroups, siteAccess } = response.data
-        console.log('response got')
-        const ourUser = {
-          id: id,
-          email: email,
-          siteAccess: siteAccess,
-          home: home(siteAccess),
-          loggedIn: true,
-          groups: fullUserGroupsToGroups(viewGroups)
-        }
-        console.log('oour user', ourUser)
-        dispatch({ type: "LOGIN", payload: ourUser })
+        // axios.post('http://localhost:3000/auth/meep',
+        //   { user: response.data }, axiosConfig).then(() => {
+            const { id, email, viewGroups, siteAccess } = response.data
+            console.log('response got')
+            const ourUser = {
+              id: id,
+              email: email,
+              siteAccess: siteAccess,
+              home: home(siteAccess),
+              loggedIn: true,
+              groups: fullUserGroupsToGroups(viewGroups)
+            }
+            console.log('oour user', ourUser)
+            dispatch({ type: "LOGIN", payload: ourUser })
+          // })
+
       })
       .catch((err) => {
         dispatch({ type: "LOGIN_REJECTED", payload: err })
@@ -78,6 +80,7 @@ export function logout() {
     type: "LOGOUT",
     payload: {}
   }
+  //todo server request
 }
 
 export function signUp(newUser) {
@@ -89,7 +92,7 @@ export function signUp(newUser) {
         email: email,
         auth: password,
         groupName: group
-      })
+      },axiosConfig)
         .then((response) => {
           //can pre process this data
 
