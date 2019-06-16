@@ -9,10 +9,23 @@ import { ViewAdminAccess } from "../entity/ViewAdminAccess"
 
 const groupAccessLevels = ['user', 'groupAdmin', 'requested', 'none']
 
+//Group access deal
+
 export default class UserController {
+  //CONTROL
+  //Promote/demote User (includes approve)
+  //Admin - all - only admin can demote a groupAdmin. Only person with access to DB can remove admin rights
+    //If someone has access to the DB, they aready have access to everything.
+  //groupAdmin - can promote/demote requested/none to user, promote user/requested/none to groupAdmin
+
   static getUser = async (req: Request, res: Response) => {
     let { userId } = req.body
     //Need the user, admin access (for promotion option), and groups
+    //CONTROL
+      //Session group ids
+      //If session is admin - OK
+      //If session is groupAdmin -> must share group + fullUserGroups limited session groupAdmin
+      //otherwise -> only session user information
     try{
       getRepository(User).findOneOrFail({ where: { id: userId } })
       .then(user => {
@@ -38,8 +51,10 @@ export default class UserController {
   }
   static getAllUsers = async (req: Request, res: Response) => {
     //TODO check if user has authority
-
-    //if user admin
+    //CONTROL
+    //if user admin -All
+    //if user groupAdmin -user from their groups
+    //otherwise -> reject
     getRepository(FullUserGroup).find()
       .then(fugs =>
         res.send({ fullUserGroups: fugs })
@@ -52,6 +67,9 @@ export default class UserController {
   }
   static addUser = async (req: Request, res: Response) => {
     //TODO check if user has authority
+    //CONTROL
+      //admin -> anything
+      //groupAdmin -> only session groups with groupAdmin
     let { email, groupAccess, groupName } = req.body
     if (!(email && groupAccess && groupName && groupAccessLevels.includes(groupAccess))) {
       res.status(400).send()

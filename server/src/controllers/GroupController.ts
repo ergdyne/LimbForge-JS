@@ -8,6 +8,10 @@ import {FullUserGroup} from '../entity/ViewFullUserGroup'
 export default class GroupController {
   static getGroup = async (req: Request, res: Response) => {
     //Also requires user session bit
+    //CONTROL
+    //For admin - all ok
+    //For groupAdmin - only groups they have groupAdmin for
+    //For users - none
     let { groupId } = req.body
     try {
       //Get the group. 
@@ -23,6 +27,7 @@ export default class GroupController {
   }
 
   static getGroupOptions = async (req: Request, res: Response) => {
+  //CONTROL - think about diff between public and private, but probably not
     //Maybe some filtering here...
     try {
       getRepository(GroupState).find({where:{attribute:'name'}})
@@ -38,6 +43,9 @@ export default class GroupController {
   static getAll = async (req: Request, res: Response) => {
     console.log('session',req.sessionID,req.session)
     //TODO would add in a user session bit.
+    //CONTROL
+    //admin - all
+    //user or groupAdmin for those groups they have user or groupAdmin access
     try {
       const groupAttributes = await getRepository(GroupState).find()
       res.send({ groupAttributes: groupAttributes })
@@ -46,7 +54,9 @@ export default class GroupController {
       res.status(400).send()
     }
   }
+
   static addGroup = async (req: Request, res: Response) => {
+    //CONTROL - from admin only
     let { name, description } = req.body
     if (!(name && description)) {
       res.status(400).send()

@@ -69,7 +69,6 @@ export default class AuthController {
       //Set auth
       bcrypt.hash(auth, saltRounds, (err, hash) => {
         if (!err) {
-          console.log('hash success', hash)
           try {
             getManager().transaction(async transactionalEntityManager => {
               let siteAuth = new SiteAuth()
@@ -91,7 +90,10 @@ export default class AuthController {
                         viewGroups: viewGroups,
                         siteAccess: admin ? 'admin' : siteAccess(viewGroups)
                       }
-                      res.send(userData)
+                      req.session.user = userData
+                      req.session.save(() => {
+                        return res.status(200).send(userData)
+                      })
                     })
                 })
             })
@@ -133,7 +135,6 @@ export default class AuthController {
     //Save the data. Note: can use decorators here too.
     bcrypt.hash(auth, saltRounds, (err, hash) => {
       if (!err) {
-        console.log('hashed!')
         try {
           getManager().transaction(async transactionalEntityManager => {
             await transactionalEntityManager.save(newUser)
@@ -153,14 +154,17 @@ export default class AuthController {
             //If it is a new group, we created a request with not group. This will be handled in the front end?
           }).then(_result => {
             //For the result, we don't need to check on anything else
-            const viewGroups:FullUserGroup[]=[]
+            const viewGroups: FullUserGroup[] = []
             const userData = {
               id: newUser.id,
               email: newUser.email,
               viewGroups: viewGroups,
               siteAccess: 'requested'
             }
-            res.send(userData)
+            req.session.user = userData
+            req.session.save(() => {
+              return res.status(200).send(userData)
+            })
           })
         } catch (error) {
           res.status(409).send({ msg: 'email is already registered' })
@@ -214,7 +218,6 @@ export default class AuthController {
 
                 req.session.user = userData
                 req.session.save(() => {
-                  console.log('and again', req.session, req.sessionID)
                   return res.status(200).send(userData)
                 })
               })
@@ -226,4 +229,5 @@ export default class AuthController {
     })
 
   }
+  //TODO password reset type things
 }
