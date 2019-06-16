@@ -1,8 +1,10 @@
 import axios from 'axios'
 import { fullUserGroupsToGroups } from '../functions/convertView'
-import {axiosConfig} from '../testData'
+import { axiosConfig } from '../testData'
 
-//TEMP
+//NOTE! I believe that encryption of credentials is handled by HTTPS.
+//So when the site is live, as long as we use HTTPS, everything should be fine.
+//Check out strategy in ergdyne/Graina.
 import { isString } from 'util';
 
 //support functions
@@ -13,8 +15,6 @@ function home(siteAccess) {
     default: return '/patients/'
   }
 }
-
-
 
 export function login(payload) {
   //Can preprocess the login credentials within the axios
@@ -54,19 +54,19 @@ export function login(payload) {
         //can pre process this data
         // axios.post('http://localhost:3000/auth/meep',
         //   { user: response.data }, axiosConfig).then(() => {
-            const { id, email, viewGroups, siteAccess } = response.data
-            console.log('response got')
-            const ourUser = {
-              id: id,
-              email: email,
-              siteAccess: siteAccess,
-              home: home(siteAccess),
-              loggedIn: true,
-              groups: fullUserGroupsToGroups(viewGroups)
-            }
-            console.log('oour user', ourUser)
-            dispatch({ type: "LOGIN", payload: ourUser })
-          // })
+        const { id, email, viewGroups, siteAccess } = response.data
+        console.log('response got')
+        const ourUser = {
+          id: id,
+          email: email,
+          siteAccess: siteAccess,
+          home: home(siteAccess),
+          loggedIn: true,
+          groups: fullUserGroupsToGroups(viewGroups)
+        }
+        console.log('oour user', ourUser)
+        dispatch({ type: "LOGIN", payload: ourUser })
+        // })
 
       })
       .catch((err) => {
@@ -76,9 +76,15 @@ export function login(payload) {
 }
 
 export function logout() {
-  return {
-    type: "LOGOUT",
-    payload: {}
+  return function (dispatch) {
+    axios.get('http://localhost:3000/auth/logout', axiosConfig)
+      .then((response) => {
+        //response doesn't really matter
+        dispatch({ type: "LOGOUT", payload: {} })
+      })
+      .catch((err) => {
+        dispatch({ type: "LOGOUT_REJECTED", payload: err })
+      })
   }
   //todo server request
 }
@@ -92,7 +98,7 @@ export function signUp(newUser) {
         email: email,
         auth: password,
         groupName: group
-      },axiosConfig)
+      }, axiosConfig)
         .then((response) => {
           //can pre process this data
 

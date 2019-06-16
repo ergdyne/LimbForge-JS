@@ -22,7 +22,8 @@ export default class Landing extends React.Component {
     this.props.dispatch(getGroupOptions())
   }
   componentDidUpdate() {
-    if (this.props.sessionUser.loggedIn) { this.props.history.push(this.props.sessionUser.home) }
+    //only redirect if not '/' as home, otherwise infinite loop!
+    if (this.props.sessionUser.loggedIn && this.props.sessionUser.home != '/') { this.props.history.push(this.props.sessionUser.home) }
   }
 
   signUpSubmit = (newUser) => {

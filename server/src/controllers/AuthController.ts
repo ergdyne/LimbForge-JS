@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express"
-import passport from "passport"
+import { Request, Response } from "express"
 import { getRepository, getManager } from "typeorm"
+import bcrypt from 'bcrypt'
 import { User } from '../entity/User'
 import { SiteAuth } from '../entity/SiteAuth'
 import { GroupState } from '../entity/ViewGroupState'
@@ -9,7 +9,8 @@ import { Group } from '../entity/Group'
 import { ViewSiteAuth } from '../entity/ViewSiteAuth'
 import { FullUserGroup } from '../entity/ViewFullUserGroup'
 import { ViewAdminAccess } from '../entity/ViewAdminAccess'
-import { meow } from "../operations/temp"
+
+const saltRounds = 11
 
 //Support functions
 function siteAccess(vg: FullUserGroup[]) {
@@ -28,6 +29,10 @@ function siteAccess(vg: FullUserGroup[]) {
 
 export default class AuthController {
   //TODO do full implimentation of security
+  static logout = async (req: Request, res: Response) => {
+    req.session.destroy(() => res.send({ msg: 'logged out' }))
+  }
+
   static signUp = async (req: Request, res: Response) => {
     let { email, auth, groupName } = req.body
     if (!(email && auth && groupName)) {
@@ -64,20 +69,27 @@ export default class AuthController {
     if (user != null) {
       //Ignore the group
       //Set auth
-      try {
-        await getManager().transaction(async transactionalEntityManager => {
-          let siteAuth = new SiteAuth()
-          siteAuth.user = user
-          siteAuth.hash = auth
-          await transactionalEntityManager.save(siteAuth)
-        })
-        //TODO run a full login thing
-        res.send({ msg: "Set login and password - should return what you need to login" })
-        return
-      } catch (err) {
-        res.send({ msg: "Failed to Save SiteAuth" })
-        return
-      }
+      bcrypt.hash(auth, saltRounds, (err, hash) => {
+        if (!err) {
+          console.log('hash success', hash)
+          try {
+            getManager().transaction(async transactionalEntityManager => {
+              let siteAuth = new SiteAuth()
+              siteAuth.user = user
+              //BCRYPT HERE
+              siteAuth.hash = hash
+              await transactionalEntityManager.save(siteAuth)
+            }).then(_result => res.send({ msg: "Set login and password - should return what you need to login" }))
+          } catch (err) {
+            res.send({ msg: "Failed to Save SiteAuth" })
+            return
+          }
+        } else {
+          res.send({ msg: 'bcrypt error' })
+          return
+        }
+
+      })
     }
 
     //Now it is the normal Signup stuff for a user that wasn't preapproved
@@ -104,43 +116,41 @@ export default class AuthController {
     newUser.email = email.toLowerCase()
 
     //Save the data. Note: can use decorators here too.
-    try {
-      await getManager().transaction(async transactionalEntityManager => {
-        await transactionalEntityManager.save(newUser)
-        let siteAuth = new SiteAuth
-        siteAuth.hash = auth
-        siteAuth.user = newUser
-        //TODO ENCRYPT USING BCRYPT!!!!
-        await transactionalEntityManager.save(siteAuth)
+    bcrypt.hash(auth, saltRounds, (err, hash) => {
+      if (!err) {
+        console.log('hashed!')
+        try {
+          getManager().transaction(async transactionalEntityManager => {
+            await transactionalEntityManager.save(newUser)
+            let siteAuth = new SiteAuth
+            siteAuth.hash = hash
+            siteAuth.user = newUser
+            await transactionalEntityManager.save(siteAuth)
 
-        //If it has a group, then we create the userGroup
-        if (!isNewGroup) {
-          let userGroup = new UserGroup()
-          userGroup.group = group
-          userGroup.access = 'requested'
-          userGroup.user = newUser
-          await transactionalEntityManager.save(userGroup)
+            //If it has a group, then we create the userGroup
+            if (!isNewGroup) {
+              let userGroup = new UserGroup()
+              userGroup.group = group
+              userGroup.access = 'requested'
+              userGroup.user = newUser
+              await transactionalEntityManager.save(userGroup)
+            }
+            //If it is a new group, we created a request with not group. This will be handled in the front end?
+          }).then(_result => res.send({ msg: 'would return temporary login stuff' }))
+        } catch (error) {
+          res.status(409).send({ msg: 'email is already registered' })
+          return
         }
-        //If it is a new group, we created a request with not group. This will be handled in the front end?
-      })
-    } catch (error) {
-      res.status(409).send({ msg: 'email is already registered' })
-      return
-    }
+      } else {
+        res.send({ msg: 'bcrypt error' })
+      }
+    })
     //TODO move this around and do the log the person in.
-    res.send({ msg: 'would return temporary login stuff' })
+
 
     //Can I create a function that takes in the response?
   }
 
-  // static meep = async (req: Request, res: Response) => {
-  //   let { user } = req.body
-  //   console.log('meep',req.session)
-  //   req.session.user = user
-  //   req.session.save(() => {
-  //     res.send({msg:'ok'})
-  //   })
-  // }
   static login = async (req: Request, res: Response) => {
     let { email, auth } = req.body
     if (!(email && auth)) {
@@ -162,41 +172,37 @@ export default class AuthController {
       return
     }
 
-    if (authView.hash === auth) {
-      //If auth passes
-      let viewGroups: FullUserGroup[]
-      let adminAccess: ViewAdminAccess
-      try {
-        const viewGroupsRepo = getRepository(FullUserGroup)
-        const adminAccessRepo = getRepository(ViewAdminAccess)
+    //BCRYPT HERE
+    bcrypt.compare(auth, authView.hash, (err, result) => {
+      if (!err && result) {
+        //If auth passes
+
         //FullUserGroup can be converted into "Group" objects in a non-typesafe way on the client side.
         //See that function for more explaination.
-        viewGroups = await viewGroupsRepo.find({ where: { userId: user.id } })
-        adminAccess = await adminAccessRepo.findOne({ where: { userId: user.id } })
-      } catch (error) {
-        res.status(401).send()
+        getRepository(FullUserGroup).find({ where: { userId: user.id } })
+          .then(viewGroups => {
+            getRepository(ViewAdminAccess).findOne({ where: { userId: user.id } })
+              .then(adminAccess => {
+                const admin = (adminAccess == null) ? false : adminAccess.isAdmin
+                const userData = {
+                  id: user.id,
+                  email: user.email,
+                  viewGroups: viewGroups,
+                  siteAccess: admin ? 'admin' : siteAccess(viewGroups)
+                }
+
+                req.session.user = userData
+                req.session.save(() => {
+                  console.log('and again', req.session, req.sessionID)
+                  return res.status(200).send(userData)
+                })
+              })
+          }).catch(error => res.status(401).send())
+      } else {
+        res.status(409).send({ msg: 'Authorization is not valid.' })
         return
       }
+    })
 
-      const admin = (adminAccess == null) ? false : adminAccess.isAdmin
-
-      const userData = {
-        id: user.id,
-        email: user.email,
-        viewGroups: viewGroups,
-        siteAccess: admin ? 'admin' : siteAccess(viewGroups)
-      }
-
-
-      req.session.user = userData
-      req.session.save(() => {
-        console.log('and again', req.session, req.sessionID)
-        return res.status(200).send(userData)
-      })
-
-    } else {
-      res.status(409).send({ msg: 'Authorization is not valid.' })
-      return
-    }
   }
 }
