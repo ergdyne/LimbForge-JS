@@ -6,9 +6,6 @@ import Download from '../components/Download'
 import { patientInputs, measurementInputs } from '../testData'
 import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions';
 import isEmpty from '../functions/isEmpty'
-//TODO move Inputs Lists to their own areas or add the generated server side based on DB.
-//These two drive the construction of the patient and measurement forms respectively.
-//Having them load from the DB (along with some funky sequel) will allow for fields to be added and removed by the admin.
 
 @connect((store) => {
   return ({
@@ -35,11 +32,9 @@ export default class Patient extends React.Component {
   componentWillUnmount(){
     this.props.dispatch(clearPatient())
   }
+
   //Callback for patient Data form.
-  //TODO connect to API to do actual read/write/updates.
   patientSubmit = (patient) => {
-    //API Call
-    
     //This might be ok without a check?
     if(this.props.patient.id){
       patient.id = this.props.patient.id
@@ -48,9 +43,10 @@ export default class Patient extends React.Component {
     if (!this.props.patient.amputationLevel) {
       patient.amputationLevel = `transradial`
     }
-    //Temporary Hack! TODO replace with validation (require!)
-    // if (!this.props.patient.gender) patient.gender = 'Male'
-    // if (!this.props.patient.side) patient.side = 'Right'
+    //TODO replace with validation (require!)
+    if (!this.props.patient.gender) patient.gender = 'Male'
+    if (!this.props.patient.side) patient.side = 'Right'
+    
     //TODO change to actual groupId instead of 1
     this.props.dispatch(savePatient(patient, patientInputs, 1))
     this.props.dispatch(updateLevel(isEmpty(this.props.measurements) ? 'measurement' : 'preview'))

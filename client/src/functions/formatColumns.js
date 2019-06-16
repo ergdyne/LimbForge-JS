@@ -4,7 +4,7 @@ import moment from 'moment'
 //Format columns for use in react-table
 //Meant to be reusable on single action lists
 //Maybe make a multiple callback function version
-//SO, TODO: This should be static items. The onclick and dynamic things should just append to this list 
+//TODO, an action type vs static type vs formated type
 export default function formatColumns(columns, onClick, caption) {
   return (
     columns.map(x => {

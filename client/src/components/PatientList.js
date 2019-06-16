@@ -10,7 +10,6 @@ export default class PatientList extends React.Component {
   }
 
   render() {
-    //TODO if using ReactTable in more places, add version of formatColumns with multiple callback availability (list of callbacks?).
     const columns =
       formatColumns(
         this.props.patientColHeaders,

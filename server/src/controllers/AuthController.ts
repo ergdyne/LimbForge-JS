@@ -26,9 +26,7 @@ function siteAccess(vg: FullUserGroup[]) {
   return 'requested'
 }
 
-
 export default class AuthController {
-  //TODO do full implimentation of security
   static logout = async (req: Request, res: Response) => {
     req.session.destroy(() => res.send({ msg: 'logged out' }))
   }

@@ -26,11 +26,7 @@ export default class Landing extends React.Component {
     if (this.props.sessionUser.loggedIn && this.props.sessionUser.home != '/') { this.props.history.push(this.props.sessionUser.home) }
   }
 
-  signUpSubmit = (newUser) => {
-
-    //TODO everywhere there is a dropDown, make sure the default is actual the value
-    //Or force a selection
-    
+  signUpSubmit = (newUser) => {    
     if (!newUser.group) {
       newUser.group = this.props.groupOptions[0]
     }

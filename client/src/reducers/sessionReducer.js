@@ -33,40 +33,10 @@ export default function reducer(state = {
       return {...state, user:emptyUser}
     }
     case "SIGN_UP":{
-      //TODO, create the temporary user credential ("pending approval")
-      //email: "x@a.com", id: 19, create_at: "2019-06-12T20:43:27.646Z"
-
       return {...state, user:pendingUser}
     }
 
     //signup failed and such
     default: return state
   }
-}
-
-//Temporary Sessions
-const admin = {
-  id: 0,
-  email: '',
-  siteAccess: 'admin',
-  home: '/users/',
-  loggedIn: true,
-  groups: []
-}
-
-const groupAdmin = {
-  id: 1,
-  email: '',
-  siteAccess: 'groupAdmin',
-  home: '/patients/',
-  loggedIn: true,
-  groups: []//should call out groups
-}
-const user = {
-  id: 2,
-  email: '',
-  siteAccess: 'user',
-  home: '/patients/',
-  loggedIn: true,
-  groups: []//should call out groups
 }

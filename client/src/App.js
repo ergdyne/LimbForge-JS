@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import style from './App.css'
 import Footer from './components/Footer'
 import { Landing, Patients, Patient, Groups, Group, Users, User } from './routes/routes'
-//import { currentUser } from './testData' //TODO Should be spelled out here or in its own location.
 import { BrowserRouter as Router, Route, NavLink, Link, Redirect } from "react-router-dom"
 import {logout} from './actions/sessionActions'
 

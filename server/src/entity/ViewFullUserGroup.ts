@@ -1,7 +1,6 @@
 import { ViewEntity, ViewColumn} from "typeorm"
 
 //Results in an entry for each userID, groupId, and attribute, which must be merged into a single group-access object.
-//TODO replace with direct query from primary tables
 @ViewEntity({
   expression: `
     select og."userId","email",og."groupId",og."access",ga."attribute",ga."value",ga."type" from

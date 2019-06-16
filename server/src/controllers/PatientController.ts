@@ -22,7 +22,6 @@ function patientInputsToAttributes(p: Patient, inputs: { attribute: string; valu
   })
 }
 
-//TODO fix res.statuses
 export default class PatientController {
   static getPatient = async (req: Request, res: Response) => {
     let { patientId } = req.body

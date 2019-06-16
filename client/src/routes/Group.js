@@ -6,7 +6,6 @@ import formatColumns from '../functions/formatColumns'
 import {getGroup} from '../actions/groupsActions'
 import { userGroupColHeaders } from '../testData'
 
-//TODO that access matters
 @connect((store) => {
   return ({
     sessionUser: store.session.user,

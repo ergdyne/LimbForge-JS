@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { patientColHeaders} from '../testData'//TODO move patientColHeader to their own place unless doing them dynamic like too.
+import { patientColHeaders} from '../testData'
 import PatientList from '../components/PatientList'
 import { getPatients } from '../actions/patientsActions'
 
