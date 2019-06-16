@@ -1,3 +1,5 @@
+import _ from 'underscore'
+
 function keyNumberToJSON(keyAttribute, numberAttribute, objectArray){
   return (
     JSON.parse(`{${objectArray
@@ -13,19 +15,25 @@ function keyStringToJSON(keyAttribute, stringAttribute, objectArray){
 }
 
 function keyValueTypeToJSON(keyAttribute, valueAttribute,typeAttribute){
-  //TODO error control
-  function typeMatch(type,value){
-    switch (type){
-      case 'date':
-      case 'string': return `"${value}"`
-      default: return `${value}`
-    }
+  //Group out
+  return function (objectArray){
+    const strings = objectArray.filter(o=>o[typeAttribute]=='string')
+    const dates = objectArray.filter(o=>o[typeAttribute]=='date')
+    const numbers = objectArray.filter(o=>o[typeAttribute]=='number')
+    const ints = objectArray.filter(o=>o[typeAttribute]=='int')
 
+    //This can be better setup...
+    var obj = {}
+
+    strings.forEach(so=>obj[so[keyAttribute]]=so[valueAttribute])
+    dates.forEach(so=>obj[so[keyAttribute]]= new Date(so[valueAttribute]))
+    numbers.forEach(so=>obj[so[keyAttribute]]= parseFloat(so[valueAttribute]))
+    ints.forEach(so=>obj[so[keyAttribute]]= parseInt(so[valueAttribute]))
+    
+    console.log('obj', obj)
+    return obj
+  
   }
-  return function (objectArray){return (
-    JSON.parse(`{${objectArray
-      .map(o => `"${o[keyAttribute]}":${typeMatch(o[typeAttribute],o[valueAttribute])}`)
-      .join(',')}}`))}
 }
 
 const listToJSON = keyValueTypeToJSON('attribute', 'value', 'type')

@@ -34,18 +34,7 @@ export default class PatientList extends React.Component {
 
 PatientList.propTypes = {
   patients: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      dateOfBirth: PropTypes.instanceOf(Date),
-      dateOfAmputation: PropTypes.instanceOf(Date),
-      city: PropTypes.string.isRequired,
-      country: PropTypes.string.isRequired,
-      gender: PropTypes.string.isRequired,
-      amputationLevel: PropTypes.string.isRequired,
-      amputationCause: PropTypes.string
-    })
+    PropTypes.object
   ),
   viewPatient: PropTypes.func.isRequired,
   patientColHeaders: PropTypes.arrayOf(

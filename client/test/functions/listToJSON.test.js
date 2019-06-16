@@ -2,15 +2,17 @@ import { expect } from 'chai'
 import { listToJSON,keyStringToJSON } from '../../src/functions/ergJSON'
 
 const inputA = [
-  { attribute: 's', value: 'a', type: 'string' },
+  { attribute: 'string', value: 'a', type: 'string' },
   { attribute: 'date', value: '2011-04-11T10:20:30Z', type: 'date' },
-  { attribute: 'n', value: '34', type: 'number' }
+  { attribute: 'number', value: '34.5', type: 'number' },
+  { attribute: 'int', value: '34', type: 'int' }
 ]
 
 const outputA = {
-  s: 'a',
-  date: '2011-04-11T10:20:30Z',
-  n: 34
+  string: 'a',
+  date: new Date('2011-04-11T10:20:30Z'),
+  number: 34.5,
+  int: 34
 }
 
 const inputB = [

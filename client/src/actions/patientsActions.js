@@ -1,16 +1,40 @@
 import axios from 'axios'
+import { patientStatesToPatients, patientMeasurementStatesToMeasurements } from '../functions/convertView'
+import {measurements as ms} from '../testData'
 
-export function getPatients(payload) {
-  return {
-    type: "GET_PATIENTS",
-    payload: payload
+export function getPatients() {
+  return function (dispatch) {
+    console.log('getting them')
+    axios.get('http://localhost:3000/patient/all')
+      .then((response) => {
+        const patients = patientStatesToPatients(response.data)
+        dispatch({ type: "GET_PATIENTS", payload: patients })
+      })
+      .catch((err) => {
+        dispatch({ type: "GET_PATIENTS_REJECTED", payload: err })
+      })
   }
 }
 
 export function getPatient(patientId) {
-  return {
-    type: "GET_PATIENT",
-    payload: { patientId: patientId }
+  return function (dispatch) {
+    axios.post('http://localhost:3000/patient/one', {
+      patientId: patientId
+    })
+      .then((response) => {
+        //Well really just one patient
+        const patients = patientStatesToPatients(response.data.patientStates)
+        const measurements = patientMeasurementStatesToMeasurements(response.data.patientMeasurementStates,ms)
+        //But just in case there is a problem
+        if (patients.length > 0) {
+          dispatch({ type: "GET_PATIENT", payload: {patient: patients[0], measurements:measurements} })
+        }else{
+          dispatch({ type: "GET_PATIENT_REJECTED", payload: 'Something wrong with data.' })
+        }
+      })
+      .catch((err) => {
+        dispatch({ type: "GET_PATIENT_REJECTED", payload: err })
+      })
   }
 }
 
@@ -35,7 +59,7 @@ export function savePatient(patient, inputs, groupId) {
       })
         .then((response) => {
           //We only need the patient id
-          
+
           patient.id = response.data.patientId
           console.log(patient.id)
           dispatch({ type: "SAVE_PATIENT", payload: patient })
@@ -71,7 +95,7 @@ export function saveMeasurements(measurements, inputs, patientId) {
       })
         .then((response) => {
           //The response doesn't matter much...
-          console.log('resp',response.data.patientId)
+          console.log('resp', response.data.patientId)
           dispatch({ type: "SAVE_MEASUREMENTS", payload: measurements })
         })
         .catch((err) => {

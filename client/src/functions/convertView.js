@@ -1,4 +1,4 @@
-import {keyStringToJSON} from './ergJSON'
+import {keyStringToJSON, listToJSON} from './ergJSON'
 import _ from 'underscore'
 
 function groupStatesToGroups(ats){
@@ -24,7 +24,7 @@ function fullUserGroupsToGroups(viewGroups) {
 }
 
 function fullUserGroupsToUsers(ugs){
-  const userSets = _.pairs(_.groupBy(ugs,(u)=>u.userId))
+  const userSets = _.pairs(_.groupBy(ugs,(ug)=>ug.userId))
   return userSets.map(s=> {
     //Pairs makes the s a list of [id, [ugs]]
     //We only need one of the ugs to get the user information.
@@ -37,4 +37,26 @@ function fullUserGroupsToUsers(ugs){
   })
 }
 
-export {fullUserGroupsToGroups,groupStatesToGroups,fullUserGroupsToUsers}
+function patientStatesToPatients(pss){
+  const patientSets = _.pairs(_.groupBy(pss,(ps)=> ps.patientId))
+  return patientSets.map(s=>{
+    //The second part of the pair is the list of attributes.
+    var patient = listToJSON(s[1]) 
+    //The first part of the pair is the patient Id
+    patient.id = parseInt(s[0])
+
+    return patient
+  })
+}
+
+function patientMeasurementStatesToMeasurements(pmss, measures){
+  //ARG this is the wrong way to do this, should just have a better view!
+  var measurements = {}
+  pmss.forEach(pms=>{
+    const accessor = _.find(measures,(m)=> m.id == pms.measureId).name.toLowerCase()
+    measurements[accessor] = parseFloat(pms.value)
+  })
+  return measurements 
+}
+
+export {fullUserGroupsToGroups,fullUserGroupsToUsers,groupStatesToGroups,patientStatesToPatients,patientMeasurementStatesToMeasurements}

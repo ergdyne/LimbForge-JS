@@ -1,4 +1,3 @@
-import { patients } from '../testData'
 import isEmpty from '../functions/isEmpty'
 
 const emptyPatient ={
@@ -17,17 +16,16 @@ export default function reducer(state={
 },action){
   switch(action.type){
     case "GET_PATIENTS":{
-      //TODO Will take input from action.payload.
-      return {...state, patients:patients}
+      return {...state, patients:action.payload}
     }
     case "GET_PATIENT":{
-      const patient = patients[action.payload.patientId]
-
+      const patient = action.payload.patient
+      const measurements = action.payload.measurements
       if(isEmpty(measurements)){
         return {...state,patient:patient,patientFormLevel:'measurement'}
       }
 
-      return {...state,patient:patient,patientFormLevel:'preview'}
+      return {...state,patient:patient,measurements:measurements,patientFormLevel:'preview'}
     }
 
     case "SAVE_PATIENT":{
