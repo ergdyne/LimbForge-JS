@@ -32,8 +32,8 @@ export default class PatientController {
     let { patientId } = req.body
     const sessionUser = req.session.user
 
-    if (!sessionUser) {
-      console.log('session failed in getPatient')
+    if(sessionUser == null) {
+      
       res.status(400).send({ msg: 'session failed' })
     }
     getRepository(PatientState).find({ where: { patientId: patientId } })
@@ -71,7 +71,7 @@ export default class PatientController {
   static getAllPatients = async (req: Request, res: Response) => {
     //Auth stuff and limit to user's groups, or no limit if admin
     const sessionUser = req.session.user
-    if (!sessionUser) {
+    if(sessionUser == null) {
       console.log('session failed in getPatients')
       res.status(400).send({ msg: 'session failed' })
     }
@@ -96,7 +96,7 @@ export default class PatientController {
     //CONTROL-OK
     //For any user, groupadmin, or admin go ahead
     const sessionUser = req.session.user
-    if (!sessionUser) {
+    if(sessionUser == null) {
       console.log('session failed in saveMeasurement')
       res.status(400).send({ msg: 'session failed' })
     }
@@ -131,7 +131,7 @@ export default class PatientController {
     //CONTROL-OK
     //For any user, groupadmin, or admin go ahead
     const sessionUser = req.session.user
-    if (!sessionUser) {
+    if(sessionUser == null) {
       console.log('session failed in saveMeasurement')
       res.status(400).send({ msg: 'session failed' })
     }

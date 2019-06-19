@@ -65,7 +65,7 @@ export function addUser(newUser){
     return function (dispatch) {
       axios.post('http://localhost:3000/user/add', {
         email:email, 
-        groupAccess:groupAccess, 
+        userGroupAccess:groupAccess, 
         groupName:groupName
       },axiosConfig)
         .then((response) => {
