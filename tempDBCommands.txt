@@ -1,0 +1,16 @@
+drop table "user";
+drop table "user_group";
+drop table "patient";
+drop table "patient_group";
+drop table "patient_attribute";
+drop table "group";
+drop table "group_attribute";
+drop table "migrations";
+drop table "admin_access";
+drop table "site_auth";
+
+or
+
+DROP SCHEMA public CASCADE;
+grant usage on schema public to public;
+grant create on schema public to public;

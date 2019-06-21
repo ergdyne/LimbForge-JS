@@ -1,33 +1,40 @@
 import express from 'express'
 import 'reflect-metadata'
-import {createConnection} from 'typeorm'
+import { createConnection } from 'typeorm'
+import cors from 'cors'
 import bodyParser from 'body-parser'
-import {User} from './entity/Account'
+import routes from './routes'
+import session from 'express-session'
 
-createConnection().then(async (connection)=>{
+const CLIENT_ORIGIN="http://localhost:8080" //TODO make https and move to env
+const SESSION_SECRET="lalalala" //TODO move to env
+
+createConnection().then(async (connection) => {
   await connection.synchronize()
-  
+
   const app = express()
+  app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
-  
-  app.get('/create', async(req,res)=>{
-    let user = new User()
-    user.email = 'j@ergdyne.com'
-    user.password = 'this is a strange hash'
-    return connection.manager
-      .save(user)
-      .then(user => res.status(201).send(user))
-  })
 
-  app.get('/all', async(req,res)=>{
-    let userRepo = connection.getRepository(User)
-    return userRepo.find().then(users => res.status(200).send(users))
-  })
+  app.use(cors({origin: CLIENT_ORIGIN,credentials: true}))
+  app.use(session({
+    secret: SESSION_SECRET,
+    name: 'limbforge',
+    resave: false,
+    saveUninitialized: true,
+    unset: 'destroy',
+    cookie: { 
+      maxAge: 1000*60*60*24,
+      secure: false //temporary before https
+    } 
+  }))
 
-  app.get('*', 
-    (req,res) => res.status(200)
-      .send({message: `Welcome to API! We have no response for ${req}.`}))
-  
+  app.use("/", routes) 
+
+  app.get('*',
+    (req, res) => res.status(200)
+      .send({ message: `Welcome to API! We have no response for ${req}.` }))
+
   app.listen(3000)
-}).catch((error)=> console.log(error))
+}).catch((error) => console.log(error))
 

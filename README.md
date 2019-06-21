@@ -4,21 +4,30 @@ REMEMBER: as long as the interfaces of the code are well structured, tangles can
 
 RANDO: on the question of using semicolins to use or not, I went with not. Where you see them is copied code.
 
-#Incomplete
+#Incomplete Setup
+Install node (v12.1.0) and npm (use nvm on github)
+
 Development Setup
-Install Postgres
 Clone Repo
-Server setup
-  from the server folder run:
-    npm install
-  copy ormconfig.example.json and rename as ormconfig.json
-  update DB username and password
-  in seperate terminals run two commands:
-    npm run watch-ts
-    npm run watch-node
-  connecting to localhost:3000 should respond with "Welcome..."
-DB setup
 Client setup
   from the client folder run:
     npm install
     npm run start
+
+Install Postgres
+  Add database and username and password for db
+
+DB setup & Server setup
+  from the server folder run:
+    npm install
+  copy ormconfig.example.json and rename as ormconfig.json
+  update DB username and password (or env)
+  in seperate terminals run two commands:
+    npm run watch-ts
+    npm run watch-node
+  connecting to localhost:3000 should respond with "Welcome..."
+
+TEMP
+redux-logger
+redux-thunk //ajax middleware
+axios (axios.get and such)

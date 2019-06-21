@@ -17,7 +17,7 @@ export default class Download extends React.Component {
 
   createZip = () => {
     //as Forearm is always the item, it is imported from testdata
-    var ur = urlGenerator(this.props.patient, forearm)
+    var ur = urlGenerator({...this.props.patient, measurements: this.props.measurements}, forearm)
 
     //Copied from LimbForge code
     function urlToPromise(url) {
@@ -75,7 +75,7 @@ export default class Download extends React.Component {
         <span>{`   `}</span>
         <button onClick={this.download}>{`Download`}</button>
         {this.state.preview ?
-          <Canvas stls={urlGenerator(this.props.patient, forearm).filter(x => !(x.type === 'coupler'))} modelColor={`#00ff00`} /> :
+          <Canvas stls={urlGenerator({...this.props.patient, measurements: this.props.measurements}, forearm).filter(x => !(x.type === 'coupler'))} modelColor={`#00ff00`} /> :
           <div />}
 
       </div>

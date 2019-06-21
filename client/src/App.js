@@ -1,55 +1,101 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import style from './App.css'
-import NavBar from './components/NavBar'
 import Footer from './components/Footer'
-import {Landing,Patients, Patient} from './routes/routes'
-import {navData} from './testData' //TODO Should be spelled out here or in its own location.
+import { Landing, Patients, Patient, Groups, Group, Users, User } from './routes/routes'
+import { BrowserRouter as Router, Route, NavLink, Link, Redirect } from "react-router-dom"
+import {logout} from './actions/sessionActions'
 
+@connect((store) => {
+  return ({
+    stored: store,
+    sessionUser: store.session.user,
+    api: store.api.link
+  })
+})
 export default class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      //The page attribute is part of the weird replacement for doing react-router. Much of the anti-patterness of this app starts here.
-      page:`patients`,
-      loggedIn: navData.loggedIn
-    }
+  componentWillMount() {
+    fetch('http://localhost:3000/')
+    .then(res=>res.json())
+    .then(data=> console.log('res', data))
   }
-
-  // Two functions updatePage() and content() combine to provide page switching used in NavBar and Patient(view/edit mode).
-  //These are things that should be done with something like React-Router.
-  updatePage = (page) =>{
-    //Access permissions can be added as well
-    this.setState({page:page})
-    console.log(this.state.page)
-  }
-
-  //Additional pages will be added for Admin and GroupAdmin functions.
-  content = () =>{
-    switch (this.state.page){
-      //Patients with an 's' lists all the user's patients (all the patients in their group(s)).
-      case 'patients': return(<Patients/>)
-      //The new patient version of Patient uses default props and allows for adding a new patient.
-      case 'new-patient': return(<Patient/>)
-      //Drive to landing page if not page is selected (probably not loggedin)
-      default: return(<Landing/>)
-    }
-  }
-
   render() {
+    // TODO add small screen functionality. Currently, menu items vanish.
+    // TODO add security layer to the Router that isn't this goofy.
+    //console.log('store', this.props.stored)
     return (
-      //Much of the css should be redone as it is a bit funky as is.
-      <div className="theme-l5">
-        <NavBar 
-          menu={navData.menu}
-          home={navData.home} 
-          updatePage={this.updatePage}
-          loggedIn={this.state.loggedIn}
-        />
-        {/* Doubly drives user to Landing if not logged in. Overkill. */}
-        {this.state.loggedIn?this.content():<Landing/>}
-        <br />
-        <Footer/>
-      </div>
+      <Router>
+        <div className="theme-l5">
+          <div className="top">
+            <div className="bar theme-d2 left-align large">
+              {/* Logo Button with custom home */}
+              <Link
+                className="bar-item button padding-large theme-d4"
+                to={(this.props.sessionUser.loggedIn) ? `${this.props.sessionUser.home}` : "/"}
+              >
+                <i className="fa fa-home margin-right"></i>
+                {`Logo`}
+              </Link>
+
+              {this.props.sessionUser.loggedIn ?
+                <span>
+                  <NavLink
+                    className="bar-item button hide-small padding-large hover-white"
+                    activeStyle={{ color: '#fff', backgroundColor: '#7d97a5' }}
+                    to="/patients/"
+                  >
+                    Patients
+                </NavLink>
+                  <NavLink
+                    activeStyle={{ color: '#fff', backgroundColor: '#7d97a5' }}
+                    className="bar-item button hide-small padding-large hover-white"
+                    to="/new-patient/"
+                  >
+                    New Patient
+                </NavLink>
+                  {['admin', 'groupAdmin'].includes(this.props.sessionUser.siteAccess) ?
+                    <span>
+                      <NavLink
+                        activeStyle={{ color: '#fff', backgroundColor: '#7d97a5' }}
+                        className="bar-item button hide-small padding-large hover-white"
+                        to="/users/"
+                      >
+                        Users
+                  </NavLink>
+
+                      {(this.props.sessionUser.siteAccess === 'admin') ?
+                        <NavLink
+                          activeStyle={{ color: '#fff', backgroundColor: '#7d97a5' }}
+                          className="bar-item button hide-small padding-large hover-white"
+                          to="/groups/"
+                        >
+                          Groups
+                  </NavLink> : <span />}
+                    </span> : <span />}
+                  <button
+                    className="bar-item button hide-small padding-large hover-white right"
+                    onClick={()=>this.props.dispatch(logout())}
+                  >
+                    Logout
+                  </button>
+                </span> : <span />}
+            </div>
+          </div>
+          {/* Redirect can do the login and then return to where the person wanted to go. This is better as part of the restricted Router setup. */}
+          {(!this.props.sessionUser.loggedIn) ? <Redirect to="/" /> : <div />}
+          <Route path="/" exact component={Landing} />
+          <Route path="/new-patient/" component={Patient} />
+          <Route path="/patient/:patientId" component={Patient} />
+          <Route path="/patients/" component={Patients} />
+          <Route path="/user/:userId" component={User} />
+          <Route path="/users/" component={Users} />
+          <Route path="/group/:groupId" render={(props) => <Group user={this.props.sessionUser} {...props} />} />
+          <Route path="/groups/" render={(props) => <Groups user={this.props.sessionUser} {...props} />} />
+          {/* render={(props) => <Dashboard {...props} */}
+          <br />
+          <Footer />
+        </div>
+      </Router>
     )
   }
 }
