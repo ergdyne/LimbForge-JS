@@ -42,7 +42,7 @@ export default class GroupController {
   }
 
   static getGroupOptions = async (req: Request, res: Response) => {
-    //CONTROL - think about diff between public and private, but probably not
+    //CONTROL - OK
     //Maybe some filtering here...
     //If session has a user with groupAccess groupAdmin, then limit results to those groups...
     //Otherwise admin or user or requested or none -> list all groups
