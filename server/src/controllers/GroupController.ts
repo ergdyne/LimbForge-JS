@@ -1,9 +1,10 @@
 import { Request, Response } from "express"
-import { getRepository, getManager } from "typeorm"
+import { getRepository, getManager, In } from "typeorm"
 import { GroupState } from '../entity/ViewGroupState'
 import { Group } from '../entity/Group'
 import { GroupAttribute } from '../entity/GroupAttribute'
-import {FullUserGroup} from '../entity/ViewFullUserGroup'
+import { FullUserGroup } from '../entity/ViewFullUserGroup'
+import { groupAccess } from "../functions/access"
 
 export default class GroupController {
   static getGroup = async (req: Request, res: Response) => {
@@ -13,35 +14,58 @@ export default class GroupController {
     //For groupAdmin - only groups they have groupAdmin for
     //For users - none
     let { groupId } = req.body
-    try {
-      //Get the group. 
-      const groupAttributes = await getRepository(GroupState).find({ where: { groupId: groupId } })
+    const sessionUser = req.session.user
 
-      const fullUserGroups = await getRepository(FullUserGroup).find({ where: { groupId: groupId } })
-      //Get the users of the group.
-      res.send({ groupAttributes: groupAttributes, userGroups:fullUserGroups })
-    } catch{
+    if(sessionUser == null) {
+      
+      res.status(400).send({ msg: 'session failed' })
+    }
+
+    const acceptableGroupIds = groupAccess(['groupAdmin'], sessionUser.viewGroups)
+    //At this point, either user is admin or value is in, or reject
+    if (sessionUser.siteAccess == 'admin' || acceptableGroupIds.includes(groupId)) {
+      try {
+        //Get the group. 
+        const groupAttributes = await getRepository(GroupState).find({ where: { groupId: groupId } })
+
+        const fullUserGroups = await getRepository(FullUserGroup).find({ where: { groupId: groupId } })
+        //Get the users of the group.
+        res.send({ groupAttributes: groupAttributes, userGroups: fullUserGroups })
+      } catch{
+        res.status(400).send()
+      }
+    }
+    else {
       res.status(400).send()
     }
 
   }
 
   static getGroupOptions = async (req: Request, res: Response) => {
-  //CONTROL - think about diff between public and private, but probably not
+    //CONTROL - OK
     //Maybe some filtering here...
-    try {
-      getRepository(GroupState).find({where:{attribute:'name'}})
-      .then(gss => 
-        res.send({ groupNames: gss.map(g=>g.value) })
-      )
-      
-    } catch{
-      res.status(400).send()
+    //If session has a user with groupAccess groupAdmin, then limit results to those groups...
+    //Otherwise admin or user or requested or none -> list all groups
+    //This may be two different things?
+    const sessionUser = req.session.user
+
+    if (sessionUser == null || sessionUser.siteAccess != 'groupAdmin') {
+      getRepository(GroupState).find({ where: { attribute: 'name' } })
+        .then(gss =>
+          res.send({ groupNames: gss.map(g => g.value) })
+        )
+    }else{
+      const acceptableGroupIds = groupAccess(['groupAdmin'], sessionUser.viewGroups)
+      getRepository(GroupState).find({ where: { attribute: 'name', groupId: In(acceptableGroupIds) } })
+        .then(gss =>
+          res.send({ groupNames: gss.map(g => g.value) })
+        )
     }
+
   }
 
   static getAll = async (req: Request, res: Response) => {
-    console.log('session',req.sessionID,req.session)
+    console.log('session', req.sessionID, req.session)
     //TODO would add in a user session bit.
     //CONTROL
     //admin - all
