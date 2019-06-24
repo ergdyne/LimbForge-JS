@@ -36,7 +36,6 @@ export default function reducer(state={
     }
     case "APPROVE_USER":{
       //userId,groupId,groupAccess
-      console.log('approve user', action.payload)
       return {...state}
     }
     case "ADD_USER":{

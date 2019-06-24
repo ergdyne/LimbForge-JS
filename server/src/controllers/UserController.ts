@@ -29,7 +29,6 @@ export default class UserController {
       res.status(400).send({ msg: 'session failed' })
     }
     //Need the user, admin access (for promotion option), and groups
-    //CONTROL-OK
     try {
       getRepository(User).findOneOrFail({ where: { id: userId } })
         .then(user => {
@@ -71,27 +70,25 @@ export default class UserController {
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
     }
-    //CONTROL - OK
     //if user admin -All
     //if user groupAdmin -user from their groups
     //otherwise -> reject
     if (sessionUser.siteAccess == 'admin') {
       getRepository(FullUserGroup).find()
-        .then(fugs =>
-          res.send({ fullUserGroups: fugs })
-        )
+        .then(userGroups => {
+          res.send({ fullUserGroups: userGroups })
+        }).catch(err => res.send(err))
     } else {
 
       const acceptableGroupIds = groupAccess(['groupAdmin'], sessionUser.viewGroups)
       getRepository(FullUserGroup).find({ where: { groupId: In(acceptableGroupIds) } })
-        .then(fugs =>
-          res.send({ fullUserGroups: fugs })
-        )
+        .then(userGroups =>{
+          res.send({ fullUserGroups: userGroups })
+        }).catch(err => res.send(err))
       //TODO reject case?
     }
   }
   static addUser = async (req: Request, res: Response) => {
-    //CONTROL - OK - TODO retest - some weird error despite users created
     //admin -> anything - works?
     //groupAdmin -> only session groups with groupAdmin
     let { email, userGroupAccess, groupName } = req.body
@@ -107,7 +104,7 @@ export default class UserController {
     }
 
     //Find if the user exists.
-    getRepository(User).findOne({ where: { email: email } })
+    getRepository(User).findOne({ where: { email: email.toLowerCase() } })
       .then(user => {
         //OK, we can check on the group
         getRepository(GroupState).findOneOrFail({ attribute: 'name', value: groupName })
@@ -127,7 +124,7 @@ export default class UserController {
                         userGroup.user = u
                         return userGroup
                       }
-                      //For the user doesn't exist -> creat it and add it to the group.
+                      //For the user doesn't exist -> create it and add it to the group.
                       if (user == null) {
                         let newUser = new User()
                         newUser.email = email.toLowerCase()
@@ -141,7 +138,7 @@ export default class UserController {
                     }).then(_ => {
                       res.send({ msg: 'user created' })
                     })
-                  }catch (error) { res.send({msg:`rejected`})}
+                  } catch (error) { res.send({ msg: `rejected` }) }
                 } else {
                   res.send({ msg: 'not authorized' })
                 }

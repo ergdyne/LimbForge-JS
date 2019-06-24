@@ -2,7 +2,6 @@ import axios from 'axios'
 import{fullUserGroupsToUsers, fullUserGroupsToGroups} from '../functions/convertView'
 import {axiosConfig} from '../testData'
 
-
 export function getGroupOptions(){
   return function (dispatch) {
     axios.get('http://localhost:3000/group/options',axiosConfig)

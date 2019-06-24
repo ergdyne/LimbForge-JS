@@ -31,7 +31,6 @@ export default class Users extends React.Component {
     //to be replace by fixing it at the form level
     if (!user.userGroupAccess) { user.userGroupAccess = 'user' }
     if (!user.groupName) { user.groupName = this.props.groupOptions[0] }
-    console.log('create user', user)
     this.props.dispatch(addUser(user))
   }
 

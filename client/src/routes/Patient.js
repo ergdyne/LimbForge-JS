@@ -6,37 +6,66 @@ import Download from '../components/Download'
 import { patientInputs, measurementInputs } from '../testData'
 import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions';
 import isEmpty from '../functions/isEmpty'
+import { getGroupOptions } from '../actions/usersActions';
 
 @connect((store) => {
   return ({
     sessionUser: store.session.user, //matters for new patient
     patient: store.patients.patient,
     measurements: store.patients.measurements,
-    level: store.patients.patientFormLevel
+    level: store.patients.patientFormLevel,
+    groupOptions: store.users.groupOptions
   })
 })
 export default class Patient extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      groupName: null
+    }
+  }
 
   componentWillMount() {
-    //API Call
     const { patientId } = this.props.match.params
     //well some more filtering than this...? Also there is a 0 index, but not a 0 patientId ;)
     const id = parseInt(patientId)
     if (patientId && !(isNaN(id))) {
       this.props.dispatch(getPatient(id))
-      //this.props.dispatch(updateLevel('preview'))
+    } else {
+      this.props.dispatch(getGroupOptions())
     }
-
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.props.dispatch(clearPatient())
   }
 
+  componentDidUpdate() {
+    //Two ways that the groupName can get set automatically
+    //New patient for a user with one group
+    if (this.props.groupOptions.length === 1 && this.state.groupName == null) {
+      this.setState({ groupName: this.props.groupOptions[0] })
+    }
+    //existing patient
+    if(this.state.groupName == null && this.props.patient.groupName){
+      this.setState({groupName: this.props.patient.groupName})
+    }
+    //These should only be called if required as updating state in componentDidUpdate can cause an infinit loop.
+  }
+
+  groupSubmit = (group) => {
+    console.log('groupSubmit clicked', group)
+    //TODO fix the form instead of using this hack
+    if(group.group){
+      this.setState({ groupName: group.group })
+    }else{
+      this.setState({groupName: this.props.groupOptions[0]})
+    }
+  }
   //Callback for patient Data form.
   patientSubmit = (patient) => {
     //This might be ok without a check?
-    if(this.props.patient.id){
+    if (this.props.patient.id) {
       patient.id = this.props.patient.id
     }
 
@@ -46,66 +75,80 @@ export default class Patient extends React.Component {
     //TODO replace with validation (require!)
     if (!this.props.patient.gender) patient.gender = 'Male'
     if (!this.props.patient.side) patient.side = 'Right'
-    
-    //TODO change to actual groupId instead of 1
-    this.props.dispatch(savePatient(patient, patientInputs, 1))
+
+    //TODO Error catching and validation on groupName
+    this.props.dispatch(savePatient(patient, patientInputs, this.state.groupName))
     this.props.dispatch(updateLevel(isEmpty(this.props.measurements) ? 'measurement' : 'preview'))
   }
 
-  removePatient = (patientId)=>{
+  removePatient = (patientId) => {
     console.log("Would be like are you sure?")
     this.props.dispatch(deletePatient(patientId))
   }
 
   //Callback for measurements form.
   measurementSubmit = (measurements) => {
-    this.props.dispatch(saveMeasurements(measurements,measurementInputs,this.props.patient.id))
+    this.props.dispatch(saveMeasurements(measurements, measurementInputs, this.props.patient.id))
     this.props.dispatch(updateLevel('preview'))
   }
-
   render() {
     const l = this.props.level
+    const groupInputs = [{ accessor: `group`, label: `Select a Group for the Patient`, type: `string`, inputType: `select`, default: this.props.groupOptions[0], options: this.props.groupOptions }]
     return (
-      // More convoluted divs from the current copied CSS.
-
+      //if new patient and group options exist, give a dropdown.
+      //If no option or exising patient display group Name
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
 
           <div>
-            {(l === 'preview' || l === 'measurement') ?
-              <PatientData
-                patient={this.props.patient}
-                measurements={this.props.measurements}
-                editPatient={() => this.props.dispatch(updateLevel('patient'))}
-                editMeasurement={(l === 'preview') ? () => this.props.dispatch(updateLevel('measurement')) : false}
-              /> :
-              <div />
-            }
-            {/* Patient Form */}
-            {(l === 'patient') ?
+            {((!this.props.patient.id) && this.state.groupName == null && this.props.groupOptions.length > 1) ?
               <FormBuilder
-                key='patient'
-                elements={patientInputs.slice(0,9)}
-                onSubmit={this.patientSubmit}
-                submitValue={`Save`}
-                preventDefault={true}
-                initial={(this.props.patient) ? this.props.patient : {}}
-              /> :
-              <div />
-            }
-            {/* Measurement Form */}
-            {(l === 'measurement') ?
-              <FormBuilder
-                key='measurments'
-                elements={measurementInputs}
-                onSubmit={this.measurementSubmit}
-                submitValue={`Save`}
+                key='groupSelection'
+                elements={groupInputs}
+                onSubmit={this.groupSubmit}
+                submitValue={`Use Group`}
                 preventDefault={true}
                 initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
               /> :
-              <div />
-            }
-            {(l === 'preview') ? <Download patient={this.props.patient} measurements={this.props.measurements}/> : <div />}
+              <div>
+                <h2> {`Patient is in ${this.state.groupName}`} </h2>
+
+
+                {(l === 'preview' || l === 'measurement') ?
+                  <PatientData
+                    patient={this.props.patient}
+                    measurements={this.props.measurements}
+                    editPatient={() => this.props.dispatch(updateLevel('patient'))}
+                    editMeasurement={(l === 'preview') ? () => this.props.dispatch(updateLevel('measurement')) : false}
+                  /> :
+                  <div />
+                }
+                {/* Patient Form */}
+                {(l === 'patient') ?
+                  <FormBuilder
+                    key='patient'
+                    elements={patientInputs.slice(0, 9)}
+                    onSubmit={this.patientSubmit}
+                    submitValue={`Save`}
+                    preventDefault={true}
+                    initial={(this.props.patient) ? this.props.patient : {}}
+                  /> :
+                  <div />
+                }
+                {/* Measurement Form */}
+                {(l === 'measurement') ?
+                  <FormBuilder
+                    key='measurments'
+                    elements={measurementInputs}
+                    onSubmit={this.measurementSubmit}
+                    submitValue={`Save`}
+                    preventDefault={true}
+                    initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
+                  /> :
+                  <div />
+                }
+                {(l === 'preview') ? <Download patient={this.props.patient} measurements={this.props.measurements} /> : <div />}
+              </div>}
           </div>
         </div></div>
       </div></div></div></div>

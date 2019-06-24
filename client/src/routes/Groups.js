@@ -16,7 +16,6 @@ import { getGroups, addGroup } from '../actions/groupsActions'
 })
 export default class Groups extends React.Component {
   componentWillMount(){
-    console.log('getting groups')
     this.props.dispatch(getGroups())
   }
 

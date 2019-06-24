@@ -8,8 +8,6 @@ import { groupAccess } from "../functions/access"
 
 export default class GroupController {
   static getGroup = async (req: Request, res: Response) => {
-    //Also requires user session bit
-    //CONTROL - OK
     //For admin - all ok
     //For groupAdmin - only groups they have groupAdmin for
     //For users - none
@@ -40,20 +38,19 @@ export default class GroupController {
   }
 
   static getGroupOptions = async (req: Request, res: Response) => {
-    //CONTROL - OK
-    //Maybe some filtering here...
     //If session has a user with groupAccess groupAdmin, then limit results to those groups...
     //Otherwise admin or user or requested or none -> list all groups
-    //This may be two different things?
     const sessionUser = req.session.user
-
-    if (sessionUser == null || sessionUser.siteAccess != 'groupAdmin') {
+//admin gets all group options. user or groupAdmin gets some
+//TODO confirm that getGroupOptions doing triple duty like this does not cause problems.
+//A possible fix could be to add a parameter for the type of get.
+    if (sessionUser == null || sessionUser.siteAccess == 'admin') {
       getRepository(GroupState).find({ where: { attribute: 'name' } })
         .then(gss =>
           res.send({ groupNames: gss.map(g => g.value) })
         )
     }else{
-      const acceptableGroupIds = groupAccess(['groupAdmin'], sessionUser.viewGroups)
+      const acceptableGroupIds = groupAccess(['groupAdmin','user'], sessionUser.viewGroups)
       getRepository(GroupState).find({ where: { attribute: 'name', groupId: In(acceptableGroupIds) } })
         .then(gss =>
           res.send({ groupNames: gss.map(g => g.value) })
@@ -63,9 +60,6 @@ export default class GroupController {
   }
 
   static getAll = async (req: Request, res: Response) => {
-    console.log('session', req.sessionID, req.session)
-    //TODO would add in a user session bit.
-    //CONTROL -OK
     //admin - only admin access
     //Check access.
     const sessionUser = req.session.user
@@ -82,7 +76,6 @@ export default class GroupController {
   }
 
   static addGroup = async (req: Request, res: Response) => {
-    //CONTROL - OK
     //for admin only
     let { name, description } = req.body
     if (!(name && description)) {

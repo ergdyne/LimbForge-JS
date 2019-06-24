@@ -19,7 +19,6 @@ function home(siteAccess) {
 
 function userDataToUser(response) {
   const { id, email, viewGroups, siteAccess } = response.data
-  console.log('response got')
   const ourUser = {
     id: id,
     email: email,
@@ -28,7 +27,6 @@ function userDataToUser(response) {
     loggedIn: true,
     groups: fullUserGroupsToGroups(viewGroups)
   }
-  console.log('oour user', ourUser)
   return ourUser
 }
 
