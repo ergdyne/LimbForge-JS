@@ -9,15 +9,13 @@ import { groupAccess } from "../functions/access"
 export default class GroupController {
   static getGroup = async (req: Request, res: Response) => {
     //Also requires user session bit
-    //CONTROL
+    //CONTROL - OK
     //For admin - all ok
     //For groupAdmin - only groups they have groupAdmin for
     //For users - none
     let { groupId } = req.body
     const sessionUser = req.session.user
-
     if(sessionUser == null) {
-      
       res.status(400).send({ msg: 'session failed' })
     }
 
@@ -67,9 +65,13 @@ export default class GroupController {
   static getAll = async (req: Request, res: Response) => {
     console.log('session', req.sessionID, req.session)
     //TODO would add in a user session bit.
-    //CONTROL
-    //admin - all
-    //user or groupAdmin for those groups they have user or groupAdmin access
+    //CONTROL -OK
+    //admin - only admin access
+    //Check access.
+    const sessionUser = req.session.user
+    if (sessionUser == null || sessionUser.siteAccess != 'admin'){
+      res.status(400).send({ msg: 'not authorized' })
+    }
     try {
       const groupAttributes = await getRepository(GroupState).find()
       res.send({ groupAttributes: groupAttributes })
@@ -80,12 +82,20 @@ export default class GroupController {
   }
 
   static addGroup = async (req: Request, res: Response) => {
-    //CONTROL - from admin only
+    //CONTROL - OK
+    //for admin only
     let { name, description } = req.body
     if (!(name && description)) {
       res.status(400).send()
       return
     }
+
+    //Check access.
+    const sessionUser = req.session.user
+    if (sessionUser == null || sessionUser.siteAccess != 'admin'){
+      res.status(400).send({ msg: 'not authorized' })
+    }
+
     //Does the name exist
     try {
       const groupStateRepo = getRepository(GroupState)

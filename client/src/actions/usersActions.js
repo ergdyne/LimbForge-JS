@@ -59,13 +59,13 @@ export function approveUser(userId,groupId,groupAccess){
 }
 
 export function addUser(newUser){
-  const { email, groupAccess, groupName } = newUser
+  const { email, userGroupAccess, groupName } = newUser
 
-  if (email.length > 0 && groupAccess.length > 0 && groupName.length > 0) {
+  if (email.length > 0 && userGroupAccess.length > 0 && groupName.length > 0) {
     return function (dispatch) {
       axios.post('http://localhost:3000/user/add', {
         email:email, 
-        userGroupAccess:groupAccess, 
+        userGroupAccess:userGroupAccess, 
         groupName:groupName
       },axiosConfig)
         .then((response) => {

@@ -29,7 +29,7 @@ export default class Users extends React.Component {
   addUser = (user) => {
     //API Call
     //to be replace by fixing it at the form level
-    if (!user.groupAccess) { user.groupAccess = 'user' }
+    if (!user.userGroupAccess) { user.userGroupAccess = 'user' }
     if (!user.groupName) { user.groupName = this.props.groupOptions[0] }
     console.log('create user', user)
     this.props.dispatch(addUser(user))
@@ -52,7 +52,7 @@ export default class Users extends React.Component {
     const userInputs = [
       { accessor: `email`, label: `Email`, type: `string`, inputType: `text`, default: '' },
       { accessor: `groupName`, label: `Group`, type: `string`, inputType: `select`, default: this.props.groupOptions[0], options: this.props.groupOptions },
-      { accessor: `groupAccess`, label: `Permission`, type: `string`, inputType: `select`, default: userAccessLevels[0], options: userAccessLevels.slice(0, 2) }
+      { accessor: `userGroupAccess`, label: `Permission`, type: `string`, inputType: `select`, default: userAccessLevels[0], options: userAccessLevels.slice(0, 2) }
     ]
     return (
       // More convoluted divs from the current copied CSS.
