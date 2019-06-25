@@ -2,11 +2,12 @@
 import {
   groupColHeaders,
   groupInputs,
-  userColHeaders,
-  userGroupColHeaders,
   patientColHeaders,
   patientInputs,
-  measurementInputs
+  measurementInputs,
+  usersColHeaders,
+  usersGroupColHeaders,
+  userGroupsColHeaders
 } from '../config/defaultDisplay'
 
 //Define all the display data that can in the future be pulled from the DB
@@ -15,11 +16,12 @@ export default function reducer(state = {
   //Currently all static
   groupColHeaders: groupColHeaders,
   groupInputs: groupInputs,
-  userColHeaders: userColHeaders,
-  userGroupColHeaders: userGroupColHeaders,
+  measurementInputs: measurementInputs,
   patientColHeaders: patientColHeaders,
   patientInputs: patientInputs,
-  measurementInputs: measurementInputs
+  usersColHeaders: usersColHeaders,
+  usersGroupColHeaders: usersGroupColHeaders,
+  userGroupsColHeaders: userGroupsColHeaders
 }, action) {
   switch (action.type) {
     case "GET_COLS": {

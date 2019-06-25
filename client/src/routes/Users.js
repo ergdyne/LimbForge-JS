@@ -10,14 +10,13 @@ import {getGroupOptions,getUsers,approveUser,addUser} from '../actions/usersActi
 //Site Admin and Group Admin access
 ////Site Admin sees all users
 ////Group Admin sees group's users
-
 @connect((store) => {
   return ({
     sessionUser: store.session.user, //used for updating the store with the correct data
     groupOptions: store.users.groupOptions,
     approvedUsers: store.users.approvedUsers,
     requestedUsers: store.users.requestedUsers,
-    userColHeaders: store.display.userColHeaders
+    usersColHeaders: store.display.usersColHeaders
   })
 })
 export default class Users extends React.Component {
@@ -47,13 +46,12 @@ export default class Users extends React.Component {
   }
 
   render() {
-    const userColumns = formatColumns(this.props.userColHeaders.slice(0, 2), this.viewUser, `View`)
-    const approveColumns = formatColumns(this.props.userColHeaders.slice(0, 2), this.approveUser, "Approve")
-    //TODO not here...
+    const userColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.viewUser, `View`)
+    const approveColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.approveUser, "Approve")
     const userInputs = [
-      { accessor: `email`, label: `Email`, type: `string`, inputType: `text`, default: '' },
-      { accessor: `groupName`, label: `Group`, type: `string`, inputType: `select`, default: this.props.groupOptions[0], options: this.props.groupOptions },
-      { accessor: `userGroupAccess`, label: `Permission`, type: `string`, inputType: `select`, default: userAccessLevels[0], options: userAccessLevels.slice(0, 2) }
+      { accessor: `email`, label: `Email`, type: `string`, inputType: `text` },
+      { accessor: `groupName`, label: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions },
+      { accessor: `userGroupAccess`, label: `Permission`, type: `string`, inputType: `select`,  placeholder: 'Select Access', options: userAccessLevels.slice(0, 2) }
     ]
     return (
       // More convoluted divs from the current copied CSS.
