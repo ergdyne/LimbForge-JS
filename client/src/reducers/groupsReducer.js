@@ -1,5 +1,3 @@
-import { groups, users } from '../testData'
-
 export default function reducer(state = {
   groups: [],
   group: {

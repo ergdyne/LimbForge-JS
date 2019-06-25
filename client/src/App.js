@@ -9,19 +9,14 @@ import {logout} from './actions/sessionActions'
 @connect((store) => {
   return ({
     stored: store,
-    sessionUser: store.session.user,
-    api: store.api.link
+    sessionUser: store.session.user
   })
 })
 export default class App extends React.Component {
-  componentWillMount() {
-    fetch('http://localhost:3000/')
-    .then(res=>res.json())
-    .then(data=> console.log('res', data))
-  }
   render() {
     // TODO add small screen functionality. Currently, menu items vanish.
     // TODO add security layer to the Router that isn't this goofy.
+    //TODO move Nav bar to component
     //console.log('store', this.props.stored)
     return (
       <Router>
@@ -89,9 +84,8 @@ export default class App extends React.Component {
           <Route path="/patients/" component={Patients} />
           <Route path="/user/:userId" component={User} />
           <Route path="/users/" component={Users} />
-          <Route path="/group/:groupId" render={(props) => <Group user={this.props.sessionUser} {...props} />} />
-          <Route path="/groups/" render={(props) => <Groups user={this.props.sessionUser} {...props} />} />
-          {/* render={(props) => <Dashboard {...props} */}
+          <Route path="/group/:groupId" component={Group} />
+          <Route path="/groups/" component={Groups} />
           <br />
           <Footer />
         </div>

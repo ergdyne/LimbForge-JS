@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { patientStatesToPatients, patientMeasurementStatesToMeasurements } from '../functions/convertView'
 import {measurements as ms} from '../testData'
-import {axiosConfig} from '../testData'
+import {AXIOS_CONFIG, API_URL} from '../config/API'
 
 export function getPatients() {
   return function (dispatch) {
-    axios.get('http://localhost:3000/patient/all',axiosConfig)
+    axios.get(`${API_URL}patient/all`,AXIOS_CONFIG)
       .then((response) => {
         const patients = patientStatesToPatients(response.data)
         dispatch({ type: "GET_PATIENTS", payload: patients })
@@ -18,9 +18,9 @@ export function getPatients() {
 
 export function getPatient(patientId) {
   return function (dispatch) {
-    axios.post('http://localhost:3000/patient/one', {
+    axios.post(`${API_URL}patient/one`, {
       patientId: patientId
-    },axiosConfig)
+    },AXIOS_CONFIG)
       .then((response) => {
         //Well really just one patient...
         const patients = patientStatesToPatients(response.data.patientStates)
@@ -55,11 +55,11 @@ export function savePatient(patient, inputs, groupName) {
   //TODO check if changes
   if (patientAttributes.length > 0) {
     return function (dispatch) {
-      axios.post('http://localhost:3000/patient/save', {
+      axios.post(`${API_URL}patient/save`, {
         patientId: patient.id,
         patientInputs: patientAttributes,
         groupName: groupName
-      }, axiosConfig)
+      }, AXIOS_CONFIG)
         .then((response) => {
           //We only need the patient id
 
@@ -90,10 +90,10 @@ export function saveMeasurements(measurements, inputs, patientId) {
   //TODO validate data and check for changes
   if (patientMeasurements.length > 0) {
     return function (dispatch) {
-      axios.post('http://localhost:3000/patient/save_measurements', {
+      axios.post(`${API_URL}patient/save_measurements`, {
         patientId: patientId,
         measurements: patientMeasurements
-      },axiosConfig)
+      },AXIOS_CONFIG)
         .then((response) => {
           //The response doesn't matter much...
           dispatch({ type: "SAVE_MEASUREMENTS", payload: measurements })

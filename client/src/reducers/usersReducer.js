@@ -1,6 +1,3 @@
-import { users, groups } from '../testData'
-import { approveUser } from '../actions/usersActions';
-
 //All about the users of the site with whom the current persion using the site interacts.
 //The admin sees all users. The groupAdmin sees the users of the groups they administer.
 export default function reducer(state={

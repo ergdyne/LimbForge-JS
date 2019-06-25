@@ -3,7 +3,7 @@ import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import { connect } from 'react-redux'
 import formatColumns from '../functions/formatColumns'
-import {userColHeaders, userAccessLevels} from '../testData'
+import {userAccessLevels} from '../config/enums'
 import FormBuilder from '../components/FormBuilder';
 import {getGroupOptions,getUsers,approveUser,addUser} from '../actions/usersActions'
 
@@ -16,7 +16,8 @@ import {getGroupOptions,getUsers,approveUser,addUser} from '../actions/usersActi
     sessionUser: store.session.user, //used for updating the store with the correct data
     groupOptions: store.users.groupOptions,
     approvedUsers: store.users.approvedUsers,
-    requestedUsers: store.users.requestedUsers
+    requestedUsers: store.users.requestedUsers,
+    userColHeaders: store.display.userColHeaders
   })
 })
 export default class Users extends React.Component {
@@ -46,8 +47,9 @@ export default class Users extends React.Component {
   }
 
   render() {
-    const userColumns = formatColumns(userColHeaders.slice(0, 2), this.viewUser, `View`)
-    const approveColumns = formatColumns(userColHeaders.slice(0, 2), this.approveUser, "Approve")
+    const userColumns = formatColumns(this.props.userColHeaders.slice(0, 2), this.viewUser, `View`)
+    const approveColumns = formatColumns(this.props.userColHeaders.slice(0, 2), this.approveUser, "Approve")
+    //TODO not here...
     const userInputs = [
       { accessor: `email`, label: `Email`, type: `string`, inputType: `text`, default: '' },
       { accessor: `groupName`, label: `Group`, type: `string`, inputType: `select`, default: this.props.groupOptions[0], options: this.props.groupOptions },

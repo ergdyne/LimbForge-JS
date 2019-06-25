@@ -1,11 +1,11 @@
 import axios from 'axios'
 import _ from 'underscore'
 import{fullUserGroupsToUsers, groupStatesToGroups} from '../functions/convertView'
-import {axiosConfig} from '../testData'
+import {AXIOS_CONFIG, API_URL} from '../config/API'
 
 export function getGroups() {
   return function (dispatch) {
-    axios.get('http://localhost:3000/group/all',axiosConfig)
+    axios.get(`${API_URL}group/all`,AXIOS_CONFIG)
       .then((response) => {
         const groups = groupStatesToGroups(response.data.groupAttributes)
         dispatch({ type: "GET_GROUPS", payload: groups })
@@ -18,9 +18,9 @@ export function getGroups() {
 
 export function getGroup(groupId) {
   return function (dispatch) {
-    axios.post('http://localhost:3000/group/one',{
+    axios.post(`${API_URL}group/one`,{
       groupId:groupId
-    },axiosConfig)
+    },AXIOS_CONFIG)
       .then((response) => {
         const group = _.first(groupStatesToGroups(response.data.groupAttributes))
         const allUsers = fullUserGroupsToUsers(response.data.userGroups)
@@ -39,10 +39,10 @@ export function addGroup(newGroup) {
 
   if (name.length > 0 && description.length > 0) {
     return function (dispatch) {
-      axios.post('http://localhost:3000/group/add', {
+      axios.post(`${API_URL}group/add`, {
         name: name,
         description: description
-      },axiosConfig)
+      },AXIOS_CONFIG)
         .then((response) => {
           //We don't really care about the response yet. Only would care if going to update state.
           dispatch({ type: "ADD_GROUP", payload: response.data })

@@ -1,6 +1,5 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { patientColHeaders} from '../testData'
 import PatientList from '../components/PatientList'
 import { getPatients } from '../actions/patientsActions'
 
@@ -9,7 +8,8 @@ import { getPatients } from '../actions/patientsActions'
 @connect((store) => {
   return ({
     sessionUser: store.session.user,
-    patients: store.patients.patients
+    patients: store.patients.patients,
+    patientColHeaders: store.display.patientColHeaders
   })
 })
 export default class Patients extends React.Component {
@@ -26,7 +26,7 @@ export default class Patients extends React.Component {
     //change colHeaders to append front
     return (
       <PatientList
-        patientColHeaders={patientColHeaders}
+        patientColHeaders={this.props.patientColHeaders}
         viewPatient={this.viewPatient}
         patients={this.props.patients}
         minRows={0}

@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import FormBuilder from '../components/FormBuilder'
 import PatientData from '../components/PatientData'
 import Download from '../components/Download'
-import { patientInputs, measurementInputs } from '../testData'
 import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions';
 import isEmpty from '../functions/isEmpty'
 import { getGroupOptions } from '../actions/usersActions';
@@ -14,7 +13,9 @@ import { getGroupOptions } from '../actions/usersActions';
     patient: store.patients.patient,
     measurements: store.patients.measurements,
     level: store.patients.patientFormLevel,
-    groupOptions: store.users.groupOptions
+    groupOptions: store.users.groupOptions,
+    patientInputs: store.display.patientInputs, 
+    measurementInputs: store.display.measurementInputs
   })
 })
 export default class Patient extends React.Component {
@@ -77,7 +78,7 @@ export default class Patient extends React.Component {
     if (!this.props.patient.side) patient.side = 'Right'
 
     //TODO Error catching and validation on groupName
-    this.props.dispatch(savePatient(patient, patientInputs, this.state.groupName))
+    this.props.dispatch(savePatient(patient, this.props.patientInputs, this.state.groupName))
     this.props.dispatch(updateLevel(isEmpty(this.props.measurements) ? 'measurement' : 'preview'))
   }
 
@@ -88,7 +89,7 @@ export default class Patient extends React.Component {
 
   //Callback for measurements form.
   measurementSubmit = (measurements) => {
-    this.props.dispatch(saveMeasurements(measurements, measurementInputs, this.props.patient.id))
+    this.props.dispatch(saveMeasurements(measurements, this.props.measurementInputs, this.props.patient.id))
     this.props.dispatch(updateLevel('preview'))
   }
   render() {
@@ -127,7 +128,7 @@ export default class Patient extends React.Component {
                 {(l === 'patient') ?
                   <FormBuilder
                     key='patient'
-                    elements={patientInputs.slice(0, 9)}
+                    elements={this.props.patientInputs.slice(0, 9)}
                     onSubmit={this.patientSubmit}
                     submitValue={`Save`}
                     preventDefault={true}
@@ -139,7 +140,7 @@ export default class Patient extends React.Component {
                 {(l === 'measurement') ?
                   <FormBuilder
                     key='measurments'
-                    elements={measurementInputs}
+                    elements={this.props.measurementInputs}
                     onSubmit={this.measurementSubmit}
                     submitValue={`Save`}
                     preventDefault={true}
