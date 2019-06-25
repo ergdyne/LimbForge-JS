@@ -29,13 +29,11 @@ export default function reducer(state={
     }
 
     case "SAVE_PATIENT":{
-      console.log("saving patient to store", action.payload)
       return {...state,patient:action.payload}
     }
 
     case "SAVE_MEASUREMENTS":{
       //would only save the measurements to the db based on the patient information
-      console.log('saving me to store', action.payload)
       return {...state,measurements:action.payload}
     }
 

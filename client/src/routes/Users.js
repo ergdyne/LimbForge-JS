@@ -3,20 +3,20 @@ import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import { connect } from 'react-redux'
 import formatColumns from '../functions/formatColumns'
-import {userColHeaders, userAccessLevels} from '../testData'
+import {userAccessLevels} from '../config/enums'
 import FormBuilder from '../components/FormBuilder';
 import {getGroupOptions,getUsers,approveUser,addUser} from '../actions/usersActions'
 
 //Site Admin and Group Admin access
 ////Site Admin sees all users
 ////Group Admin sees group's users
-
 @connect((store) => {
   return ({
     sessionUser: store.session.user, //used for updating the store with the correct data
     groupOptions: store.users.groupOptions,
     approvedUsers: store.users.approvedUsers,
-    requestedUsers: store.users.requestedUsers
+    requestedUsers: store.users.requestedUsers,
+    usersColHeaders: store.display.usersColHeaders
   })
 })
 export default class Users extends React.Component {
@@ -29,9 +29,8 @@ export default class Users extends React.Component {
   addUser = (user) => {
     //API Call
     //to be replace by fixing it at the form level
-    if (!user.groupAccess) { user.groupAccess = 'user' }
+    if (!user.userGroupAccess) { user.userGroupAccess = 'user' }
     if (!user.groupName) { user.groupName = this.props.groupOptions[0] }
-    console.log('create user', user)
     this.props.dispatch(addUser(user))
   }
 
@@ -47,12 +46,12 @@ export default class Users extends React.Component {
   }
 
   render() {
-    const userColumns = formatColumns(userColHeaders.slice(0, 2), this.viewUser, `View`)
-    const approveColumns = formatColumns(userColHeaders.slice(0, 2), this.approveUser, "Approve")
+    const userColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.viewUser, `View`)
+    const approveColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.approveUser, "Approve")
     const userInputs = [
-      { accessor: `email`, label: `Email`, type: `string`, inputType: `text`, default: '' },
-      { accessor: `groupName`, label: `Group`, type: `string`, inputType: `select`, default: this.props.groupOptions[0], options: this.props.groupOptions },
-      { accessor: `groupAccess`, label: `Permission`, type: `string`, inputType: `select`, default: userAccessLevels[0], options: userAccessLevels.slice(0, 2) }
+      { accessor: `email`, label: `Email`, type: `string`, inputType: `text` },
+      { accessor: `groupName`, label: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions },
+      { accessor: `userGroupAccess`, label: `Permission`, type: `string`, inputType: `select`,  placeholder: 'Select Access', options: userAccessLevels.slice(0, 2) }
     ]
     return (
       // More convoluted divs from the current copied CSS.

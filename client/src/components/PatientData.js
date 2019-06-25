@@ -3,14 +3,9 @@ import PropTypes from 'prop-types'
 import 'react-table/react-table.css'
 import formatValue from '../functions/formatValue'
 import isEmpty from '../functions/isEmpty'
-import { patientInputs, measurementInputs } from '../testData'
+import { patientInputs, measurementInputs } from '../config/defaultDisplay'
 
 export default class PatientData extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  //Temporary
   render() {
     return (
       <div>

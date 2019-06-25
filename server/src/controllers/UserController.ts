@@ -14,8 +14,9 @@ const groupAccessLevels = ['user', 'groupAdmin', 'requested', 'none']
 //Group access deal
 
 export default class UserController {
-  //CONTROL
+  //CONTROL - can be rolled into addUser
   //Promote/demote User (includes approve)
+  //TODO create function to roll checks into addUser
   //Admin - all - only admin can demote a groupAdmin. Only person with access to DB can remove admin rights
   //If someone has access to the DB, they aready have access to everything.
   //groupAdmin - can promote/demote requested/none to user, promote user/requested/none to groupAdmin
@@ -28,7 +29,6 @@ export default class UserController {
       res.status(400).send({ msg: 'session failed' })
     }
     //Need the user, admin access (for promotion option), and groups
-    //CONTROL-OK
     try {
       getRepository(User).findOneOrFail({ where: { id: userId } })
         .then(user => {
@@ -70,34 +70,28 @@ export default class UserController {
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
     }
-    //CONTROL - OK
     //if user admin -All
     //if user groupAdmin -user from their groups
     //otherwise -> reject
     if (sessionUser.siteAccess == 'admin') {
       getRepository(FullUserGroup).find()
-        .then(fugs =>
-          res.send({ fullUserGroups: fugs })
-        )
+        .then(userGroups => {
+          res.send({ fullUserGroups: userGroups })
+        }).catch(err => res.send(err))
     } else {
 
       const acceptableGroupIds = groupAccess(['groupAdmin'], sessionUser.viewGroups)
       getRepository(FullUserGroup).find({ where: { groupId: In(acceptableGroupIds) } })
-        .then(fugs =>
-          res.send({ fullUserGroups: fugs })
-        )
+        .then(userGroups =>{
+          res.send({ fullUserGroups: userGroups })
+        }).catch(err => res.send(err))
       //TODO reject case?
     }
   }
   static addUser = async (req: Request, res: Response) => {
-    //TODO check if user has authority
-    //CONTROL - BROKEN
     //admin -> anything - works?
-    //groupAdmin -> only session groups with groupAdmin - doesn't work at all in either
-    console.log('adduser',req.session.user)
+    //groupAdmin -> only session groups with groupAdmin
     let { email, userGroupAccess, groupName } = req.body
-
-    console.log(email, userGroupAccess,groupName)
     if (!(email && userGroupAccess && groupName && groupAccessLevels.includes(userGroupAccess))) {
       res.status(400).send()
       return
@@ -105,52 +99,51 @@ export default class UserController {
 
     //Standard reject if no session
     const sessionUser = req.session.user
-    console.log('user',sessionUser)
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
     }
 
     //Find if the user exists.
-    getRepository(User).findOne({ where: { email: email } })
+    getRepository(User).findOne({ where: { email: email.toLowerCase() } })
       .then(user => {
-        if (user != null) {
-          //If exists, then meh... maybe in the future will go through access
-          res.status(409).send({ msg: 'email is already registered' })
-          return
-        }
         //OK, we can check on the group
-        //Copy paste from Auth controller... so think about functions...
-        try {
-          getRepository(GroupState).findOneOrFail({ attribute: 'name', value: groupName })
-            .then(groupState => {
-              getRepository(Group).findOneOrFail(groupState.groupId)
-                .then(group => {
-                  //have a group and no user
-                  //we want to create the user and user group
-                  console.log('group found')
-                  const acceptableGroupIds = groupAccess(['groupAdmin'], sessionUser.viewGroups)
-                  //At this point, either user is admin or value is in, or reject
-                  console.log('site access',sessionUser.siteAccess)
-                  if (sessionUser.siteAccess == 'admin' || acceptableGroupIds.includes(group.id)) {
+        getRepository(GroupState).findOneOrFail({ attribute: 'name', value: groupName })
+          .then(groupState => {
+            getRepository(Group).findOneOrFail(groupState.groupId)
+              .then(group => {
+                //have a group and maybe a user
+                const acceptableGroupIds = groupAccess(['groupAdmin'], sessionUser.viewGroups)
+                //At this point, either user is admin or value is in, or reject
+                if (sessionUser.siteAccess == 'admin' || acceptableGroupIds.includes(group.id)) {
+                  try {
                     getManager().transaction(async transactionalEntityManager => {
-                      let newUser = new User()
-                      newUser.email = email.toLowerCase()
-                      await transactionalEntityManager.save(newUser)
-                      let userGroup = new UserGroup()
-                      userGroup.group = group
-                      userGroup.access = userGroupAccess
-                      userGroup.user = newUser
-                      await transactionalEntityManager.save(userGroup)
-                    }).then(_ => res.send({ msg: 'user created' }))
-                  }else{
-                    res.send({msg: 'not authorized'})
-                  }
-                })
-            })
-        } catch (error) {
-          res.status(401).send({ err: error, msg: 'some problem finding or creating' })
-          return
-        }
+                      function createUserGroup(g: Group, a: string, u: User) {
+                        let userGroup = new UserGroup()
+                        userGroup.group = g
+                        userGroup.access = a
+                        userGroup.user = u
+                        return userGroup
+                      }
+                      //For the user doesn't exist -> create it and add it to the group.
+                      if (user == null) {
+                        let newUser = new User()
+                        newUser.email = email.toLowerCase()
+                        await transactionalEntityManager.save(newUser)
+                        await transactionalEntityManager.save(createUserGroup(group, userGroupAccess, newUser))
+                      } else {
+                        //user exists, add to a group -> this is another way to approve people.
+                        //In fact, this route could be reused for access control adjustments
+                        await transactionalEntityManager.save(createUserGroup(group, userGroupAccess, user))
+                      }
+                    }).then(_ => {
+                      res.send({ msg: 'user created' })
+                    })
+                  } catch (error) { res.send({ msg: `rejected` }) }
+                } else {
+                  res.send({ msg: 'not authorized' })
+                }
+              })
+          })
 
       }).catch(err =>
         res.status(400).send(err)

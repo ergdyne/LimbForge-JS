@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
-import {groupColHeaders, groupInputs } from '../testData'
 import formatColumns from '../functions/formatColumns'
 import FormBuilder from '../components/FormBuilder'
 import { getGroups, addGroup } from '../actions/groupsActions'
@@ -11,12 +10,13 @@ import { getGroups, addGroup } from '../actions/groupsActions'
 @connect((store) => {
   return ({
     sessionUser: store.session.user,
-    groups: store.groups.groups
+    groups: store.groups.groups,
+    groupColHeaders: store.display.groupColHeaders,
+    groupInputs: store.display.groupInputs
   })
 })
 export default class Groups extends React.Component {
   componentWillMount(){
-    console.log('getting groups')
     this.props.dispatch(getGroups())
   }
 
@@ -32,7 +32,7 @@ export default class Groups extends React.Component {
   render() {
     const columns =
       formatColumns(
-        groupColHeaders,
+        this.props.groupColHeaders,
         this.viewGroup,
         `View`
       )
@@ -43,7 +43,7 @@ export default class Groups extends React.Component {
         <div className="card round white"><div className="container padding">
           <FormBuilder
             key='patient'
-            elements={groupInputs}
+            elements={this.props.groupInputs}
             onSubmit={this.submitGroup}
             submitValue={`Add`}
             clearOnSubmit={true}

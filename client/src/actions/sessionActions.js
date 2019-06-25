@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { fullUserGroupsToGroups } from '../functions/convertView'
-import { axiosConfig } from '../testData'
+import {AXIOS_CONFIG, API_URL} from '../config/API'
 
 //NOTE! I believe that encryption of credentials is handled by HTTPS.
 //So when the site is live, as long as we use HTTPS, everything should be fine.
@@ -19,7 +19,6 @@ function home(siteAccess) {
 
 function userDataToUser(response) {
   const { id, email, viewGroups, siteAccess } = response.data
-  console.log('response got')
   const ourUser = {
     id: id,
     email: email,
@@ -28,7 +27,6 @@ function userDataToUser(response) {
     loggedIn: true,
     groups: fullUserGroupsToGroups(viewGroups)
   }
-  console.log('oour user', ourUser)
   return ourUser
 }
 
@@ -62,10 +60,10 @@ export function login(payload) {
   }
 
   return function (dispatch) {
-    axios.post('http://localhost:3000/auth/login', {
+    axios.post(`${API_URL}auth/login`, {
       email: email,
       auth: password
-    }, axiosConfig)
+    }, AXIOS_CONFIG)
       .then((response) => {
         dispatch({ type: "LOGIN", payload: userDataToUser(response) })
       })
@@ -77,7 +75,7 @@ export function login(payload) {
 
 export function logout() {
   return function (dispatch) {
-    axios.get('http://localhost:3000/auth/logout', axiosConfig)
+    axios.get(`${API_URL}auth/logout`, AXIOS_CONFIG)
       .then((response) => {
         //response doesn't really matter
         dispatch({ type: "LOGOUT", payload: {} })
@@ -93,11 +91,11 @@ export function signUp(newUser) {
   const { email, password, passwordConfirm, group } = newUser
   if (password === passwordConfirm) {
     return function (dispatch) {
-      axios.post('http://localhost:3000/auth/signup', {
+      axios.post(`${API_URL}auth/signup`, {
         email: email,
         auth: password,
         groupName: group
-      }, axiosConfig)
+      }, AXIOS_CONFIG)
         .then((response) => {
           dispatch({ type: "SIGN_UP", payload: userDataToUser(response) })
         })

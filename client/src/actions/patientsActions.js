@@ -1,12 +1,11 @@
 import axios from 'axios'
 import { patientStatesToPatients, patientMeasurementStatesToMeasurements } from '../functions/convertView'
 import {measurements as ms} from '../testData'
-import {axiosConfig} from '../testData'
+import {AXIOS_CONFIG, API_URL} from '../config/API'
 
 export function getPatients() {
   return function (dispatch) {
-    console.log('getting them')
-    axios.get('http://localhost:3000/patient/all',axiosConfig)
+    axios.get(`${API_URL}patient/all`,AXIOS_CONFIG)
       .then((response) => {
         const patients = patientStatesToPatients(response.data)
         dispatch({ type: "GET_PATIENTS", payload: patients })
@@ -19,16 +18,20 @@ export function getPatients() {
 
 export function getPatient(patientId) {
   return function (dispatch) {
-    axios.post('http://localhost:3000/patient/one', {
+    axios.post(`${API_URL}patient/one`, {
       patientId: patientId
-    },axiosConfig)
+    },AXIOS_CONFIG)
       .then((response) => {
-        //Well really just one patient
+        //Well really just one patient...
         const patients = patientStatesToPatients(response.data.patientStates)
+        
         const measurements = patientMeasurementStatesToMeasurements(response.data.patientMeasurementStates,ms)
-        //But just in case there is a problem
+        //But just in case there is a problem...TODO should ===1?
         if (patients.length > 0) {
-          dispatch({ type: "GET_PATIENT", payload: {patient: patients[0], measurements:measurements} })
+          var patient = patients[0]
+          //add the groupName to the patient
+          patient.groupName = response.data.groupName
+          dispatch({ type: "GET_PATIENT", payload: {patient: patient, measurements:measurements} })
         }else{
           dispatch({ type: "GET_PATIENT_REJECTED", payload: 'Something wrong with data.' })
         }
@@ -39,8 +42,7 @@ export function getPatient(patientId) {
   }
 }
 
-export function savePatient(patient, inputs, groupId) {
-  console.log("ats for for ", patient.id, patient, inputs, groupId)
+export function savePatient(patient, inputs, groupName) {
   const patientAttributes = inputs.map(i => (
     {
       attribute: i.accessor,
@@ -53,16 +55,15 @@ export function savePatient(patient, inputs, groupId) {
   //TODO check if changes
   if (patientAttributes.length > 0) {
     return function (dispatch) {
-      axios.post('http://localhost:3000/patient/save', {
+      axios.post(`${API_URL}patient/save`, {
         patientId: patient.id,
         patientInputs: patientAttributes,
-        groupId: groupId //TODO make it come from somewhere else
-      }, axiosConfig)
+        groupName: groupName
+      }, AXIOS_CONFIG)
         .then((response) => {
           //We only need the patient id
 
           patient.id = response.data.patientId
-          console.log(patient.id)
           dispatch({ type: "SAVE_PATIENT", payload: patient })
         })
         .catch((err) => {
@@ -78,7 +79,6 @@ export function savePatient(patient, inputs, groupId) {
 }
 
 export function saveMeasurements(measurements, inputs, patientId) {
-  console.log("m for ", patientId)
   const patientMeasurements = inputs.map(i => (
     {
       accessor: i.accessor,
@@ -90,13 +90,12 @@ export function saveMeasurements(measurements, inputs, patientId) {
   //TODO validate data and check for changes
   if (patientMeasurements.length > 0) {
     return function (dispatch) {
-      axios.post('http://localhost:3000/patient/save_measurements', {
+      axios.post(`${API_URL}patient/save_measurements`, {
         patientId: patientId,
         measurements: patientMeasurements
-      },axiosConfig)
+      },AXIOS_CONFIG)
         .then((response) => {
           //The response doesn't matter much...
-          console.log('resp', response.data.patientId)
           dispatch({ type: "SAVE_MEASUREMENTS", payload: measurements })
         })
         .catch((err) => {

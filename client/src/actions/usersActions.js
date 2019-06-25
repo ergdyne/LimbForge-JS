@@ -1,11 +1,10 @@
 import axios from 'axios'
 import{fullUserGroupsToUsers, fullUserGroupsToGroups} from '../functions/convertView'
-import {axiosConfig} from '../testData'
-
+import {AXIOS_CONFIG, API_URL} from '../config/API'
 
 export function getGroupOptions(){
   return function (dispatch) {
-    axios.get('http://localhost:3000/group/options',axiosConfig)
+    axios.get(`${API_URL}group/options`,AXIOS_CONFIG)
       .then((response) => {
         dispatch({ type: "GET_GROUP_OPTIONS", payload: response.data.groupNames })
       })
@@ -17,7 +16,7 @@ export function getGroupOptions(){
 
 export function getUsers(){
   return function (dispatch) {
-    axios.get('http://localhost:3000/user/all',axiosConfig)
+    axios.get(`${API_URL}user/all`,AXIOS_CONFIG)
       .then((response) => {
         const allUsers = fullUserGroupsToUsers(response.data.fullUserGroups)
         const requestedUsers = allUsers.filter(u=> u.groupAccess === 'requested')
@@ -32,9 +31,9 @@ export function getUsers(){
 
 export function getUser(userId){
   return function (dispatch) {
-    axios.post('http://localhost:3000/user/one',{
+    axios.post(`${API_URL}user/one`,{
       userId:userId
-    },axiosConfig)
+    },AXIOS_CONFIG)
       .then((response) => {
         const data = response.data
         const ourUser ={
@@ -59,15 +58,15 @@ export function approveUser(userId,groupId,groupAccess){
 }
 
 export function addUser(newUser){
-  const { email, groupAccess, groupName } = newUser
+  const { email, userGroupAccess, groupName } = newUser
 
-  if (email.length > 0 && groupAccess.length > 0 && groupName.length > 0) {
+  if (email.length > 0 && userGroupAccess.length > 0 && groupName.length > 0) {
     return function (dispatch) {
-      axios.post('http://localhost:3000/user/add', {
+      axios.post(`${API_URL}user/add`, {
         email:email, 
-        userGroupAccess:groupAccess, 
+        userGroupAccess:userGroupAccess, 
         groupName:groupName
-      },axiosConfig)
+      },AXIOS_CONFIG)
         .then((response) => {
           //We don't really care about the response yet. Only would care if going to update state.
           dispatch({ type: "ADD_USER", payload: response.data })

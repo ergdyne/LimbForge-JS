@@ -28,6 +28,11 @@ export default class FormBuilder extends React.Component {
       var state = this.state
       if (this.props.initial && this.props.initial[element.accessor]) {
         state[element.accessor] = this.props.initial[element.accessor]
+      } else {
+        if (element.default) {
+          console.log('default set')
+          state[element.accessor] = element.default
+        }
       }
 
       this.setState(state)
@@ -71,6 +76,8 @@ export default class FormBuilder extends React.Component {
               value={this.state[element.accessor]}
               name={element.accessor}
               onChange={this.handleInputChange}>
+                {/* React does not like this line of code, but it seems to be the only way to get the desired functionality. */}
+              {(element.placeholder && !this.state[element.accessor]) ? <option value="" disabled selected>{element.placeholder}</option> : ''}
               {element.options.map(o => {
                 return (
                   <option

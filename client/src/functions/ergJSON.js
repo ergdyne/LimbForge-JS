@@ -30,7 +30,6 @@ function keyValueTypeToJSON(keyAttribute, valueAttribute,typeAttribute){
     numbers.forEach(so=>obj[so[keyAttribute]]= parseFloat(so[valueAttribute]))
     ints.forEach(so=>obj[so[keyAttribute]]= parseInt(so[valueAttribute]))
     
-    console.log('obj', obj)
     return obj
   
   }

@@ -11,6 +11,7 @@ import { PatientMeasurement } from '../entity/PatientMeasurement'
 import { PatientMeasurementState } from '../entity/ViewPatientMeasurementState'
 import { groupAccess } from "../functions/access"
 import { ViewPatientGroup } from "../entity/ViewPatientGroup"
+import { GroupState } from "../entity/ViewGroupState";
 
 function patientInputsToAttributes(p: Patient, inputs: { attribute: string; value: string; type: string; }[]) {
   return inputs.map(i => {
@@ -24,7 +25,6 @@ function patientInputsToAttributes(p: Patient, inputs: { attribute: string; valu
 }
 
 export default class PatientController {
-  //CONTROL-OK
   //Admin - all
   //groupAdmin or User -> only if patient in a group that the user has user or groupAdmin access for
   //Untested due to reloading killing cookie
@@ -32,19 +32,30 @@ export default class PatientController {
     let { patientId } = req.body
     const sessionUser = req.session.user
 
-    if(sessionUser == null) {
-      
+    if (sessionUser == null) {
+
       res.status(400).send({ msg: 'session failed' })
     }
     getRepository(PatientState).find({ where: { patientId: patientId } })
       .then(pss => {
         getRepository(PatientMeasurementState).find({ where: { patientId: patientId } })
           .then(pmss => {
-            if (sessionUser.siteAccess == 'admin') {
-              res.send({ patientStates: pss, patientMeasurementStates: pmss })
-            } else {
-              //Get patient's grou
-              try {
+            try {
+              //Get patient's groupName
+              if (sessionUser.siteAccess == 'admin') {
+                //get the group name
+                getRepository(ViewPatientGroup)
+                  .findOneOrFail({ where: { patientId: patientId } })
+                  .then(group => {
+                    //Get the group name
+                    res.send({
+                      patientStates: pss,
+                      patientMeasurementStates: pmss,
+                      groupName: group.groupName
+                    })
+                  })
+              } else {
+                //For users and groupAdmins, saving a patient is group limited
                 const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
                 getRepository(ViewPatientGroup)
                   .findOneOrFail({
@@ -52,27 +63,31 @@ export default class PatientController {
                       patientId: patientId,
                       groupId: In(acceptableGroupIds)
                     }
-                  }).then(_result => res.send({ patientStates: pss, patientMeasurementStates: pmss }))
-              } catch{
-                res.status(400).send({ msg: 'no access' })
-                return
+                  }).then(_result => {
+                    //Get the group name
+                    res.send({
+                      patientStates: pss,
+                      patientMeasurementStates: pmss,
+                      groupName: group.groupName
+                    })
+                  })
               }
+            } catch{
+              res.status(400).send({ msg: 'no access' })
+              return
             }
           })
 
       })
       .catch(err => res.status(400).send(err))
   }
-
-  //CONTROL-OK
   //Admin - all
   //groupAdmin or User -> only patients in groups that the user has user or groupAdmin access for
   //Tested for user... seems to work
   static getAllPatients = async (req: Request, res: Response) => {
     //Auth stuff and limit to user's groups, or no limit if admin
     const sessionUser = req.session.user
-    if(sessionUser == null) {
-      console.log('session failed in getPatients')
+    if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
     }
 
@@ -93,11 +108,9 @@ export default class PatientController {
   static saveMeasurement = async (req: Request, res: Response) => {
     let { measurements, patientId } = req.body
     //Going to create Patient Measurements
-    //CONTROL-OK
     //For any user, groupadmin, or admin go ahead
     const sessionUser = req.session.user
-    if(sessionUser == null) {
-      console.log('session failed in saveMeasurement')
+    if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
     }
 
@@ -114,7 +127,7 @@ export default class PatientController {
                     measurement.patient = patient
                     measurement.measure = measure
                     measurement.value = parseFloat(m.value)//not safe
-                    getRepository(PatientMeasurement).save(measurement)//.then(x=>{console.log('ok...',x)})
+                    getRepository(PatientMeasurement).save(measurement)
                   })
               })
           })
@@ -128,17 +141,16 @@ export default class PatientController {
     }
   }
   static savePatient = async (req: Request, res: Response) => {
-    //CONTROL-OK
+    //TODO add check to see if attributes have changed instead of saving all of them.
     //For any user, groupadmin, or admin go ahead
     const sessionUser = req.session.user
-    if(sessionUser == null) {
-      console.log('session failed in saveMeasurement')
+    if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
     }
 
     if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
       //incoming list of {attribute, value:string, type (string or date)}
-      let { patientInputs, groupId, patientId } = req.body
+      let { patientInputs, groupName, patientId } = req.body
       //Existing patient case is different then new one
       if (patientId != null) {
         try {
@@ -154,28 +166,36 @@ export default class PatientController {
 
       } else {
         //new patient
-        //TODO replace 1 with groupId
         try {
-          getRepository(Group).findOneOrFail(1).then(group => {
-            let newPatient = new Patient()
-            getManager().transaction(async transactionalEntityManager => {
-              await transactionalEntityManager.save(newPatient)
-              let patientGroup = new PatientGroup()
-              patientGroup.patient = newPatient
-              patientGroup.group = group
-              await transactionalEntityManager.save(patientGroup)
+          //Add group feeding in correctly
+          getRepository(GroupState)
+            .findOneOrFail({
+              where: {
+                attribute: 'name',
+                value: groupName
+              }
+            }).then(groupState => {
+              getRepository(Group).findOneOrFail(groupState.groupId).then(group => {
+                let newPatient = new Patient()
+                getManager().transaction(async transactionalEntityManager => {
+                  await transactionalEntityManager.save(newPatient)
+                  let patientGroup = new PatientGroup()
+                  patientGroup.patient = newPatient
+                  patientGroup.group = group
+                  await transactionalEntityManager.save(patientGroup)
 
-              let patientAttributes = patientInputsToAttributes(newPatient, patientInputs).filter(p => p.value != null)
+                  let patientAttributes = patientInputsToAttributes(newPatient, patientInputs).filter(p => p.value != null)
 
-              await transactionalEntityManager.save(patientAttributes)
+                  await transactionalEntityManager.save(patientAttributes)
 
-            }).then(_ => res.send({ patientId: newPatient.id, msg: 'new patient' }))
-          })
+                }).then(_ => res.send({ patientId: newPatient.id, msg: 'new patient' }))
+              })
+            })
         } catch (err) {
           res.status(400).send(err)
         }
       }
-    }else{
+    } else {
       res.status(400).send({ msg: 'not authorized' })
     }
   }

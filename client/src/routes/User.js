@@ -7,7 +7,8 @@ import { getUser } from '../actions/usersActions'
 @connect((store) => {
   return ({
     sessionUser: store.session.user,
-    user: store.users.user
+    user: store.users.user,
+    userGroupsColHeaders: store.display.userGroupsColHeaders
   })
 })
 export default class User extends React.Component {
@@ -20,11 +21,6 @@ export default class User extends React.Component {
     }
   }
   render() {
-    const columns = [
-      {Header: 'Group', accessor: 'name'},
-      {Header: 'Description', accessor: 'description'},
-      {Header: 'Access', accessor: 'groupAccess'},
-    ]
     return (
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
@@ -33,7 +29,7 @@ export default class User extends React.Component {
           {(this.props.user.groups.length > 0) ?
             <ReactTable
               data={this.props.user.groups}
-              columns={columns}
+              columns={this.props.userGroupsColHeaders}
               filterable={true}
               minRows={0}
             /> :
@@ -44,10 +40,3 @@ export default class User extends React.Component {
     )
   }
 }
-
-// user:{ //for looking at a particular user
-//   id:null,
-//   email:'',
-//   siteAccess:'',
-//   groups:[]
-// },
