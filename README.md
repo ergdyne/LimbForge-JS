@@ -4,7 +4,7 @@ REMEMBER: as long as the interfaces of the code are well structured, tangles can
 
 RANDO: on the question of using semicolins to use or not, I went with not. Where you see them is copied code.
 
-#Incomplete Setup
+--Incomplete Setup--
 Install node (v12.1.0) and npm (use nvm on github)
 
 Development Setup

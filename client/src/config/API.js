@@ -6,8 +6,8 @@ let AXIOS_CONFIG = {
   withCredentials: true
 }
 
-let API_URL = `http://localhost:3000/`
-
+//DEPLOY: When deploying change this. This is good enough set up.
+let API_URL = '/api/' //'https://limbforge.ergdyne.com:8000/'
 export {
   AXIOS_CONFIG,
   API_URL

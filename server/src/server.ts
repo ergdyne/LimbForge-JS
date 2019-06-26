@@ -30,7 +30,7 @@ createConnection().then(async (connection) => {
     } 
   }))
 
-  app.use("/", routes) 
+  app.use("/api/", routes) 
 
   app.get('*',
     (req, res) => res.status(200)
