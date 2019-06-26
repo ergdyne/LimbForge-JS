@@ -5,9 +5,10 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import routes from './routes'
 import session from 'express-session'
+import * as dotenv from "dotenv"
+//Work around
 
-const CLIENT_ORIGIN="http://localhost:8080" //TODO make https and move to env
-const SESSION_SECRET="lalalala" //TODO move to env
+dotenv.config()
 
 createConnection().then(async (connection) => {
   await connection.synchronize()
@@ -16,9 +17,9 @@ createConnection().then(async (connection) => {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
 
-  app.use(cors({origin: CLIENT_ORIGIN,credentials: true}))
+  app.use(cors({origin: process.env.CLIENT_ORIGIN, credentials: true}))
   app.use(session({
-    secret: SESSION_SECRET,
+    secret: process.env.SESSION_SECRET,
     name: 'limbforge',
     resave: false,
     saveUninitialized: true,
