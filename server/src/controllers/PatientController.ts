@@ -63,7 +63,7 @@ export default class PatientController {
                       patientId: patientId,
                       groupId: In(acceptableGroupIds)
                     }
-                  }).then(_result => {
+                  }).then(group => {
                     //Get the group name
                     res.send({
                       patientStates: pss,
@@ -90,7 +90,6 @@ export default class PatientController {
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
     }
-
     if (sessionUser.siteAccess == 'admin') {
       getRepository(PatientState).find()
         .then(patients => {
@@ -113,7 +112,6 @@ export default class PatientController {
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
     }
-
     if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
       try {
         //Get the patient
@@ -147,7 +145,6 @@ export default class PatientController {
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
     }
-
     if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
       //incoming list of {attribute, value:string, type (string or date)}
       let { patientInputs, groupName, patientId } = req.body
