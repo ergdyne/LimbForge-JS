@@ -26,6 +26,21 @@ insert into "measure_attribute" (attribute,"value", "type","measureId") values (
 insert into "measure_attribute" (attribute,"value", "type","measureId") values ('accessor', 'c4', 'string', 4);
 insert into "measure_attribute" (attribute,"value", "type","measureId") values ('instruction', 'Measure around the wrist.', 'string', 4);
 
+--New inserts - v 0.2
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('step', '1.0', 'number', 1);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('step', '0.5', 'number', 2);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('step', '0.5', 'number', 3);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('step', '0.5', 'number', 4);
+
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-min', '18', 'number', 1);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-max', '32', 'number', 1);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-min', '14', 'number', 2);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-max', '19', 'number', 2);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-min', '14.5', 'number', 3);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-max', '18', 'number', 3);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-min', '20', 'number', 4);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-max', '28', 'number', 4);
+
 
 drop view full_user_group ;
 drop view group_state ;
