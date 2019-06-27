@@ -27,6 +27,9 @@ export default function reducer(state = {
     case "GET_COLS": {
       return { ...state }
     }
+    case "GET_MEASURE_INPUTS":{
+      return {...state, measurementInputs:action.payload}
+    }
     default: return state
   }
 

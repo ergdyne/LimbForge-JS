@@ -30,7 +30,6 @@ export default class FormBuilder extends React.Component {
         state[element.accessor] = this.props.initial[element.accessor]
       } else {
         if (element.default) {
-          console.log('default set')
           state[element.accessor] = element.default
         }
       }
@@ -122,8 +121,9 @@ export default class FormBuilder extends React.Component {
         )
       }
       default: {
+        //TODO decide on name vs label and then remove that check
         return (<div key={element.accessor}>
-          <span data-tip={element.instruction}>{`${element.label}: `}</span>
+          <span data-tip={element.instruction}>{`${(element.name)?element.name:element.label}: `}</span>
           <TextInput
             key={element.accessor}
             name={element.accessor}

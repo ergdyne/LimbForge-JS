@@ -18,7 +18,6 @@ export default class App extends React.Component {
     // TODO add small screen functionality. Currently, menu items vanish.
     // TODO add security layer to the Router that isn't this goofy.
     //TODO move Nav bar to component
-    //console.log('store', this.props.stored)
     return (
       <Router>
         <div className="theme-l5">

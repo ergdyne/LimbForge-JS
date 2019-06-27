@@ -1,5 +1,10 @@
 import { expect } from 'chai'
-import { measureStatesToMeasures,listToValidationObject } from '../../src/functions/convertView'
+import { 
+
+  listToValidationObject,
+  measureStatesToMeasures,
+  patientMeasurementStatesToMeasurements 
+} from '../../src/functions/convertView'
 
 const measureInput = [
   { measureId: 1, attribute: 'name', value: 'L1', type: 'string' },
@@ -32,12 +37,28 @@ const validationOutput = {
   max: 32
 }
 
+const patientMeasurementStatesInput = 
+  [
+    {patientId: 1, measureId: 1, groupId: 1, value: "24.00", accessor: 'l1'},
+  {patientId: 1, measureId: 2, groupId: 1, value: "23.00", accessor:'l2'}
+]
+const measurementsOutput = {
+  l1:24,
+  l2:23
+}
+
+
 describe("convertView", () => {
   it("measureStatesToMeasures generates expected object", () => {
     expect(measureStatesToMeasures(measureInput)).to.eql(measureOutput)
   })
+  
   it("listToValidationObject generates expected object", () => {
     expect(listToValidationObject(validationInput)).to.eql(validationOutput)
+  })
+
+  it("patientMeasurementStatesToMeasurements generates expected measurements", () =>{
+    expect(patientMeasurementStatesToMeasurements(patientMeasurementStatesInput)).to.eql(measurementsOutput)
   })
 })
 

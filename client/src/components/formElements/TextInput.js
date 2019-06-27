@@ -27,6 +27,7 @@ export default class TextInput extends React.Component {
 
   render() {
     // Can use className to position the prop in the future.
+    //TODO put label in here too
     return (
       <input
         name={this.props.name}

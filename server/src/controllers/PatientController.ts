@@ -115,6 +115,7 @@ export default class PatientController {
     if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
       try {
         //Get the patient
+        //TODO this should be a transaction...
         getRepository(Patient).findOneOrFail(patientId).then(patient => {
           measurements.forEach((m: { accessor: string; value: string; }) => {
             let measurement = new PatientMeasurement()

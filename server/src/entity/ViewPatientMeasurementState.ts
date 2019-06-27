@@ -3,7 +3,7 @@ import { ViewEntity, ViewColumn } from "typeorm"
 //patient's group is not expected to change, but this makes it allowable.
 @ViewEntity({
   expression: `
-    select l.mid as "measureId", l.pid as "patientId",pg."groupId", om.value from 
+    select l.mid as "measureId", l.pid as "patientId",pg."groupId", om.value, a.accessor from 
       (select 
         "measureId" as mid, 
         max(create_at) as latest, 
@@ -24,6 +24,20 @@ import { ViewEntity, ViewColumn } from "typeorm"
           inner join patient_group as og
           on l.pid = og."patientId" and l.latest = og.create_at
     ) as pg on pg."patientId" = l.pid
+    inner join
+    (select l.mid as "measureId", oa.value as accessor from
+      (
+        select 
+          "measureId" as mid,
+          max(create_at) as latest,
+          attribute
+        from measure_attribute
+        where attribute = 'accessor'
+        group by "measureId", attribute
+      ) as l
+    inner join measure_attribute as oa
+    on l.mid = oa."measureId" and l.latest = oa.create_at and l.attribute = oa.attribute) as a
+    on a."measureId" = l.mid
   `
 })
 export class PatientMeasurementState{
@@ -38,4 +52,7 @@ export class PatientMeasurementState{
 
   @ViewColumn()
   value: number
+
+  @ViewColumn()
+  accessor: string
 }

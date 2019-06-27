@@ -70,12 +70,11 @@ function patientStatesToPatients(pss) {
   })
 }
 
-function patientMeasurementStatesToMeasurements(pmss, measures) {
+function patientMeasurementStatesToMeasurements(pmss) {
   //ARG this is the wrong way to do this, should just have a better view!
   var measurements = {}
   pmss.forEach(pms => {
-    const accessor = _.find(measures, (m) => m.id == pms.measureId).name.toLowerCase()
-    measurements[accessor] = parseFloat(pms.value)
+    measurements[pms.accessor] = parseFloat(pms.value)
   })
   return measurements
 }

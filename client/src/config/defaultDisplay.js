@@ -1,5 +1,4 @@
 import {amputationCauses,genders, sides, } from './enums'
-import {measurements} from '../testData'
 
 const groupColHeaders = [
   { accessor: `id`, label: ``, type: `id` },
@@ -64,20 +63,7 @@ const patientInputs = [
 //TODO deal with any issues with caps Transradial
 ]
 
-const measurementInputs = measurements.map(m => {
-  return ({
-    accessor: m.name.toLowerCase(),
-    label: m.name,
-    type: 'number',
-    inputType: 'text',
-    placeholder: "XX.X cm",
-    validation: {
-      min: m.min,
-      max: m.max
-    },
-    instruction: m.instruction
-  })
-})
+const measurementInputs = []
 
 export {
   groupColHeaders,
