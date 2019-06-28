@@ -130,7 +130,7 @@ export default class Patient extends React.Component {
                 {(l === 'patient') ?
                   <FormBuilder
                     key='patient'
-                    elements={this.props.patientInputs.slice(0, 9)}
+                    elements={this.props.patientInputs.slice(0, this.props.patientInputs.length-1)}
                     onSubmit={this.patientSubmit}
                     submitValue={`Save`}
                     preventDefault={true}
