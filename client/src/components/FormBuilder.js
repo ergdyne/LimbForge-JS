@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
+import DateSelect from './formElements/DateSelect'
 import PasswordInput from './formElements/PasswordInput'
 import RadioInput from './formElements/RadioInput'
 import SelectInput from './formElements/SelectInput'
@@ -79,28 +78,24 @@ export default class FormBuilder extends React.Component {
     this.setState({ [name]: item, submitError: '' })
   }
 
-  //Works with react-datepicker to allow for curried accessor and multiple dates without building multiple onChanges.
-  dateChange(element) {
-    return (date) => {
-      var newDate = this.state[element.accessor]
-      newDate.value = date
-      this.setState({ [element.accessor]: newDate })
-    }
-  }
-
   //Every case should be a single ReactComponent that preferably has no state and has validation behavior.
   generateFormElement = (element) => {
     switch (element.inputType) {
       //TODO move date into it's own component. Works fine now as it is small
       case 'date': {
-        return (<div key={element.accessor}>
-          <span>{`${element.name}: `}</span>
-          <DatePicker
+        return (
+          <DateSelect
             key={element.accessor}
-            selected={this.state[element.accessor].value}
-            onChange={this.dateChange(element)}
+            onChange={this.handleInputChange}
+            name={element.accessor}
+            value={this.state[element.accessor].value}
+            label={element.name}
+            instruction={element.instruction}
+            isValid={this.state[element.accessor].isValid}
+            errors={this.state[element.accessor].errors}
+            validations={element.validation}
           />
-        </div>)
+        )
       }
       case 'select': {
         return (
@@ -136,7 +131,7 @@ export default class FormBuilder extends React.Component {
       }
       case 'password': {
         return (
-          <PasswordInput 
+          <PasswordInput
             key={element.accessor}
             onChange={this.handleInputChange}
             name={element.accessor}
@@ -170,14 +165,11 @@ export default class FormBuilder extends React.Component {
   render() {
     return (
       <form onSubmit={() => {
-        console.log('submit!')
         //TODO move submit to function
         //preventDefault stops page reload.
         if (this.props.preventDefault) { event.preventDefault() }
         //Sending the whole state back with the onSubmit.
         const data = this.state
-        console.log('raw data', data)
-
         //Filter to those items with validation and check for errors       
         var allErrors = []
 
@@ -196,18 +188,14 @@ export default class FormBuilder extends React.Component {
           }
         })
 
-        console.log('error check done', allErrors)
-
         if (allErrors.length === 0) {
           //Clear the form and the state
-          console.log('should be submiting now')
           if (this.props.clearOnSubmit) { this.clearState() }
 
           //Each item with a value map to just the value
           var formData = {}
           this.props.elements.filter(e => data[e.accessor].value)
             .forEach(e => formData[e.accessor] = data[e.accessor].value)
-          console.log('object submitted', formData)
           this.props.onSubmit(formData)
         } else {
           this.setState({ submitError: 'Oh no! Some data is not right. Please fix input errors in red.' })

@@ -25,7 +25,6 @@ export function getPatient(patientId) {
         const patients = patientStatesToPatients(response.data.patientStates)
         
         //MEASURE
-        console.log('patient state',response.data.patientMeasurementStates )
         const measurements = patientMeasurementStatesToMeasurements(response.data.patientMeasurementStates)
         //But just in case there is a problem...TODO should ===1?
         if (patients.length > 0) {
