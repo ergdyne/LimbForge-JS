@@ -99,7 +99,7 @@ export default class Patient extends React.Component {
   render() {
     const l = this.props.level
     //TODO adjust location. This can be pulled when the user logs in. See multiple reducers in action from tutorial.
-    const groupInputs = [{ accessor: `group`, label: `Select a Group for the Patient`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions }]
+    const groupInputs = [{ accessor: `group`, name: `Select a Group for the Patient`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions }]
     return (
       //if new patient and group options exist, give a dropdown.
       //If no option or exising patient display group Name

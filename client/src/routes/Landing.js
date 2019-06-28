@@ -41,10 +41,10 @@ export default class Landing extends React.Component {
     //TODO adjust location of inputs (maybe?)
     const groupOptions = this.props.groupOptions
     const signUpInputs = [//PUSH IN THE NEW OPTION
-      { accessor: `email`, label: `Email`, type: `string`, inputType: `text` },
-      { accessor: `password`, label: `Password`, type: `string`, inputType: `password` },
-      { accessor: `passwordConfirm`, label: `Confirm Password`, type: `string`, inputType: `password` },
-      { accessor: `group`, label: `Group`, type: `string`, inputType: `select`, placeholder:'Select Group', options: (groupOptions) },
+      { accessor: `email`, name: `Email`, type: `string`, inputType: `text` },
+      { accessor: `password`, name: `Password`, type: `string`, inputType: `password` },
+      { accessor: `passwordConfirm`, name: `Confirm Password`, type: `string`, inputType: `password` },
+      { accessor: `group`, name: `Group`, type: `string`, inputType: `select`, placeholder:'Select Group', options: (groupOptions) },
     ]
     return (
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">

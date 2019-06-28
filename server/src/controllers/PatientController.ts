@@ -111,6 +111,7 @@ export default class PatientController {
     const sessionUser = req.session.user
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
+      return
     }
     if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
       try {
@@ -132,11 +133,14 @@ export default class PatientController {
           })
         })
         res.send({ patientId: patientId, msg: 'measurements saved' })
+        return
       } catch (err) {
         res.status(400).send(err)
+        return
       }
     } else {
       res.status(400).send({ msg: 'not authorized' })
+      return
     }
   }
   static savePatient = async (req: Request, res: Response) => {
@@ -145,6 +149,7 @@ export default class PatientController {
     const sessionUser = req.session.user
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
+      return
     }
     if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
       //incoming list of {attribute, value:string, type (string or date)}
@@ -156,10 +161,14 @@ export default class PatientController {
             let patientAttributes = patientInputsToAttributes(patient, patientInputs).filter(p => p.value != null)
             getManager().transaction(async transactionalEntityManager => {
               await transactionalEntityManager.save(patientAttributes)
-            }).then(_ => res.send({ patientId: patientId, msg: 'updated' }))
+            }).then(_ => {
+              res.send({ patientId: patientId, msg: 'updated' })
+              return
+            })
           })
         } catch (err) {
           res.status(400).send(err)
+          return
         }
 
       } else {
@@ -186,15 +195,20 @@ export default class PatientController {
 
                   await transactionalEntityManager.save(patientAttributes)
 
-                }).then(_ => res.send({ patientId: newPatient.id, msg: 'new patient' }))
+                }).then(_ => {
+                  res.send({ patientId: newPatient.id, msg: 'new patient' })
+                  return
+                })
               })
             })
         } catch (err) {
           res.status(400).send(err)
+          return
         }
       }
     } else {
       res.status(400).send({ msg: 'not authorized' })
+      return
     }
   }
 }

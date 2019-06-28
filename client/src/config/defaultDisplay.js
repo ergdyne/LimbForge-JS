@@ -1,27 +1,27 @@
 import {amputationCauses,genders, sides, } from './enums'
 
 const groupColHeaders = [
-  { accessor: `id`, label: ``, type: `id` },
-  { accessor: `name`, label: `Name`, type: `string` },
-  { accessor: `description`, label: `About`, type: `string` }
+  { accessor: `id`, name: ``, type: `id` },
+  { accessor: `name`, name: `Name`, type: `string` },
+  { accessor: `description`, name: `About`, type: `string` }
 ]
 
 const groupInputs = [
-  { accessor: `name`, label: `Group Name`, type: `string`, inputType: `text`},
-  { accessor: `description`, label: `About`, type: `string`, inputType: `text`}
+  { accessor: `name`, name: `Group Name`, type: `string`, inputType: `text`},
+  { accessor: `description`, name: `About`, type: `string`, inputType: `text`}
 ]
 
 
 const usersColHeaders = [
-  { accessor: `id`, label: ``, type: `id` },
-  { accessor: `email`, label: `Email`, type: `string` },
-  { accessor: `siteAccess`, label: `Level`, type: `string` },
+  { accessor: `id`, name: ``, type: `id` },
+  { accessor: `email`, name: `Email`, type: `string` },
+  { accessor: `siteAccess`, name: `Level`, type: `string` },
 ]
 
 const usersGroupColHeaders = [
-  { accessor: `id`, label: ``, type: `id` },
-  { accessor: `email`, label: `Email`, type: `string` },
-  { accessor: `groupAccess`, label: `Level`, type: `string` },
+  { accessor: `id`, name: ``, type: `id` },
+  { accessor: `email`, name: `Email`, type: `string` },
+  { accessor: `groupAccess`, name: `Level`, type: `string` },
 ]
 
 //Col headers that show a user's groups
@@ -33,33 +33,33 @@ const userGroupsColHeaders =
 ]
 
 const patientColHeaders = [
-  { accessor: `id`, label: ``, type: `id` },
-  { accessor: `firstName`, label: `First Name`, type: `string` },
-  { accessor: `lastName`, label: `Last Name`, type: `string` },
-  { accessor: `dateOfBirth`, label: `Date of Birth`, type: `date` },
-  { accessor: `dateOfAmputation`, label: `Amputation Date`, type: `date` },
-  { accessor: `city`, label: `City`, type: `string` },
-  { accessor: `country`, label: `Country`, type: `string` },
-  { accessor: `gender`, label: `Gender`, type: `string` },
-  { accessor: `side`, label: `Side`, type: `string` },
-  { accessor: `amputationLevel`, label: `Amputation Level`, type: `string` },
-  { accessor: `amputationCause`, label: `Amputation Cause`, type: `string` }
+  { accessor: `id`, name: ``, type: `id` },
+  { accessor: `firstName`, name: `First Name`, type: `string` },
+  { accessor: `lastName`, name: `Last Name`, type: `string` },
+  { accessor: `dateOfBirth`, name: `Date of Birth`, type: `date` },
+  { accessor: `dateOfAmputation`, name: `Amputation Date`, type: `date` },
+  { accessor: `city`, name: `City`, type: `string` },
+  { accessor: `country`, name: `Country`, type: `string` },
+  { accessor: `gender`, name: `Gender`, type: `string` },
+  { accessor: `side`, name: `Side`, type: `string` },
+  { accessor: `amputationLevel`, name: `Amputation Level`, type: `string` },
+  { accessor: `amputationCause`, name: `Amputation Cause`, type: `string` }
 ]
 
 //I am ok with type being type
 //Patient Inputs are currently saved int a weaker state than measurements (the accessor matters)
 //When building a fully dynamic form, the data will have to be converted to follow the same process as measures.
 const patientInputs = [
-  { accessor: `firstName`, label: `First Name`, type: `string`, inputType: `text` },
-  { accessor: `lastName`, label: `Last Name`, type: `string`, inputType: `text` },
-  { accessor: `dateOfBirth`, label: `Date of Birth`, type: `date`, inputType: `date` },
-  { accessor: `dateOfAmputation`, label: `Amputation Date`, type: `date`, inputType: `date` },
-  { accessor: `city`, label: `City`, type: `string`, inputType: `text` },
-  { accessor: `country`, label: `Country`, type: `string`, inputType: `text` },
-  { accessor: `gender`, label: `Gender`, type: `string`, inputType: `radio`, options: genders },
-  { accessor: `side`, label: `Amputation Side`, type: `string`, inputType: `radio`, options: sides },
-  { accessor: `amputationCause`, label: `Amputation Cause`, type: `string`, inputType: `select`, placeholder:'Select Cause', options: amputationCauses },
-  { accessor: `amputationLevel`, label: `Amputation Level`, type: `string`, inputType: `text`, default: 'Transradial' }
+  { accessor: `firstName`, name: `First Name`, type: `string`, inputType: `text` },
+  { accessor: `lastName`, name: `Last Name`, type: `string`, inputType: `text` },
+  { accessor: `dateOfBirth`, name: `Date of Birth`, type: `date`, inputType: `date` },
+  { accessor: `dateOfAmputation`, name: `Amputation Date`, type: `date`, inputType: `date` },
+  { accessor: `city`, name: `City`, type: `string`, inputType: `text` },
+  { accessor: `country`, name: `Country`, type: `string`, inputType: `text` },
+  { accessor: `gender`, name: `Gender`, type: `string`, inputType: `radio`, options: genders },
+  { accessor: `side`, name: `Amputation Side`, type: `string`, inputType: `radio`, options: sides },
+  { accessor: `amputationCause`, name: `Amputation Cause`, type: `string`, inputType: `select`, placeholder:'Select Cause', options: amputationCauses },
+  { accessor: `amputationLevel`, name: `Amputation Level`, type: `string`, inputType: `text`, default: 'Transradial' }
 //TODO deal with any issues with caps Transradial
 ]
 

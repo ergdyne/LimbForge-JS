@@ -13,7 +13,7 @@ export default class PatientData extends React.Component {
         <div>{`Patient:`}</div>
         {/* Temporary formating */}
         <div>
-          {patientInputs.map(x => { return <span key={`header-${x.accessor}`}><span>{x.label}</span><span>{" - "}</span></span> })}
+          {patientInputs.map(x => { return <span key={`header-${x.accessor}`}><span>{x.name}</span><span>{" - "}</span></span> })}
 
         </div>
         <div>{patientInputs.map(x => { return (<span key={x.accessor}><span>{formatValue(x.type, this.props.patient[x.accessor])}</span><span>{" - "}</span></span>) })}</div>
