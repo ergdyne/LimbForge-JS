@@ -1,17 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ReactTooltip from 'react-tooltip'
-import validation from '../../functions/validation'
 
 export default class TextInput extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      color: "gray",
-      errors:[]
-    }
-  }
-
   componentWillMount(){
     if(this.props.value){this.setState({color:"black"})}
   }
@@ -19,34 +9,31 @@ export default class TextInput extends React.Component {
   //Simple version of checking values for just our cases.
 
   checkInput = (event) => {
-    //Naive approach//TODO map against all validations
-    const validations = validation(this.props.validation,event.target.value,this.props.label)
-    if (validations.length === 0) {
-      this.setState({ color: "green",errors:[] })
-    } else {
-      this.setState({ color: "red",errors:validations })
+    //Callback to state inside form with the parts of event we care about
+    const change = {
+      name:this.props.name,
+      label:this.props.label,
+      value:event.target.value,
+      validations:this.props.validations,
+      isValid:this.props.isValid
     }
-    //validation callback?
-
-    //Callback to state inside form
-    this.props.onChange(event)
+    this.props.onChange(change)
   }
 
   render() {
     // Can use className to position the prop in the future.
     return (
-      <div className={`FormBuilder-text`}>
+      <div className={`FormBuilder-text ${(this.props.isValid)?'':'input-error'}`}>
         <span data-tip={this.props.instruction}>{`${this.props.label}: `}</span>
-        <input
+        <span data-tip={(this.props.errors.length===0)?'':this.props.errors}><input
           name={this.props.name}
           value={this.props.value}
-          data-tip={(this.state.errors.length===0)?'':this.state.errors}
+          
           className='FormBuilder-text-input'
           type='text'
           placeholder={this.props.placeholder}
-          onChange={(this.props.validation)?this.checkInput:this.props.onChange}
-          style={{color:this.state.color}}
-        />
+          onChange={this.checkInput}
+        /></span>
       </div>
     )
   }
@@ -58,6 +45,8 @@ TextInput.propTypes={
   placeholder: PropTypes.string,
   label: PropTypes.string.isRequired,
   instruction: PropTypes.string,
+  isValid:PropTypes.bool,
+  errors:PropTypes.array,
   //ok for now but changes if this all gets more complex... or moves up.
-  validation: PropTypes.object
+  validations: PropTypes.object
 }

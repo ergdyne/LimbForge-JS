@@ -77,11 +77,7 @@ export default class Patient extends React.Component {
     if (!this.props.patient.amputationLevel) {
       patient.amputationLevel = `transradial`
     }
-    //TODO replace with validation (require!)
-    if (!this.props.patient.gender) patient.gender = 'Male'
-    if (!this.props.patient.side) patient.side = 'Right'
 
-    //TODO Error catching and validation on groupName
     this.props.dispatch(savePatient(patient, this.props.patientInputs, this.state.groupName))
     this.props.dispatch(updateLevel(isEmpty(this.props.measurements) ? 'measurement' : 'preview'))
   }

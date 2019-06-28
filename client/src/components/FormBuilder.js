@@ -3,12 +3,23 @@ import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-//import { useAlert } from 'react-alert'
 import TextInput from './formElements/TextInput'
 import validation from '../functions/validation'
 
 //A component that takes a list of elements and a submit function and generates a form.
-//TODO add validation. Two layers: in line and submit on/off.
+//SOME NOTES//
+///To lessen my confusion, I increased the potential for others to be confused.
+////At the Data level:
+////What is usually event is change (as I am adding things).
+////What is typically name in a form element, I call an accessor (as it is used for access and this is consistant with the table builder).
+////Name is now used as a label.
+////At the Form element level, name and label are used.
+//********************//
+// in Form - in Data  //
+//   name  - accessor //
+//   label -  name    //
+//********************//
+
 //TODO add css tags that can be used to wire formating.
 export default class FormBuilder extends React.Component {
   constructor(props) {
@@ -32,24 +43,36 @@ export default class FormBuilder extends React.Component {
     //Mapping each form element to the state adding defaults where required.
     this.props.elements.map(element => {
       var state = this.state
+      var item ={}
+      //Let's start with true and remap on submit error
+      item.isValid = true
+      item.errors = []
+
       if (this.props.initial && this.props.initial[element.accessor]) {
-        state[element.accessor] = this.props.initial[element.accessor]
+        item.value = this.props.initial[element.accessor]
       } else {
         if (element.default) {
-          state[element.accessor] = element.default
+          item.value = element.default
         }
       }
-
+      //May be able to get away without this
+      state[element.accessor] = item
       this.setState(state)
     })
   }
 
   //This is the standard react way of updating state from form elements.
-  handleInputChange = (event) => {
-    const target = event.target
-    const value = target.type === 'checkbox' ? target.checked : target.value
-    const name = target.name
-    this.setState({ [name]: value,submitError:''})
+  handleInputChange = (change) => {
+    const {value, name,label,validations,isValid} = change
+    const errors = (validations)?validation(validations,value,label):[]
+    //If currently false, can change to true. Otherwise, leave it true as change to false only happens at submit.
+    const newIsValid = (isValid)?isValid:(errors.length === 0)
+    const item = {
+      value:value,
+      isValid:newIsValid,
+      errors: errors
+    }
+    this.setState({ [name]: item,submitError:''})
   }
 
   //Works with react-datepicker to allow for curried accessor and multiple dates without building multiple onChanges.
@@ -133,11 +156,13 @@ export default class FormBuilder extends React.Component {
             name={element.accessor} //In form elements name is the accessor; in our datatypes name is the label
             instruction={element.instruction}
             label={element.name}
-            value={this.state[element.accessor]}
+            isValid={this.state[element.accessor].isValid}
+            errors={this.state[element.accessor].errors}
+            value={this.state[element.accessor].value}
             className='FormBuilder-text'
             placeholder={(element.placeholder) ? element.placeholder : ""}
             onChange={this.handleInputChange}
-            validation={element.validation}
+            validations={element.validation}
           />
         </div>)
       }
@@ -152,23 +177,29 @@ export default class FormBuilder extends React.Component {
         if (this.props.preventDefault) { event.preventDefault() }
         //Sending the whole state back with the onSubmit.
         const data = this.state
-        //Filter to those items with validation        
-        var errors = []
+        //Filter to those items with validation and check for errors       
+        var allErrors = []
         this.props.elements.filter(e=> e.validation).forEach(e=>{
-          const value = (this.state[e.accessor])?this.state[e.accessor]:''
-          validation(e.validation,value,e.name).forEach(err=>errors.push(err))
+          var item = this.state[e.accessor]
+          const value = (item.value)?item.value:''
+          //Double check as required elements that have not been checked, do not have errors.
+          const errors = validation(e.validation,value,e.name)
+          //If errors we need to push them to the state and the overall list
+          if(errors.length > 0){
+            item.isValid = false,
+            item.errors = errors
+            this.setState({[e.accessor]:item})
+            errors.forEach(err=>allErrors.push(err))
+          }
         })
 
-        if(errors.length === 0)
-        {
+        if(allErrors.length === 0){
           //Clear the form and the state
           if (this.props.clearOnSubmit) { this.clearState() }
           this.props.onSubmit(data)
         }else{
-          //TODO highlight in red the errors
           this.setState({submitError:'Oh no! Some data is not right. Please fix input errors in red.'})
-          //alert.show('Oh no! Some data is not right. Please fix input errors in red.')
-        }
+         }
       }}>
         {this.props.elements.map(x => this.generateFormElement(x))}
         <input 
