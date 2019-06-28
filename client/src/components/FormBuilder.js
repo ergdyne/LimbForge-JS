@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-import TextInput from './formElements/TextInput'
+import PasswordInput from './formElements/PasswordInput'
 import RadioInput from './formElements/RadioInput'
 import SelectInput from './formElements/SelectInput'
+import TextInput from './formElements/TextInput'
 import validation from '../functions/validation'
 
 //A component that takes a list of elements and a submit function and generates a form.
@@ -87,10 +88,10 @@ export default class FormBuilder extends React.Component {
     }
   }
 
-  //TODO use standard form types.
   //Every case should be a single ReactComponent that preferably has no state and has validation behavior.
   generateFormElement = (element) => {
     switch (element.inputType) {
+      //TODO move date into it's own component. Works fine now as it is small
       case 'date': {
         return (<div key={element.accessor}>
           <span>{`${element.name}: `}</span>
@@ -104,6 +105,7 @@ export default class FormBuilder extends React.Component {
       case 'select': {
         return (
           <SelectInput
+            key={element.accessor}
             onChange={this.handleInputChange}
             name={element.accessor}
             value={this.state[element.accessor].value}
@@ -120,6 +122,7 @@ export default class FormBuilder extends React.Component {
       case 'radio': {
         return (
           <RadioInput
+            key={element.accessor}
             onChange={this.handleInputChange}
             name={element.accessor}
             value={this.state[element.accessor].value}
@@ -133,16 +136,16 @@ export default class FormBuilder extends React.Component {
       }
       case 'password': {
         return (
-          <div key={element.accessor}>
-            <span data-tip={element.instruction}>{`${element.name}: `}</span>
-            <input
-              name={element.accessor}
-              value={this.state[element.accessor].value}
-              className='FormBuilder-password'
-              type='password'
-              onChange={this.handleInputChange}
-            />
-          </div>
+          <PasswordInput 
+            key={element.accessor}
+            onChange={this.handleInputChange}
+            name={element.accessor}
+            value={this.state[element.accessor].value}
+            label={element.name}
+            isValid={this.state[element.accessor].isValid}
+            errors={this.state[element.accessor].errors}
+            validations={element.validation}
+          />
         )
       }
       default: {
