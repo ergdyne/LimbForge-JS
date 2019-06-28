@@ -58,7 +58,7 @@ const patientInputs = [
   { accessor: `country`, name: `Country`, type: `string`, inputType: `text` },
   { accessor: `gender`, name: `Gender`, type: `string`, inputType: `radio`, options: genders, validation:{required:true} },
   { accessor: `side`, name: `Amputation Side`, type: `string`, inputType: `radio`, options: sides, validation:{required:true} },
-  { accessor: `amputationCause`, name: `Amputation Cause`, type: `string`, inputType: `select`, placeholder:'Select Cause', options: amputationCauses },
+  { accessor: `amputationCause`, name: `Amputation Cause`, type: `string`, inputType: `select`, placeholder:'Select Cause', options: amputationCauses},
   { accessor: `amputationLevel`, name: `Amputation Level`, type: `string`, inputType: `text`, default: 'Transradial' }
 //TODO deal with any issues with caps Transradial
 ]
