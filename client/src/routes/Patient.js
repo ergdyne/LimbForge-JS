@@ -5,7 +5,8 @@ import PatientData from '../components/PatientData'
 import Download from '../components/Download'
 import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions';
 import isEmpty from '../functions/isEmpty'
-import { getGroupOptions } from '../actions/usersActions';
+import { getGroupOptions } from '../actions/usersActions'
+import {getMeasures} from '../actions/displayActions'
 
 @connect((store) => {
   return ({
@@ -35,6 +36,10 @@ export default class Patient extends React.Component {
     } else {
       this.props.dispatch(getGroupOptions())
     }
+
+    //TODO should trigger somewhere else?
+    //TODO replace with actual device information
+    this.props.dispatch(getMeasures('nothing'))
   }
 
   componentWillUnmount() {
@@ -55,7 +60,6 @@ export default class Patient extends React.Component {
   }
 
   groupSubmit = (group) => {
-    console.log('groupSubmit clicked', group)
     //TODO fix the form instead of using this hack
     if(group.group){
       this.setState({ groupName: group.group })
@@ -73,11 +77,7 @@ export default class Patient extends React.Component {
     if (!this.props.patient.amputationLevel) {
       patient.amputationLevel = `transradial`
     }
-    //TODO replace with validation (require!)
-    if (!this.props.patient.gender) patient.gender = 'Male'
-    if (!this.props.patient.side) patient.side = 'Right'
 
-    //TODO Error catching and validation on groupName
     this.props.dispatch(savePatient(patient, this.props.patientInputs, this.state.groupName))
     this.props.dispatch(updateLevel(isEmpty(this.props.measurements) ? 'measurement' : 'preview'))
   }
@@ -95,8 +95,7 @@ export default class Patient extends React.Component {
   render() {
     const l = this.props.level
     //TODO adjust location. This can be pulled when the user logs in. See multiple reducers in action from tutorial.
-    const groupInputs = [{ accessor: `group`, label: `Select a Group for the Patient`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions }]
-    
+    const groupInputs = [{ accessor: `group`, name: `Select a Group for the Patient`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions }]
     return (
       //if new patient and group options exist, give a dropdown.
       //If no option or exising patient display group Name
@@ -120,6 +119,7 @@ export default class Patient extends React.Component {
                 {(l === 'preview' || l === 'measurement') ?
                   <PatientData
                     patient={this.props.patient}
+                    measurementInputs={this.props.measurementInputs}
                     measurements={this.props.measurements}
                     editPatient={() => this.props.dispatch(updateLevel('patient'))}
                     editMeasurement={(l === 'preview') ? () => this.props.dispatch(updateLevel('measurement')) : false}
@@ -128,9 +128,10 @@ export default class Patient extends React.Component {
                 }
                 {/* Patient Form */}
                 {(l === 'patient') ?
+                // TODO - inputs should not be sliced this way.
                   <FormBuilder
                     key='patient'
-                    elements={this.props.patientInputs.slice(0, 9)}
+                    elements={this.props.patientInputs.slice(0, this.props.patientInputs.length-1)}
                     onSubmit={this.patientSubmit}
                     submitValue={`Save`}
                     preventDefault={true}

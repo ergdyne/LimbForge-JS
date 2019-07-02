@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import 'react-table/react-table.css'
 import formatValue from '../functions/formatValue'
 import isEmpty from '../functions/isEmpty'
-import { patientInputs, measurementInputs } from '../config/defaultDisplay'
+import { patientInputs} from '../config/defaultDisplay'
 
 export default class PatientData extends React.Component {
   render() {
@@ -13,7 +13,7 @@ export default class PatientData extends React.Component {
         <div>{`Patient:`}</div>
         {/* Temporary formating */}
         <div>
-          {patientInputs.map(x => { return <span key={`header-${x.accessor}`}><span>{x.label}</span><span>{" - "}</span></span> })}
+          {patientInputs.map(x => { return <span key={`header-${x.accessor}`}><span>{x.name}</span><span>{" - "}</span></span> })}
 
         </div>
         <div>{patientInputs.map(x => { return (<span key={x.accessor}><span>{formatValue(x.type, this.props.patient[x.accessor])}</span><span>{" - "}</span></span>) })}</div>
@@ -28,8 +28,8 @@ export default class PatientData extends React.Component {
               {
                 <div>
                   <div>{'Measurements:'}</div>
-                  <div>{measurementInputs.map(x => { return <span key={`header-${x.accessor}`}><span>{x.label}</span><span>{" - "}</span></span> })}</div>
-                  <div>{measurementInputs.map(x => { return (<span key={x.accessor}><span>{formatValue(x.type, this.props.measurements[x.accessor])}</span><span>{" - "}</span></span>) })}</div>
+                  <div>{this.props.measurementInputs.map(x => { return <span key={`header-${x.accessor}`}><span>{x.name}</span><span>{" - "}</span></span> })}</div>
+                  <div>{this.props.measurementInputs.map(x => { return (<span key={x.accessor}><span>{formatValue(x.type, this.props.measurements[x.accessor])}</span><span>{" - "}</span></span>) })}</div>
                   <div>
                     {(this.props.editMeasurement) ?
                       <button onClick={() => this.props.editMeasurement()}>{`Edit`}</button> :
@@ -49,5 +49,6 @@ export default class PatientData extends React.Component {
 //WELL, this might not be valid any longer...
 PatientData.propTypes = {
   measurements: PropTypes.object,
-  patient: PropTypes.object
+  patient: PropTypes.object,
+  measurementInputs: PropTypes.array
 }

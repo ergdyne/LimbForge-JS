@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export default class TextInput extends React.Component {
+export default class PasswordInput extends React.Component {
   //Optional input check path (if validation on)
   //Simple version of checking values for just our cases.
   checkInput = (event) => {
@@ -17,18 +17,18 @@ export default class TextInput extends React.Component {
   }
 
   render() {
-    // Can use className to position the prop in the future.
+    // TODO make password confirm.
     return (
-      <div className={`FormBuilder-text`}>
+      <div className={`FormBuilder-password`}>
         <label
-          className={`FormBuilder-text-label ${(this.props.isValid) ? '' : 'input-error'}`}
+          className={`FormBuilder-password-label ${(this.props.isValid) ? '' : 'input-error'}`}
           data-tip={this.props.instruction}
         >
           {`${this.props.label}: `}
           <span data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}>
             <input
-              className='FormBuilder-text-input'
-              type='text'
+              className='FormBuilder-password-input'
+              type='password'
               name={this.props.name}
               value={this.props.value}
               placeholder={this.props.placeholder}
@@ -41,7 +41,7 @@ export default class TextInput extends React.Component {
   }
 }
 
-TextInput.propTypes = {
+PasswordInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string,
   name: PropTypes.string.isRequired,
@@ -50,5 +50,7 @@ TextInput.propTypes = {
   instruction: PropTypes.string,
   isValid: PropTypes.bool,
   errors: PropTypes.array,
-  validations: PropTypes.object
+  //ok for now but changes if this all gets more complex... or moves up.
+  validations: PropTypes.object,
+  confirm: PropTypes.bool //Use this to create a second element that verifies both are the same
 }

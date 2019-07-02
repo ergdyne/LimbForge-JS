@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { patientStatesToPatients, patientMeasurementStatesToMeasurements } from '../functions/convertView'
-import {measurements as ms} from '../testData'
 import {AXIOS_CONFIG, API_URL} from '../config/API'
 
 export function getPatients() {
@@ -25,7 +24,8 @@ export function getPatient(patientId) {
         //Well really just one patient...
         const patients = patientStatesToPatients(response.data.patientStates)
         
-        const measurements = patientMeasurementStatesToMeasurements(response.data.patientMeasurementStates,ms)
+        //MEASURE
+        const measurements = patientMeasurementStatesToMeasurements(response.data.patientMeasurementStates)
         //But just in case there is a problem...TODO should ===1?
         if (patients.length > 0) {
           var patient = patients[0]
@@ -78,15 +78,15 @@ export function savePatient(patient, inputs, groupName) {
   //let { patientInputs, groupId, patientId } = req.body
 }
 
-export function saveMeasurements(measurements, inputs, patientId) {
-  const patientMeasurements = inputs.map(i => (
+//TODO better define what inputs is and such
+export function saveMeasurements(measurements, measurementInputs, patientId) {
+  const patientMeasurements = measurementInputs.map(i => (
     {
       accessor: i.accessor,
       value: measurements[i.accessor]//parse float?
     }
   )
   ).filter(a => a.value != null)
-
   //TODO validate data and check for changes
   if (patientMeasurements.length > 0) {
     return function (dispatch) {

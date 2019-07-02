@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {Provider} from 'react-redux'
+import { Provider } from 'react-redux'
 import registerServiceWorker from './registerServiceWorker'
 import store from './store'
 import App from './App'
@@ -9,7 +9,8 @@ import App from './App'
 //Everything intializes from here.
 //The store and App are bound here.
 ReactDOM.render(
-    <Provider store={store}><App/></Provider>, 
+    <Provider store={store}><App /></Provider>
+  ,
   document.getElementById('app')
 )
 registerServiceWorker();

@@ -7,6 +7,12 @@
 .theme-d3 {color:#fff !important; background-color:#435761 !important}
 .theme-d4 {color:#fff !important; background-color:#3a4b53 !important}
 
+.input-error {
+  border: 2px solid red;
+}
+
+
+
 html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}
 html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}
 html,body{font-family:Verdana,sans-serif;font-size:15px;line-height:1.5}html{overflow-x:hidden}

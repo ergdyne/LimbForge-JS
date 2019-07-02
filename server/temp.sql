@@ -26,6 +26,27 @@ insert into "measure_attribute" (attribute,"value", "type","measureId") values (
 insert into "measure_attribute" (attribute,"value", "type","measureId") values ('accessor', 'c4', 'string', 4);
 insert into "measure_attribute" (attribute,"value", "type","measureId") values ('instruction', 'Measure around the wrist.', 'string', 4);
 
+--New inserts - v 0.2
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('step', '1.0', 'number', 1);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('step', '0.5', 'number', 2);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('step', '0.5', 'number', 3);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('step', '0.5', 'number', 4);
+
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-min', '18', 'number', 1);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-max', '32', 'number', 1);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-min', '14', 'number', 2);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-max', '19', 'number', 2);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-min', '14.5', 'number', 3);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-max', '18', 'number', 3);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-min', '20', 'number', 4);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('validation-max', '28', 'number', 4);
+
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('placeholder', 'XX.X', 'string', 1);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('placeholder', 'XX.X', 'string', 2);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('placeholder', 'XX.X', 'string', 3);
+insert into "measure_attribute" (attribute,"value", "type","measureId") values ('placeholder', 'XX.X', 'string', 4);
+
+
 
 drop view full_user_group ;
 drop view group_state ;
@@ -38,28 +59,38 @@ drop view view_patient_group;
 drop view view_site_auth ;
 
 
-    select l.pid as "patientId", og."groupId", "groupName" from 
+select l.mid as "measureId", l.pid as "patientId",pg."groupId", om.value, a.accessor from 
       (select 
-        "patientId" as pid, 
-        max(create_at) as latest
-      from patient_group
-      group by "patientId"
+        "measureId" as mid, 
+        max(create_at) as latest, 
+        "patientId" as pid
+      from patient_measurement
+      group by "measureId", "patientId"
       ) as l
-    inner join patient_group as og
-    on l.pid = og."patientId" and l.latest = og.create_at
+    inner join patient_measurement as om
+    on l.mid = om."measureId" and l.latest = om.create_at and l.pid = om."patientId"
+    inner join (
+      select l.pid as "patientId", "groupId" from 
+            (select 
+              "patientId" as pid, 
+              max(create_at) as latest
+            from patient_group
+            group by "patientId"
+            ) as l
+          inner join patient_group as og
+          on l.pid = og."patientId" and l.latest = og.create_at
+    ) as pg on pg."patientId" = l.pid
     inner join
-    (
-      select l.gid as "groupId", oa.value as "groupName" from 
+    (select l.mid as "measureId", oa.value as accessor from
       (
         select 
-          "groupId" as gid, 
-          max(create_at) as latest, 
+          "measureId" as mid,
+          max(create_at) as latest,
           attribute
-        from group_attribute
-        where attribute = 'name'
-        group by "groupId", attribute
+        from measure_attribute
+        where attribute = 'accessor'
+        group by "measureId", attribute
       ) as l
-    inner join group_attribute as oa
-    on l.gid = oa."groupId" and l.latest = oa.create_at and l.attribute = oa.attribute
-    ) as n
-    on n."groupId" = og."groupId"
+    inner join measure_attribute as oa
+    on l.mid = oa."measureId" and l.latest = oa.create_at and l.attribute = oa.attribute) as a
+    on a."measureId" = l.mid

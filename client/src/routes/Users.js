@@ -49,9 +49,9 @@ export default class Users extends React.Component {
     const userColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.viewUser, `View`)
     const approveColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.approveUser, "Approve")
     const userInputs = [
-      { accessor: `email`, label: `Email`, type: `string`, inputType: `text` },
-      { accessor: `groupName`, label: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions },
-      { accessor: `userGroupAccess`, label: `Permission`, type: `string`, inputType: `select`,  placeholder: 'Select Access', options: userAccessLevels.slice(0, 2) }
+      { accessor: `email`, name: `Email`, type: `string`, inputType: `text`,validation:{type:'email'} },
+      { accessor: `groupName`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions, validation:{required:true} },
+      { accessor: `userGroupAccess`, name: `Permission`, type: `string`, inputType: `select`,  placeholder: 'Select Access', options: userAccessLevels.slice(0, 2), validation:{required:true} }
     ]
     return (
       // More convoluted divs from the current copied CSS.

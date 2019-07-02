@@ -1,4 +1,5 @@
-//Database driven ENUM
+
+//Database driven ENUMs
 const amputationCauses = [
   "Congenital",
   "Diabetes",
@@ -14,23 +15,19 @@ const amputationCauses = [
   "Unknown",
   "Other"
 ]
-
-//Database driven ENUM?
-const genders = [`Male`, `Female`]
-
-//ENUM
-const sides = [`Right`, `Left`]
-
-//Database driven ENUM
 const amputationLevels = [`Transradial`]
+const genders = [`Male`, `Female`] //Maybe?
+const nozzelOptions = [`0.4mm`,`0.6mm`]
 
-//ENUM
+//Set ENUMs
+const sides = [`Right`, `Left`]
 const userAccessLevels =['user','groupAdmin','admin','requested','none']
 
 export {
   amputationCauses,
   amputationLevels,
   genders,
+  nozzelOptions,
   sides,
   userAccessLevels
 }
