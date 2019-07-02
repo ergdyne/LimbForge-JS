@@ -128,6 +128,7 @@ export default class Patient extends React.Component {
                 }
                 {/* Patient Form */}
                 {(l === 'patient') ?
+                // TODO - inputs should not be sliced this way.
                   <FormBuilder
                     key='patient'
                     elements={this.props.patientInputs.slice(0, this.props.patientInputs.length-1)}

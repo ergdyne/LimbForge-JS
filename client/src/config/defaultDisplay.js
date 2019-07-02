@@ -62,7 +62,9 @@ const patientInputs = [
   { accessor: `amputationCause`, name: `Amputation Cause`, type: `string`, inputType: `select`, placeholder: 'Select Cause', options: amputationCauses },
   {accessor: `nozzleSize`, name: 'Nozzle Size', type: `string`, inputType: `select`, default: nozzelOptions[0], options: nozzelOptions },
   { accessor: `amputationLevel`, name: `Amputation Level`, type: `string`, inputType: `text`, default: 'Transradial' }
-  //TODO deal with any issues with caps Transradial
+  //TODO deal with any issues with caps Transradial, also -> create a custom form element that gives the image selection option
+  //Same with the measurements, a custom form element to handle and position those.
+  //NOTE: Last item in this list is dropped
 ]
 
 const measurementInputs = []
