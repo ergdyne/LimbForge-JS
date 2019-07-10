@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import style from './App.css'
 import Footer from './components/Footer'
 import { Landing, Patients, Patient, Groups, Group, Users, User } from './routes/routes'
 import { BrowserRouter as Router, Route, NavLink, Link, Redirect } from "react-router-dom"
@@ -18,6 +17,7 @@ export default class App extends React.Component {
     // TODO add small screen functionality. Currently, menu items vanish.
     // TODO add security layer to the Router that isn't this goofy.
     //TODO move Nav bar to component
+    //CSS
     return (
       <Router>
         <div className="theme-l5">

@@ -15,6 +15,7 @@ export default class RadioInput extends React.Component{
   }
 
   render(){
+    //CSS
     return (
       <div key={this.props.name}>
         <span 

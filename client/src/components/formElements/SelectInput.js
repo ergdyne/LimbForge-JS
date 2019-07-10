@@ -16,6 +16,7 @@ export default class SelectInput extends React.Component {
   }
 
   render() {
+    //CSS
     return (<div key={this.props.name}>
       <label
         className={`FormBuilder-select-label ${(this.props.isValid) ? '' : 'input-error'}`}

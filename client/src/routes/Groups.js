@@ -38,7 +38,7 @@ export default class Groups extends React.Component {
       )
       
     return (
-      // More convoluted divs from the current copied CSS.
+      //CSS
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
           <FormBuilder

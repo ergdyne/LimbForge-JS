@@ -54,7 +54,8 @@ export default class Users extends React.Component {
       { accessor: `userGroupAccess`, name: `Permission`, type: `string`, inputType: `select`,  placeholder: 'Select Access', options: userAccessLevels.slice(0, 2), validation:{required:true} }
     ]
     return (
-      // More convoluted divs from the current copied CSS.
+      //CSS
+      // More convoluted divs from the current copied.
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
           {/* TODO remap this to be based on the sessionUser as to what group options are available */}

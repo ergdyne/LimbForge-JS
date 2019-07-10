@@ -48,6 +48,7 @@ export default class Landing extends React.Component {
       { accessor: `group`, name: `Group`, type: `string`, inputType: `select`, placeholder:'Select Group', options: (groupOptions), validation:{required:true} },
     ]
     return (
+      //CSS
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
           {/* TEMPORARY */}

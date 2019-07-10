@@ -21,6 +21,7 @@ export default class User extends React.Component {
     }
   }
   render() {
+    //CSS
     return (
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">

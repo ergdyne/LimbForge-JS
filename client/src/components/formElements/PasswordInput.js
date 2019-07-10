@@ -17,6 +17,7 @@ export default class PasswordInput extends React.Component {
   }
 
   render() {
+    //CSS
     // TODO make password confirm.
     return (
       <div className={`FormBuilder-password`}>

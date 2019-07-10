@@ -69,6 +69,7 @@ export default class Download extends React.Component {
   }
 
   render() {
+    //CSS
     return (
       <div>
         <button onClick={this.preview}>{`Preview`}</button>

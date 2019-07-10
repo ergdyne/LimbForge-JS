@@ -16,7 +16,7 @@ export default class PatientList extends React.Component {
         this.props.viewPatient,
         `View`
       )
-
+//CSS
     return (
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12"><div className="card round white"><div className="container padding">
         {/* ReactTable provides a bunch of built in functionality for tables. */}

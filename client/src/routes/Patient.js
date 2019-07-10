@@ -99,6 +99,7 @@ export default class Patient extends React.Component {
     return (
       //if new patient and group options exist, give a dropdown.
       //If no option or exising patient display group Name
+      //CSS
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">
 

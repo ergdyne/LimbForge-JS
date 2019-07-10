@@ -33,6 +33,7 @@ export default class Group extends React.Component {
     //TODO change these columns up.
     const userColumns = formatColumns(this.props.usersGroupColHeaders,() => { },``)
     const approveColumns = formatColumns(this.props.usersGroupColHeaders,this.approveUser,"Approve")
+    //CSS
     return (
       <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
         <div className="card round white"><div className="container padding">

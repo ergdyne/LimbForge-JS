@@ -7,6 +7,7 @@ import { patientInputs} from '../config/defaultDisplay'
 
 export default class PatientData extends React.Component {
   render() {
+    //CSS
     return (
       <div>
         

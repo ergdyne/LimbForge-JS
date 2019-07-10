@@ -17,6 +17,7 @@ export default class TextInput extends React.Component {
   }
 
   render() {
+    //CSS
     // Can use className to position the prop in the future.
     return (
       <div className={`FormBuilder-text`}>
