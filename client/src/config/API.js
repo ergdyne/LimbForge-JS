@@ -7,7 +7,7 @@ let AXIOS_CONFIG = {
 }
 
 //DEPLOY: When deploying change this. This is good enough set up.
-let API_URL = '/api/' //'https://limbforge.ergdyne.com:8000/'
+let API_URL = '/api/' //'https://limbforge.ergdyne.com:8000/api/'
 export {
   AXIOS_CONFIG,
   API_URL
