@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import 'react-table/react-table.css'
 import formatValue from '../functions/formatValue'
 import isEmpty from '../functions/isEmpty'
 import { patientInputs} from '../config/defaultDisplay'
