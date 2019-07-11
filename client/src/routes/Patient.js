@@ -23,7 +23,8 @@ export default class Patient extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      groupName: null
+      groupName: null,
+      measuresSRC: null
     }
   }
 
@@ -44,6 +45,7 @@ export default class Patient extends React.Component {
 
   componentWillUnmount() {
     this.props.dispatch(clearPatient())
+    this.setState({ measuresSRC: null })
   }
 
   componentDidUpdate() {
@@ -78,8 +80,10 @@ export default class Patient extends React.Component {
       patient.amputationLevel = `transradial`
     }
 
+    this.setState({ measuresSRC: this.imageLocation(patient.gender, patient.side) })
     this.props.dispatch(savePatient(patient, this.props.patientInputs, this.state.groupName))
     this.props.dispatch(updateLevel(isEmpty(this.props.measurements) ? 'measurement' : 'preview'))
+
   }
 
   removePatient = (patientId) => {
@@ -94,12 +98,13 @@ export default class Patient extends React.Component {
   }
 
   //map side and gender to image used
-  imageLocation = (gender, side) =>{
+  imageLocation = (gender, side) => {
     return `https://limbfore-js-assets.s3.amazonaws.com/${gender.toLowerCase()}-transradial-${side.charAt(0).toUpperCase()}.svg`
   }
 
   render() {
     const l = this.props.level
+     
     //TODO adjust location. This can be pulled when the user logs in. See multiple reducers in action from tutorial.
     const groupInputs = [{ accessor: `group`, name: `Select a Group for the Patient`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions }]
     return (
@@ -161,10 +166,10 @@ export default class Patient extends React.Component {
                   preventDefault={true}
                   initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
                 />
-                <img 
+                <img
                   className="card large col-sm"
                   max-height="500"
-                  src={this.imageLocation(this.props.patient.gender,this.props.patient.side)}
+                  src={(this.state.measuresSRC)?this.state.measuresSRC:this.imageLocation(this.props.patient.gender, this.props.patient.side)}
                 />
               </div> :
               <span />

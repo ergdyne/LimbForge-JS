@@ -27,7 +27,7 @@ export default class PatientData extends React.Component {
           {`Patient: ${(p.firstName) ? p.firstName : ''} ${(p.lastName) ? p.lastName : ''}`}
         </h2>
         <h3 className='row'>
-          {`${(p.city) ? `${p.city},` : ''} ${p.country} - ${p.groupName}`}
+          {`${(p.city != null) ? `${p.city}${(p.city != null&&p.country != null)?',':''}` : ''} ${(p.country != null) ? `${p.country}` : ''}`}
         </h3>
         {/* Temporary formating */}
         <div>
