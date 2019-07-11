@@ -92,6 +92,12 @@ export default class Patient extends React.Component {
     this.props.dispatch(saveMeasurements(measurements, this.props.measurementInputs, this.props.patient.id))
     this.props.dispatch(updateLevel('preview'))
   }
+
+  //map side and gender to image used
+  imageLocation = (gender, side) =>{
+    return `https://limbfore-js-assets.s3.amazonaws.com/${gender.toLowerCase()}-transradial-${side.charAt(0).toUpperCase()}.svg`
+  }
+
   render() {
     const l = this.props.level
     //TODO adjust location. This can be pulled when the user logs in. See multiple reducers in action from tutorial.
@@ -148,12 +154,16 @@ export default class Patient extends React.Component {
                 <FormBuilder
                   title="Measurements"
                   key='measurments'
-                  className="card large"
+                  className="card large col-sm"
                   elements={this.props.measurementInputs}
                   onSubmit={this.measurementSubmit}
                   submitValue={`Save`}
                   preventDefault={true}
                   initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
+                />
+                <img 
+                  className="card large col-sm"
+                  src={this.imageLocation(this.props.patient.gender,this.props.patient.side)}
                 />
               </div> :
               <span />
