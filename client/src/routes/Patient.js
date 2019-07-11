@@ -163,6 +163,7 @@ export default class Patient extends React.Component {
                 />
                 <img 
                   className="card large col-sm"
+                  max-height="500"
                   src={this.imageLocation(this.props.patient.gender,this.props.patient.side)}
                 />
               </div> :

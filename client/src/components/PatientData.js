@@ -5,6 +5,15 @@ import isEmpty from '../functions/isEmpty'
 import { patientInputs } from '../config/defaultDisplay'
 
 export default class PatientData extends React.Component {
+
+  attributeMap = (x, p) => {
+    return ((p[x.accessor]) ?
+        <label key={`header-${x.accessor}`} className="row">{`${x.name}: `}
+          <span className="col-sm-2" > {formatValue(x.type, p[x.accessor])}</span>
+        </label> : <span />
+    )
+  }
+
   render() {
     //CSS
     const p = this.props.patient
@@ -22,14 +31,7 @@ export default class PatientData extends React.Component {
         </h3>
         {/* Temporary formating */}
         <div>
-          {extraData.map(x => {
-            return ((p[x.accessor]) ?
-              <div className='row' key={`header-${x.accessor}`}>
-                <span className="col-sm-1">{`${x.name}: `}</span>
-                <span className="col-sm-2" > {formatValue(x.type, p[x.accessor])}</span>
-              </div> : <span />
-            )
-          })}
+          {extraData.map(x => this.attributeMap(x, p))}
 
         </div >
         <div>{(this.props.editPatient) ?
@@ -40,18 +42,11 @@ export default class PatientData extends React.Component {
         <div>
           {(!isEmpty(this.props.measurements)) ?
             <div>
-              {
-                <div>
-                  <div>{'Measurements:'}</div>
-                  <div>{this.props.measurementInputs.map(x => { return <span key={`header-${x.accessor}`}><span>{x.name}</span><span>{" - "}</span></span> })}</div>
-                  <div>{this.props.measurementInputs.map(x => { return (<span key={x.accessor}><span>{formatValue(x.type, this.props.measurements[x.accessor])}</span><span>{" - "}</span></span>) })}</div>
-                  <div>
-                    {(this.props.editMeasurement) ?
-                      <button onClick={() => this.props.editMeasurement()}>{`Edit`}</button> :
-                      <span></span>
-                    }
-                  </div>
-                </div>
+              <h3 className="row">{'Measurements'}</h3>
+              {this.props.measurementInputs.map(x => this.attributeMap(x, this.props.measurements))}
+              {(this.props.editMeasurement) ?
+                <button className="row" onClick={() => this.props.editMeasurement()}>{`Edit`}</button> :
+                <span/>
               }
             </div> :
             <div></div>
