@@ -1,9 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Footer from './components/Footer'
-import { Landing, Patients, Patient, Groups, Group, Users, User } from './routes/routes'
+import 'react-table/react-table.css'
 import { BrowserRouter as Router, Route, NavLink, Link, Redirect } from "react-router-dom"
+import { Landing, Patients, Patient, Groups, Group, Users, User } from './routes/routes'
+import Footer from './components/Footer'
 import { logout } from './actions/sessionActions'
+import style from './App.css'
 
 @connect((store) => {
   return ({

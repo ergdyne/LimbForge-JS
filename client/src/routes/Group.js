@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactTable from 'react-table'
 import { connect } from 'react-redux'
-import 'react-table/react-table.css'
 import formatColumns from '../functions/formatColumns'
 import { getGroup } from '../actions/groupsActions'
 

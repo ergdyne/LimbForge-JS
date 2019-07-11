@@ -17,15 +17,16 @@ export default class DateSelect extends React.Component {
   }
 
   render() {
-    //CSS
+    //CSS - initial
     return (
       <div className={`FormBuilder-date`}>
         <label
-          className={`FormBuilder-date-label ${(this.props.isValid) ? '' : 'input-error'}`}
           data-tip={this.props.instruction}
         >
           {`${this.props.label}: `}
-          <span data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}>
+          <span 
+            className={`${(this.props.isValid) ? '' : 'invalid'}`}
+            data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}>
             <DatePicker
               selected={this.props.value}
               onChange={this.checkInput}

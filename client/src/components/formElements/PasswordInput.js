@@ -17,19 +17,18 @@ export default class PasswordInput extends React.Component {
   }
 
   render() {
-    //CSS
+    //CSS - initial
     // TODO make password confirm.
     return (
       <div className={`FormBuilder-password`}>
         <label
-          className={`FormBuilder-password-label ${(this.props.isValid) ? '' : 'input-error'}`}
           data-tip={this.props.instruction}
         >
           {`${this.props.label}: `}
           <span data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}>
             <input
-              className='FormBuilder-password-input'
               type='password'
+              className={`${(this.props.isValid) ? '' : 'invalid'}`}
               name={this.props.name}
               value={this.props.value}
               placeholder={this.props.placeholder}

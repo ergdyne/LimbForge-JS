@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export default class RadioInput extends React.Component{
+export default class RadioInput extends React.Component {
 
-  inputChange = (event)=>{
+  inputChange = (event) => {
     const change = {
       name: this.props.name,
       label: this.props.label,
@@ -14,14 +14,15 @@ export default class RadioInput extends React.Component{
     this.props.onChange(change)
   }
 
-  render(){
-    //CSS
+  render() {
+    //CSS - initial
     return (
-      <div key={this.props.name}>
-        <span 
-          className={`FormBuilder-radio-span ${(this.props.isValid) ? '' : 'input-error'}`}
-          data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}
-        >
+      <div
+        key={this.props.name}
+        className={`FormBuilder-radio ${(this.props.isValid) ? '' : 'invalid'}`}
+        data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}
+
+      >
         {this.props.options.map(o => {
           return (<label key={`${this.props.name}-${o}`}>
             <input
@@ -34,9 +35,8 @@ export default class RadioInput extends React.Component{
             {o}
           </label>)
         })}
-        </span>
       </div>
-      )
+    )
   }
 }
 
