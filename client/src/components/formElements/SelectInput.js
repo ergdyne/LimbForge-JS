@@ -16,35 +16,37 @@ export default class SelectInput extends React.Component {
   }
 
   render() {
-    //CSS
-    return (<div key={this.props.name}>
-      <label
-        className={`FormBuilder-select-label ${(this.props.isValid) ? '' : 'input-error'}`}
-        data-tip={this.props.instruction}
-      >
-        {`${this.props.label}: `}
-        <span data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}>
-          <select
-            value={this.props.value}
-            name={this.props.name}
-            onChange={this.checkInput}
+    //CSS - initial
+    return (
+      <div
+        className={`FormBuilder-select ${(this.props.isValid) ? '' : 'invalid'}`}
+        key={this.props.name}>
+        <label data-tip={this.props.instruction}>
+          {`${this.props.label}: `}
+          <span
+            data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}
           >
-            {/* React does not like this line of code, but it seems to be the only way to get the desired functionality. */}
-            {/* TODO the solution migth be to set the value as '' which should trigger this */}
-            {(this.props.placeholder && !this.props.value) ? <option value='' disabled selected>{this.props.placeholder}</option> : ''}
-            {this.props.options.map(o => {
-              return (
-                <option
-                  value={o}
-                  key={`${this.props.name}-${o}`}
-                >
-                  {o}
-                </option>)
-            })}
-          </select>
-        </span>
-      </label>
-    </div>
+            <select
+              value={this.props.value}
+              name={this.props.name}
+              onChange={this.checkInput}
+            >
+              {/* React does not like this line of code, but it seems to be the only way to get the desired functionality. */}
+              {/* TODO the solution migth be to set the value as '' which should trigger this */}
+              {(this.props.placeholder && !this.props.value) ? <option value='' disabled selected>{this.props.placeholder}</option> : ''}
+              {this.props.options.map(o => {
+                return (
+                  <option
+                    value={o}
+                    key={`${this.props.name}-${o}`}
+                  >
+                    {o}
+                  </option>)
+              })}
+            </select>
+          </span>
+        </label>
+      </div>
     )
   }
 }

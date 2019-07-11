@@ -114,9 +114,6 @@ export default class Patient extends React.Component {
             />
           </div> :
           <div>
-            <h2 className="row"> {`Patient is in ${this.state.groupName}`} </h2>
-
-
             {(l === 'preview' || l === 'measurement') ?
               <PatientData
                 className="row"

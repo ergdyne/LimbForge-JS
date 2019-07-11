@@ -17,28 +17,32 @@ export default class TextInput extends React.Component {
   }
 
   render() {
-    //CSS
+    //CSS - initial
     // Can use className to position the prop in the future.
     return (
-      <div className={`FormBuilder-text`}>
+      <div className="FormBuilder-text-input">
         <label
-          className={`FormBuilder-text-label ${(this.props.isValid) ? '' : 'input-error'}`}
+          for={this.props.name}
           data-tip={this.props.instruction}
         >
           {`${this.props.label}: `}
-          <span data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}>
-            <input
-              className='FormBuilder-text-input'
-              type='text'
-              name={this.props.name}
-              value={this.props.value}
-              placeholder={this.props.placeholder}
-              onChange={this.checkInput}
-            />
-          </span>
+
+
+          <input
+            className={`${this.props.isValid ? '' : 'invalid'}`}
+            type='text'
+            isValid={this.props.isValid}
+            id={this.props.name}
+            name={this.props.name}
+            value={this.props.value}
+            placeholder={this.props.placeholder}
+            onChange={this.checkInput}
+            data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}
+          />
+
         </label>
       </div>
-    )
+    )  
   }
 }
 
