@@ -3,7 +3,7 @@ import ReactTable from 'react-table'
 import { connect } from 'react-redux'
 import 'react-table/react-table.css'
 import formatColumns from '../functions/formatColumns'
-import {getGroup} from '../actions/groupsActions'
+import { getGroup } from '../actions/groupsActions'
 
 @connect((store) => {
   return ({
@@ -17,7 +17,7 @@ export default class Group extends React.Component {
     //API Call
     const { groupId } = this.props.match.params
     const id = parseInt(groupId)
-    
+
     if (!isNaN(id)) {
       this.props.dispatch(getGroup(id))
     }
@@ -31,47 +31,45 @@ export default class Group extends React.Component {
   render() {
     console.log("group is ", this.props.group)
     //TODO change these columns up.
-    const userColumns = formatColumns(this.props.usersGroupColHeaders,() => { },``)
-    const approveColumns = formatColumns(this.props.usersGroupColHeaders,this.approveUser,"Approve")
-    //CSS
+    const userColumns = formatColumns(this.props.usersGroupColHeaders, () => { }, ``)
+    const approveColumns = formatColumns(this.props.usersGroupColHeaders, this.approveUser, "Approve")
+    //CSS - initial
     return (
-      <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
-        <div className="card round white"><div className="container padding">
-          <div className="group-info-area">
-            <h2>{this.props.group.name}</h2>
-            <div>{this.props.group.description}</div>
-            <hr />
-            {(this.props.group.requestedUsers.length > 0) ?
-              <div>
-                <h3>{'Access Requests'}</h3>
-                <ReactTable
-                  key="access"
-                  columns={approveColumns}
-                  data={this.props.group.requestedUsers}
-                  filterable={true}
-                  defaultPageSize={5}
-                  minRows={0}
-                />
-              </div> :
-              <span></span>
-            }
-            {(this.props.group.approvedUsers.length > 0) ?
-              <div>
-                <h3>{'Users'}</h3>
-                <ReactTable
-                  key="users"
-                  columns={userColumns}
-                  data={this.props.group.approvedUsers}
-                  filterable={true}
-                  defaultPageSize={5}
-                  minRows={0}
-                />
-              </div> :
-              <span></span>
-            }
-          </div>
-        </div></div>
-      </div></div></div></div>
+      <div className="container">
+        <h2 className="row">{this.props.group.name}</h2>
+        <div className="row">{this.props.group.description}</div>
+
+        {(this.props.group.requestedUsers.length > 0) ?
+          <div>
+            <h3 className="row">{'Access Requests'}</h3>
+            <ReactTable
+              className="row"
+              key="access"
+              columns={approveColumns}
+              data={this.props.group.requestedUsers}
+              filterable={true}
+              defaultPageSize={5}
+              minRows={0}
+            />
+          </div> :
+          <span></span>
+        }
+        {(this.props.group.approvedUsers.length > 0) ?
+          <div>
+            <h3 className="row">{'Users'}</h3>
+            <ReactTable
+              className="row"
+              key="users"
+              columns={userColumns}
+              data={this.props.group.approvedUsers}
+              filterable={true}
+              defaultPageSize={5}
+              minRows={0}
+            />
+          </div> :
+          <span></span>
+        }
+      </div>
     )
   }
 }

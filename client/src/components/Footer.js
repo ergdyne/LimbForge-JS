@@ -6,9 +6,10 @@ export default class Footer extends React.Component{
   }
 
   render(){
+    //CSS - Initial
     return(
-      <footer className="container theme-d3 padding-16">
-          <h5>Footer</h5>
+      <footer>
+          <span>Footer goes here</span>
       </footer>
     )
   }

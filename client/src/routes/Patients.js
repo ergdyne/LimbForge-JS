@@ -23,9 +23,10 @@ export default class Patients extends React.Component {
   }
 
   render() {
-    //change colHeaders to append front
+    //CSS - Initial
     return (
       <PatientList
+        className="container"
         patientColHeaders={this.props.patientColHeaders}
         viewPatient={this.viewPatient}
         patients={this.props.patients}

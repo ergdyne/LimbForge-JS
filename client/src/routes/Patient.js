@@ -6,7 +6,7 @@ import Download from '../components/Download'
 import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions';
 import isEmpty from '../functions/isEmpty'
 import { getGroupOptions } from '../actions/usersActions'
-import {getMeasures} from '../actions/displayActions'
+import { getMeasures } from '../actions/displayActions'
 
 @connect((store) => {
   return ({
@@ -15,7 +15,7 @@ import {getMeasures} from '../actions/displayActions'
     measurements: store.patients.measurements,
     level: store.patients.patientFormLevel,
     groupOptions: store.users.groupOptions,
-    patientInputs: store.display.patientInputs, 
+    patientInputs: store.display.patientInputs,
     measurementInputs: store.display.measurementInputs
   })
 })
@@ -53,18 +53,18 @@ export default class Patient extends React.Component {
       this.setState({ groupName: this.props.groupOptions[0] })
     }
     //existing patient
-    if(this.state.groupName == null && this.props.patient.groupName){
-      this.setState({groupName: this.props.patient.groupName})
+    if (this.state.groupName == null && this.props.patient.groupName) {
+      this.setState({ groupName: this.props.patient.groupName })
     }
     //These should only be called if required as updating state in componentDidUpdate can cause an infinit loop.
   }
 
   groupSubmit = (group) => {
     //TODO fix the form instead of using this hack
-    if(group.group){
+    if (group.group) {
       this.setState({ groupName: group.group })
-    }else{
-      this.setState({groupName: this.props.groupOptions[0]})
+    } else {
+      this.setState({ groupName: this.props.groupOptions[0] })
     }
   }
   //Callback for patient Data form.
@@ -99,64 +99,78 @@ export default class Patient extends React.Component {
     return (
       //if new patient and group options exist, give a dropdown.
       //If no option or exising patient display group Name
-      //CSS
-      <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
-        <div className="card round white"><div className="container padding">
-
+      //CSS - Initial
+      <div className="container">
+        {((!this.props.patient.id) && this.state.groupName == null && this.props.groupOptions.length > 1) ?
+          <div className="row">
+            <FormBuilder
+              className="card large"
+              key='groupSelection'
+              elements={groupInputs}
+              onSubmit={this.groupSubmit}
+              submitValue={`Use Group`}
+              preventDefault={true}
+              initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
+            />
+          </div> :
           <div>
-            {((!this.props.patient.id) && this.state.groupName == null && this.props.groupOptions.length > 1) ?
-              <FormBuilder
-                key='groupSelection'
-                elements={groupInputs}
-                onSubmit={this.groupSubmit}
-                submitValue={`Use Group`}
-                preventDefault={true}
-                initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
+            <h2 className="row"> {`Patient is in ${this.state.groupName}`} </h2>
+
+
+            {(l === 'preview' || l === 'measurement') ?
+              <PatientData
+                className="row"
+                patient={this.props.patient}
+                measurementInputs={this.props.measurementInputs}
+                measurements={this.props.measurements}
+                editPatient={() => this.props.dispatch(updateLevel('patient'))}
+                editMeasurement={(l === 'preview') ? () => this.props.dispatch(updateLevel('measurement')) : false}
               /> :
-              <div>
-                <h2> {`Patient is in ${this.state.groupName}`} </h2>
-
-
-                {(l === 'preview' || l === 'measurement') ?
-                  <PatientData
-                    patient={this.props.patient}
-                    measurementInputs={this.props.measurementInputs}
-                    measurements={this.props.measurements}
-                    editPatient={() => this.props.dispatch(updateLevel('patient'))}
-                    editMeasurement={(l === 'preview') ? () => this.props.dispatch(updateLevel('measurement')) : false}
-                  /> :
-                  <div />
-                }
-                {/* Patient Form */}
-                {(l === 'patient') ?
-                // TODO - inputs should not be sliced this way.
-                  <FormBuilder
-                    key='patient'
-                    elements={this.props.patientInputs.slice(0, this.props.patientInputs.length-1)}
-                    onSubmit={this.patientSubmit}
-                    submitValue={`Save`}
-                    preventDefault={true}
-                    initial={(this.props.patient) ? this.props.patient : {}}
-                  /> :
-                  <div />
-                }
-                {/* Measurement Form */}
-                {(l === 'measurement') ?
-                  <FormBuilder
-                    key='measurments'
-                    elements={this.props.measurementInputs}
-                    onSubmit={this.measurementSubmit}
-                    submitValue={`Save`}
-                    preventDefault={true}
-                    initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
-                  /> :
-                  <div />
-                }
-                {(l === 'preview') ? <Download patient={this.props.patient} measurements={this.props.measurements} /> : <div />}
-              </div>}
-          </div>
-        </div></div>
-      </div></div></div></div>
+              <span />
+            }
+            {/* Patient Form */}
+            {(l === 'patient') ?
+              // TODO - inputs should not be sliced this way.
+              <div className="row">
+                <FormBuilder
+                  title="Patient Data"
+                  key='patient'
+                  className="card large"
+                  elements={this.props.patientInputs.slice(0, this.props.patientInputs.length - 1)}
+                  onSubmit={this.patientSubmit}
+                  submitValue={`Save`}
+                  preventDefault={true}
+                  initial={(this.props.patient) ? this.props.patient : {}}
+                />
+              </div> :
+              <span />
+            }
+            {/* Measurement Form */}
+            {(l === 'measurement') ?
+              <div className="row">
+                <FormBuilder
+                  title="Measurements"
+                  key='measurments'
+                  className="card large"
+                  elements={this.props.measurementInputs}
+                  onSubmit={this.measurementSubmit}
+                  submitValue={`Save`}
+                  preventDefault={true}
+                  initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
+                />
+              </div> :
+              <span />
+            }
+            {(l === 'preview') ?
+              <div className="row">
+                <Download
+                  className="card large"
+                  patient={this.props.patient}
+                  measurements={this.props.measurements}
+                />
+              </div> : <span />}
+          </div>}
+      </div>
     )
   }
 }

@@ -78,7 +78,6 @@ export default class FormBuilder extends React.Component {
     this.setState({ [name]: item, submitError: '' })
   }
 
-  //Every case should be a single ReactComponent that preferably has no state and has validation behavior.
   generateFormElement = (element) => {
     switch (element.inputType) {
       //TODO move date into it's own component. Works fine now as it is small
@@ -163,7 +162,7 @@ export default class FormBuilder extends React.Component {
   }
 
   render() {
-    //CSS
+    //CSS - fix error coloring.
     return (
       <form onSubmit={() => {
         //TODO move submit to function
@@ -202,13 +201,16 @@ export default class FormBuilder extends React.Component {
           this.setState({ submitError: 'Oh no! Some data is not right. Please fix input errors in red.' })
         }
       }}>
-        {this.props.elements.map(x => this.generateFormElement(x))}
-        <input
-          className='FormBuilder-button'
-          value={(this.props.submitValue) ? this.props.submitValue : `Submit`}
-          type="submit"
-          data-tip={this.state.submitError}
-        />
+        <fieldset>
+          {(this.props.title) ? <legend>{this.props.title}</legend> : <span />}
+          {this.props.elements.map(x => this.generateFormElement(x))}
+          <input
+            className='FormBuilder-button'
+            value={(this.props.submitValue) ? this.props.submitValue : `Submit`}
+            type="submit"
+            data-tip={this.state.submitError}
+          />
+        </fieldset>
         <ReactTooltip />
       </form>
     )
@@ -225,6 +227,7 @@ FormBuilder.propTypes = {
   elements: PropTypes.arrayOf(
     PropTypes.object
   ).isRequired,
-  initial: PropTypes.object
+  initial: PropTypes.object,
+  title: PropTypes.string
 }
 

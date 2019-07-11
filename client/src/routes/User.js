@@ -21,23 +21,22 @@ export default class User extends React.Component {
     }
   }
   render() {
-    //CSS
+    //CSS initial
     return (
-      <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
-        <div className="card round white"><div className="container padding">
-          <h2>{`User: ${this.props.user.email}`}</h2>
-          <br />
-          {(this.props.user.groups.length > 0) ?
-            <ReactTable
-              data={this.props.user.groups}
-              columns={this.props.userGroupsColHeaders}
-              filterable={true}
-              minRows={0}
-            /> :
-            <span />
-          }
-        </div></div>
-      </div></div></div></div>
+      <div className="container">
+        <h2 className="row">{`User: ${this.props.user.email}`}</h2>
+        <br />
+        {(this.props.user.groups.length > 0) ?
+          <ReactTable
+            className="row"
+            data={this.props.user.groups}
+            columns={this.props.userGroupsColHeaders}
+            filterable={true}
+            minRows={0}
+          /> :
+          <span />
+        }
+      </div>
     )
   }
 }

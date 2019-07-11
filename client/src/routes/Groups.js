@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ReactTable from 'react-table'
-import 'react-table/react-table.css'
 import formatColumns from '../functions/formatColumns'
 import FormBuilder from '../components/FormBuilder'
 import { getGroups, addGroup } from '../actions/groupsActions'
@@ -16,7 +15,7 @@ import { getGroups, addGroup } from '../actions/groupsActions'
   })
 })
 export default class Groups extends React.Component {
-  componentWillMount(){
+  componentWillMount() {
     this.props.dispatch(getGroups())
   }
 
@@ -36,28 +35,30 @@ export default class Groups extends React.Component {
         this.viewGroup,
         `View`
       )
-      
+
     return (
-      //CSS
-      <div className="row"><div className="col m12"><div className="row-padding"><div className="col m12">
-        <div className="card round white"><div className="container padding">
+      //CSS - initial
+      <div className="container">
+        <div className="row">
           <FormBuilder
-            key='patient'
+            title="New Group"
+            className="card large"
+            key='group'
             elements={this.props.groupInputs}
             onSubmit={this.submitGroup}
             submitValue={`Add`}
             clearOnSubmit={true}
             preventDefault={true}
           />
-          <br />
-          <ReactTable
-            data={this.props.groups}
-            columns={columns}
-            filterable={true}
-            minRows={0}
-          />
-        </div></div>
-      </div></div></div></div>
+        </div>
+        <ReactTable
+          className="row"
+          data={this.props.groups}
+          columns={columns}
+          filterable={true}
+          minRows={0}
+        />
+      </div>
     )
   }
 }
