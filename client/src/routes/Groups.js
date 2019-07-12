@@ -41,7 +41,7 @@ export default class Groups extends React.Component {
       <div className="container">
         <div className="row">
           <FormBuilder
-            title="New Group"
+            title="Create Group"
             className="card large"
             key='group'
             elements={this.props.groupInputs}

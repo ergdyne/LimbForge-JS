@@ -51,6 +51,7 @@ export function getUser(userId){
 }
 
 export function approveUser(userId,groupId,groupAccess){
+  //TODO - add this functionality
   return {
     type:"APPROVE_USER",
     payload:{userId:userId,groupId:groupId,groupAccess:groupAccess}
@@ -68,7 +69,6 @@ export function addUser(newUser){
         groupName:groupName
       },AXIOS_CONFIG)
         .then((response) => {
-          //We don't really care about the response yet. Only would care if going to update state.
           dispatch(getUsers())
           dispatch({ type: "ADD_USER", payload: response.data })
         })
