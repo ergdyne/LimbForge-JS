@@ -1,11 +1,10 @@
 import axios from 'axios'
 import { fullUserGroupsToGroups } from '../functions/convertView'
 import {AXIOS_CONFIG, API_URL} from '../config/API'
-
+import { isString } from 'util' //TEMP
 //NOTE! I believe that encryption of credentials is handled by HTTPS.
 //So when the site is live, as long as we use HTTPS, everything should be fine.
-//Check out strategy in ergdyne/Graina.
-import { isString } from 'util';
+
 
 //support functions
 //ENUM?

@@ -20,7 +20,7 @@ export default class RadioInput extends React.Component {
       <div
         key={this.props.name}
         className={`FormBuilder-radio ${(this.props.isValid) ? '' : 'invalid'}`}
-        data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}
+        data-tip={(this.props.isValid) ? '' : this.props.errors}
 
       >
         {this.props.options.map(o => {

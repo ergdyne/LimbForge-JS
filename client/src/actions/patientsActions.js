@@ -75,7 +75,6 @@ export function savePatient(patient, inputs, groupName) {
     type: "SAVE_PATIENT_REJECTED",
     payload: {}
   }
-  //let { patientInputs, groupId, patientId } = req.body
 }
 
 //TODO better define what inputs is and such

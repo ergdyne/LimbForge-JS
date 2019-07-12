@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 import * as THREE from 'three'
 import STLLoaderModule from 'three-stl-loader'
 import OrbitControlsModule from 'three-orbit-controls'
-import { ScaleLoader } from 'react-spinners'
+import ScaleLoader from 'react-spinners/SyncLoader'
 
 //Much of this file was converted from an example of STLLoader for Three.
 //The point of it: load multiple STL files into a scene so the user can preview them.

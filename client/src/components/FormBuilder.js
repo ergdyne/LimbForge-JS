@@ -31,20 +31,11 @@ export default class FormBuilder extends React.Component {
     }
   }
 
-  //TODO prevent submit if not valid.
-
-  //Clear the state as a hack to deal with not letting the page refresh... TODO fix refresh
-  clearState = () => {
-    //Naive approach. Clears rather than using initial or default.
-    this.props.elements.map(element => {
-      this.setState({ [element.accessor]: '' })
-    })
-  }
-
-  componentWillMount() {
+  setInitialState = () => {
     //Mapping each form element to the state adding defaults where required.
+    var newState = {...this.state}
+  
     this.props.elements.map(element => {
-      var state = this.state
       var item = {}
       //Let's start with true and remap on submit error
       item.isValid = true
@@ -55,12 +46,19 @@ export default class FormBuilder extends React.Component {
       } else {
         if (element.default) {
           item.value = element.default
+        }else{
+          item.value = ''
         }
       }
       //May be able to get away without this
-      state[element.accessor] = item
-      this.setState(state)
+      newState[element.accessor] = item
+      
     })
+    this.setState(newState)
+  }
+
+  componentWillMount() {
+    this.setInitialState()
   }
 
 
@@ -78,9 +76,29 @@ export default class FormBuilder extends React.Component {
     this.setState({ [name]: item, submitError: '' })
   }
 
+  checkErrors = () => {
+    var allErrors = []
+    this.props.elements.filter(e => e.validation).forEach(e => {
+      var item = this.state[e.accessor]
+      const value = (item.value) ? item.value : ''
+
+      //Double check as required elements that have not been checked, do not have errors.
+      const errors = validation(e.validation, value, e.name)
+
+      //If errors we need to push them to the state and the overall list
+      if (errors.length > 0) {
+        item.isValid = false,
+          item.errors = errors
+        this.setState({ [e.accessor]: item })
+        errors.forEach(err => allErrors.push(err))
+      }
+    })
+
+    return allErrors
+  }
+
   generateFormElement = (element) => {
     switch (element.inputType) {
-      //TODO move date into it's own component. Works fine now as it is small
       case 'date': {
         return (
           <DateSelect
@@ -162,40 +180,23 @@ export default class FormBuilder extends React.Component {
   }
 
   render() {
-    //CSS - fix error coloring.
+    //CSS - initial
     return (
       <form onSubmit={() => {
-        //TODO move submit to function
-        //preventDefault stops page reload.
-        if (this.props.preventDefault) { event.preventDefault() }
-        //Sending the whole state back with the onSubmit.
-        const data = this.state
-        //Filter to those items with validation and check for errors       
-        var allErrors = []
+        if (this.props.preventDefault) { event.preventDefault() } //Stop page reload
 
-        this.props.elements.filter(e => e.validation).forEach(e => {
-          var item = this.state[e.accessor]
-          const value = (item.value) ? item.value : ''
+        if (this.checkErrors().length === 0) {
+          const data = {...this.state}
 
-          //Double check as required elements that have not been checked, do not have errors.
-          const errors = validation(e.validation, value, e.name)
-          //If errors we need to push them to the state and the overall list
-          if (errors.length > 0) {
-            item.isValid = false,
-              item.errors = errors
-            this.setState({ [e.accessor]: item })
-            errors.forEach(err => allErrors.push(err))
-          }
-        })
-
-        if (allErrors.length === 0) {
           //Clear the form and the state
-          if (this.props.clearOnSubmit) { this.clearState() }
+          if (this.props.clearOnSubmit) { this.setInitialState() }
 
           //Each item with a value map to just the value
           var formData = {}
+
           this.props.elements.filter(e => data[e.accessor].value)
             .forEach(e => formData[e.accessor] = data[e.accessor].value)
+
           this.props.onSubmit(formData)
         } else {
           this.setState({ submitError: 'Oh no! Some data is not right. Please fix input errors in red.' })
@@ -216,7 +217,6 @@ export default class FormBuilder extends React.Component {
     )
   }
 }
-
 
 FormBuilder.propTypes = {
   //onSubmit() callback should take the form's state back with it.

@@ -37,7 +37,7 @@ export default class TextInput extends React.Component {
             value={this.props.value}
             placeholder={this.props.placeholder}
             onChange={this.checkInput}
-            data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}
+            data-tip={(this.props.isValid) ? '' : this.props.errors}
           />
 
         </label>

@@ -7,7 +7,10 @@ let AXIOS_CONFIG = {
 }
 
 //DEPLOY: When deploying change this. This is good enough set up.
-let API_URL = '/api/' //'https://limbforge.ergdyne.com:8000/'
+//change to load env
+let API_URL = process.env.API_URL//'/api/' //'https://limbforge.ergdyne.com:8000/api/'
+console.log(process.env.API_URL)
+console.log('API', API_URL)
 export {
   AXIOS_CONFIG,
   API_URL

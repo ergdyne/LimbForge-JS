@@ -35,13 +35,13 @@ export default function urlGenerator(specs, component) {
   var urls = [
     {
       link: `https://s3.amazonaws.com/limbforgestls/TD/${genderChar}PTD1/r${revision}/build/${sideChar}/info_C1-${C_1}_L4-${L_4}.stl`,
-      name: `${patientName}TERMINAL DEVICE_r15_C1=${c1}_L4=${l4}`,
+      name: `${patientName}TERMINAL DEVICE_r15_C1=${C_1}_L4=${L_4}`,
       type: 'terminalDevice'
     },
     {
     //The forearm has to be rotated pi radians to be lined up correctly.
       link: `https://s3.amazonaws.com/limbforgestls/${componentFolder}/r${componentVersion}/${sideChar}/info_C1-${C_1}_C4-${C_4}_L1-${L_1}.stl`,
-      name: `${patientName}FOREARM_r${componentVersion}_${sideChar}_C1=${c1}_C4=${c4}_L1=${l1}`,
+      name: `${patientName}FOREARM_r${componentVersion}_${sideChar}_C1=${C_1}_C4=${C_4}_L1=${L_1}`,
       rotation : {x:0, y:Math.PI,z:0},
       type: 'device'
     },
@@ -74,6 +74,7 @@ function roundDownNumber(input) {
 }
 
 //Converts first and last name into a format for the filename.
+//TODO move somewhere else
 function fullNameUpper(first, last) {
   return (((last === '') ? '' : `${last}_`)+((first === '') ? '' : `${first}_`)).toUpperCase()
 }
