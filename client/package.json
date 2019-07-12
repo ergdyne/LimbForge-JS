@@ -1,12 +1,12 @@
 {
   "name": "client",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'dist/*.js'",
     "start": "API_URL=http://localhost:3000/api/ webpack-dev-server --https --open --mode development ",
-    "build": "API_URL=http://limbforge.ergdyne.com/api/ webpack --mode production",
+    "build": "API_URL=https://limbforge.ergdyne.com:8000/api/ webpack --mode production",
     "test": "mocha --require jsdomSetup.js --require @babel/register --require ignore-styles --require isomorphic-fetch --recursive"
   },
   "keywords": [],
