@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'dist/*.js'",
-    "start": "webpack-dev-server --https --open --mode development",
-    "build": "webpack --mode production",
+    "start": "API_URL=http://localhost:3000/api/ webpack-dev-server --https --open --mode development ",
+    "build": "API_URL=http://limbforge.ergdyne.com/api/ webpack --mode production",
     "test": "mocha --require jsdomSetup.js --require @babel/register --require ignore-styles --require isomorphic-fetch --recursive"
   },
   "keywords": [],
