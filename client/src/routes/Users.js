@@ -27,10 +27,8 @@ export default class Users extends React.Component {
 
   addUser = (user) => {
     //API Call
-    //to be replace by fixing it at the form level
-    if (!user.userGroupAccess) { user.userGroupAccess = 'user' }
-    if (!user.groupName) { user.groupName = this.props.groupOptions[0] }
     this.props.dispatch(addUser(user))
+    
   }
 
   approveUser = (userId) => {

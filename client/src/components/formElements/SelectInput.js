@@ -24,7 +24,7 @@ export default class SelectInput extends React.Component {
         <label data-tip={this.props.instruction}>
           {`${this.props.label}: `}
           <span
-            data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}
+            data-tip={(this.props.isValid) ? '' : this.props.errors}
           >
             <select
               value={this.props.value}

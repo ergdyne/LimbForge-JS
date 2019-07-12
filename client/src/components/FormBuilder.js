@@ -36,6 +36,7 @@ export default class FormBuilder extends React.Component {
   //Clear the state as a hack to deal with not letting the page refresh... TODO fix refresh
   clearState = () => {
     //Naive approach. Clears rather than using initial or default.
+    //Doesn't seem to actually work
     this.props.elements.map(element => {
       this.setState({ [element.accessor]: '' })
     })

@@ -43,7 +43,8 @@ export default class Download extends React.Component {
     zip.file('Passive.Transradial.Device.Assembly.Manual.pdf', urlToPromise('https://s3-us-west-2.amazonaws.com/limbforgedocs/Passive.Transradial.Device.Assembly.Manual.pdf'), { binary: true });
 
     // when everything has been downloaded, we can trigger the dl
-    const patientName = 'hi-'
+    const p = this.props.patient
+    const patientName = `${(p.firstName) ?`${p.firstName}-`: ''}${(p.lastName) ? p.lastName : ''}`
 
     zip.generateAsync({ type: "blob" })
       .then(function callback(blob) {

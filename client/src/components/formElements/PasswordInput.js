@@ -25,7 +25,7 @@ export default class PasswordInput extends React.Component {
           data-tip={this.props.instruction}
         >
           {`${this.props.label}: `}
-          <span data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}>
+          <span data-tip={(this.props.isValid) ? '' : this.props.errors}>
             <input
               type='password'
               className={`${(this.props.isValid) ? '' : 'invalid'}`}

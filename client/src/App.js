@@ -20,8 +20,10 @@ export default class App extends React.Component {
     // TODO add security layer to the Router that isn't this goofy.
     //TODO move Nav bar to component
     //CSS - Initial
+    console.log('PRE',location)
     return (
       <Router>
+        {console.log('LOCATION-------',location)}
         <header>
           {/* Logo Button with custom home */}
           <Link

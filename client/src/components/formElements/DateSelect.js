@@ -26,7 +26,7 @@ export default class DateSelect extends React.Component {
           {`${this.props.label}: `}
           <span 
             className={`${(this.props.isValid) ? '' : 'invalid'}`}
-            data-tip={(this.props.errors.length === 0) ? '' : this.props.errors}>
+            data-tip={(this.props.isValid) ? '' : this.props.errors}>
             <DatePicker
               selected={this.props.value}
               onChange={this.checkInput}

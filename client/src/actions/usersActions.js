@@ -69,6 +69,7 @@ export function addUser(newUser){
       },AXIOS_CONFIG)
         .then((response) => {
           //We don't really care about the response yet. Only would care if going to update state.
+          dispatch(getUsers())
           dispatch({ type: "ADD_USER", payload: response.data })
         })
         .catch((err) => {
