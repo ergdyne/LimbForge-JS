@@ -77,7 +77,7 @@ export default class Patient extends React.Component {
     }
 
     if (!this.props.patient.amputationLevel) {
-      patient.amputationLevel = `transradial`
+      patient.amputationLevel = `Transradial`
     }
 
     this.setState({ measuresSRC: this.imageLocation(patient.gender, patient.side) })

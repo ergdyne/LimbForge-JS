@@ -22,16 +22,14 @@ export default class Group extends React.Component {
     }
   }
 
-  approveUser = (userId) => {
-    //API Call
-    console.log('approve user', userId, 'for group', this.props.group)
+  viewUser = (userId) => {
+    this.props.history.push(`/user/${userId}`)
   }
 
   render() {
     console.log("group is ", this.props.group)
     //TODO change these columns up.
-    const userColumns = formatColumns(this.props.usersGroupColHeaders, () => { }, ``)
-    const approveColumns = formatColumns(this.props.usersGroupColHeaders, this.approveUser, "Approve")
+    const userColumns = formatColumns(this.props.usersGroupColHeaders, this.viewUser, `View`)
     //CSS - initial
     return (
       <div className="container">
@@ -44,7 +42,7 @@ export default class Group extends React.Component {
             <ReactTable
               className="row"
               key="access"
-              columns={approveColumns}
+              columns={userColumns}
               data={this.props.group.requestedUsers}
               filterable={true}
               defaultPageSize={5}
