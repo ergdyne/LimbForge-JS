@@ -11,7 +11,13 @@ import { groupAccess } from "../functions/access"
 
 const groupAccessLevels = ['user', 'groupAdmin', 'requested', 'none']
 
-//Group access deal
+function createUserGroup(g: Group, a: string, u: User) {
+  let userGroup = new UserGroup()
+  userGroup.group = g
+  userGroup.access = a
+  userGroup.user = u
+  return userGroup
+}
 
 export default class UserController {
   //CONTROL - can be rolled into addUser
@@ -89,6 +95,7 @@ export default class UserController {
     }
   }
   static addUser = async (req: Request, res: Response) => {
+    //add user should work for adjusting access too.
     //admin -> anything - works?
     //groupAdmin -> only session groups with groupAdmin
     let { email, userGroupAccess, groupName } = req.body
@@ -117,13 +124,8 @@ export default class UserController {
                 if (sessionUser.siteAccess == 'admin' || acceptableGroupIds.includes(group.id)) {
                   try {
                     getManager().transaction(async transactionalEntityManager => {
-                      function createUserGroup(g: Group, a: string, u: User) {
-                        let userGroup = new UserGroup()
-                        userGroup.group = g
-                        userGroup.access = a
-                        userGroup.user = u
-                        return userGroup
-                      }
+
+                      
                       //For the user doesn't exist -> create it and add it to the group.
                       if (user == null) {
                         let newUser = new User()
