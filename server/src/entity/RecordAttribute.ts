@@ -1,8 +1,9 @@
 import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne} from 'typeorm'
-import Measure from "./Measure"
+import Record from "./Record"
 
+//How a record is defined
 @Entity()
-export class MeasureAttribute{
+export class RecordAttribute{
   @PrimaryGeneratedColumn()
   public id: number
 
@@ -18,9 +19,9 @@ export class MeasureAttribute{
   @CreateDateColumn()
   public create_at: Date
 
-  //Many to one Measure
-  @ManyToOne(type=> Measure, measure => measure.measureAttributes)
-  measure: Measure
+  //Many to one Record
+  @ManyToOne(type=> Record, record => record.recordAttributes)
+  record: Record
 }
 
-export default MeasureAttribute
+export default RecordAttribute

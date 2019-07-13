@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, CreateDateColumn,OneToMany} from 'typeorm'
 import PatientGroup from './PatientGroup'
-import PatientAttribute from './PatientAttribute'
-import PatientMeasurement from './PatientMeasurement'
+import PatientRecord from './PatientRecord'
+import PatientBuild from './PatientBuild'
 
 @Entity()
 export class Patient{
@@ -11,13 +11,13 @@ export class Patient{
   @CreateDateColumn()
   public create_at: Date
 
-  //One Patient to many PatientAttributes
-  @OneToMany(type => PatientAttribute, patientAttribute => patientAttribute.patient)
-  patientAttributes: PatientAttribute[]
+  //One Patient to many PatientRecords
+  @OneToMany(type => PatientRecord, patientRecord => patientRecord.patient)
+  patientRecords: PatientRecord[]
 
-  //One Patient to many Measurements
-  @OneToMany(type => PatientMeasurement, patientMeasurement => patientMeasurement.patient)
-  patientMeasurements: PatientMeasurement[]
+  //One Patient to many Builds
+  @OneToMany(type => PatientBuild, patientBuild => patientBuild.patient)
+  patientBuilds: PatientBuild[]
 
   //One Patient to many patientGroups, but typically only care about 1.
   @OneToMany(type => PatientGroup, patientGroup => patientGroup.patient)
