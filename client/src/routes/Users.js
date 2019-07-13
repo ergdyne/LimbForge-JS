@@ -31,20 +31,13 @@ export default class Users extends React.Component {
     
   }
 
-  approveUser = (userId) => {
-    const groupId = 0
-    //TODO remap the approval table to include the group information
-    console.log('approve user', userId, 'for group ?')
-    this.props.dispatch(approveUser(userId, groupId, 'user'))
-  }
-
   viewUser = (userId) => {
     this.props.history.push(`/user/${userId}`)
   }
 
   render() {
     const userColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.viewUser, `View`)
-    const approveColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.approveUser, "Approve")
+    const approveColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.viewUser, "View")
     const userInputs = [
       { accessor: `email`, name: `Email`, type: `string`, inputType: `text`, validation: { type: 'email' } },
       { accessor: `groupName`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions, validation: { required: true } },

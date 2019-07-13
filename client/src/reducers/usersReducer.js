@@ -32,7 +32,6 @@ export default function reducer(state={
       return {...state, user:action.payload}
     }
     case "APPROVE_USER":{
-      //userId,groupId,groupAccess
       return {...state}
     }
     case "ADD_USER":{

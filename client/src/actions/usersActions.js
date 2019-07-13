@@ -38,7 +38,7 @@ export function getUser(userId){
         const data = response.data
         const ourUser ={
           id: userId,
-          email: data.id,
+          email: data.email,
           isAdmin: data.isAdmin,
           groups: fullUserGroupsToGroups(data.fullUserGroups)
         }
@@ -50,11 +50,21 @@ export function getUser(userId){
   }
 }
 
-export function approveUser(userId,groupId,groupAccess){
-  //TODO - add this functionality
-  return {
-    type:"APPROVE_USER",
-    payload:{userId:userId,groupId:groupId,groupAccess:groupAccess}
+export function approveUser(userId, email,group,groupAccess){
+  return function (dispatch) {
+    //Add does double duty of adjusting group access
+    axios.post(`${API_URL}user/add`, {
+      email:email, 
+      userGroupAccess:groupAccess, 
+      groupName:group
+    },AXIOS_CONFIG)
+      .then((response) => {
+        dispatch(getUser(userId))
+        dispatch({ type: "APPROVE_USER", payload: response.data })
+      })
+      .catch((err) => {
+        dispatch({ type: "APPROVE_USER_REJECTED", payload: err })
+      })
   }
 }
 
