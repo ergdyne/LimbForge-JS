@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne} from 'typeorm'
+import {Entity, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToMany} from 'typeorm'
 import Patient from './Patient'
 import Build from './Build'
 import PatientBuildRecord from './PatientBuildRecord'

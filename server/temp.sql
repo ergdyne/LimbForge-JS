@@ -78,3 +78,7 @@ drop view view_admin_access ;
 drop view view_patient_group;
 drop view view_site_auth ;
 
+drop table migrations;
+drop table typeorm_metadata;
+
+

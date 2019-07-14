@@ -26,7 +26,7 @@ export class Record{
   patientRecords: PatientRecord[]
 
   //UXRecords
-  @OneToMany(type => UXRecord, uXRecord => uxRecord.record)
+  @OneToMany(type => UXRecord, uXRecord => uXRecord.record)
   uXRecords: UXRecord[]
 
 }

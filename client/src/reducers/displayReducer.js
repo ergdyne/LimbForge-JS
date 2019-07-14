@@ -10,6 +10,8 @@ import {
   userGroupsColHeaders
 } from '../config/defaultDisplay'
 
+
+
 //Define all the display data that can in the future be pulled from the DB
 export default function reducer(state = {
   //Named Forms and Tables with eventually multiple versions
