@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { fullUserGroupsToGroups } from '../functions/convertView'
-import {AXIOS_CONFIG, API_URL} from '../config/API'
+import { AXIOS_CONFIG, API_URL } from '../config/API'
 import { isString } from 'util' //TEMP
 //NOTE! I believe that encryption of credentials is handled by HTTPS.
 //So when the site is live, as long as we use HTTPS, everything should be fine.
@@ -87,25 +87,18 @@ export function logout() {
 }
 
 export function signUp(newUser) {
-  const { email, password, passwordConfirm, group } = newUser
-  if (password === passwordConfirm) {
-    return function (dispatch) {
-      axios.post(`${API_URL}auth/signup`, {
-        email: email,
-        auth: password,
-        groupName: group
-      }, AXIOS_CONFIG)
-        .then((response) => {
-          dispatch({ type: "SIGN_UP", payload: userDataToUser(response) })
-        })
-        .catch((err) => {
-          dispatch({ type: "SIGN_UP_REJECTED", payload: err })
-        })
-    }
-  }
-
-  return {
-    type: "SIGN_UP_REJECTED",
-    payload: { msg: "passwords don't match" }
+  const { email, password, group } = newUser
+  return function (dispatch) {
+    axios.post(`${API_URL}auth/signup`, {
+      email: email,
+      auth: password,
+      groupName: group
+    }, AXIOS_CONFIG)
+      .then((response) => {
+        dispatch({ type: "SIGN_UP", payload: userDataToUser(response) })
+      })
+      .catch((err) => {
+        dispatch({ type: "SIGN_UP_REJECTED", payload: err })
+      })
   }
 }

@@ -8,7 +8,7 @@ const groupColHeaders = [
 
 const groupInputs = [
   { accessor: `name`, name: `Group Name`, type: `string`, inputType: `text`, validation: { required: true } },
-  { accessor: `description`, name: `About`, type: `string`, inputType: `text`, validation: { required: true } }
+  { accessor: `description`, name: `About`, type: `string`, inputType: `text`}
 ]
 
 

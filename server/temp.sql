@@ -3,11 +3,7 @@
 
 --Probably need a user seed too
 
---TODO write a seed for measures and attributes
-insert into "measure" (create_at) values (current_timestamp);
-insert into "measure" (create_at) values (current_timestamp);
-insert into "measure" (create_at) values (current_timestamp);
-insert into "measure" (create_at) values (current_timestamp);
+-- write a seed...
 
 insert into "measure_attribute" (attribute,"value", "type","measureId") values ('name', 'L1', 'string', 1);
 insert into "measure_attribute" (attribute,"value", "type","measureId") values ('accessor', 'l1', 'string', 1);
@@ -81,4 +77,6 @@ drop view view_site_auth ;
 drop table migrations;
 drop table typeorm_metadata;
 
+--Version 0.4
 
+insert into "record" (create_at) values (current_timestamp);insert into record_attribute (attribute, "value","type","recordId") values ('accessor','email','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('name','Email','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('type','string','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('inputType','text','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('validation-type','email','string',1);

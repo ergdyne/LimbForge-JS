@@ -10,7 +10,7 @@ export default class SelectInput extends React.Component {
       label: this.props.label,
       value: event.target.value,
       validations: this.props.validations,
-      isValid: this.props.isValid
+      isvalid: this.props.isvalid
     }
     this.props.onChange(change)
   }
@@ -19,12 +19,12 @@ export default class SelectInput extends React.Component {
     //CSS - initial
     return (
       <div
-        className={`FormBuilder-select ${(this.props.isValid) ? '' : 'invalid'}`}
+        className={`FormBuilder-select ${(this.props.isvalid) ? '' : 'invalid'}`}
         key={this.props.name}>
         <label data-tip={this.props.instruction}>
           {`${this.props.label}: `}
           <span
-            data-tip={(this.props.isValid) ? '' : this.props.errors}
+            data-tip={(this.props.isvalid) ? '' : this.props.errors}
           >
             <select
               value={this.props.value}
@@ -62,7 +62,7 @@ SelectInput.propTypes = {
   placeholder: PropTypes.string,
   label: PropTypes.string.isRequired,
   instruction: PropTypes.string,
-  isValid: PropTypes.bool,
+  isvalid: PropTypes.bool,
   errors: PropTypes.array,
   validations: PropTypes.object
 }

@@ -33,12 +33,12 @@ export default class FormBuilder extends React.Component {
 
   setInitialState = () => {
     //Mapping each form element to the state adding defaults where required.
-    var newState = {...this.state}
-  
+    var newState = { ...this.state }
+
     this.props.elements.map(element => {
       var item = {}
       //Let's start with true and remap on submit error
-      item.isValid = true
+      item.isvalid = true
       item.errors = []
 
       if (this.props.initial && this.props.initial[element.accessor]) {
@@ -46,13 +46,13 @@ export default class FormBuilder extends React.Component {
       } else {
         if (element.default) {
           item.value = element.default
-        }else{
+        } else {
           item.value = ''
         }
       }
       //May be able to get away without this
       newState[element.accessor] = item
-      
+
     })
     this.setState(newState)
   }
@@ -64,13 +64,13 @@ export default class FormBuilder extends React.Component {
 
   handleInputChange = (change) => {
     //All Input fields must return this information on change to use this method
-    const { value, name, label, validations, isValid } = change
+    const { value, name, label, validations, isvalid } = change
     const errors = (validations) ? validation(validations, value, label) : []
     //If currently false, can change to true. Otherwise, leave it true as change to false only happens at submit.
-    const newIsValid = (isValid) ? isValid : (errors.length === 0)
+    const newisvalid = (isvalid) ? isvalid : (errors.length === 0)
     const item = {
       value: value,
-      isValid: newIsValid,
+      isvalid: newisvalid,
       errors: errors
     }
     this.setState({ [name]: item, submitError: '' })
@@ -87,7 +87,7 @@ export default class FormBuilder extends React.Component {
 
       //If errors we need to push them to the state and the overall list
       if (errors.length > 0) {
-        item.isValid = false,
+        item.isvalid = false,
           item.errors = errors
         this.setState({ [e.accessor]: item })
         errors.forEach(err => allErrors.push(err))
@@ -108,7 +108,7 @@ export default class FormBuilder extends React.Component {
             value={this.state[element.accessor].value}
             label={element.name}
             instruction={element.instruction}
-            isValid={this.state[element.accessor].isValid}
+            isvalid={this.state[element.accessor].isvalid}
             errors={this.state[element.accessor].errors}
             validations={element.validation}
           />
@@ -125,7 +125,7 @@ export default class FormBuilder extends React.Component {
             placeholder={element.placeholder}
             label={element.name}
             instruction={element.instruction}
-            isValid={this.state[element.accessor].isValid}
+            isvalid={this.state[element.accessor].isvalid}
             errors={this.state[element.accessor].errors}
             validations={element.validation}
           />
@@ -140,7 +140,7 @@ export default class FormBuilder extends React.Component {
             value={this.state[element.accessor].value}
             options={element.options}
             label={element.name}
-            isValid={this.state[element.accessor].isValid}
+            isvalid={this.state[element.accessor].isvalid}
             errors={this.state[element.accessor].errors}
             validations={element.validation}
           />
@@ -154,7 +154,7 @@ export default class FormBuilder extends React.Component {
             name={element.accessor}
             value={this.state[element.accessor].value}
             label={element.name}
-            isValid={this.state[element.accessor].isValid}
+            isvalid={this.state[element.accessor].isvalid}
             errors={this.state[element.accessor].errors}
             validations={element.validation}
           />
@@ -167,7 +167,7 @@ export default class FormBuilder extends React.Component {
             name={element.accessor} //In form elements name is the accessor; in our datatypes name is the label
             instruction={element.instruction}
             label={element.name}
-            isValid={this.state[element.accessor].isValid}
+            isvalid={this.state[element.accessor].isvalid}
             errors={this.state[element.accessor].errors}
             value={this.state[element.accessor].value}
             className='FormBuilder-text'
@@ -186,7 +186,7 @@ export default class FormBuilder extends React.Component {
         if (this.props.preventDefault) { event.preventDefault() } //Stop page reload
 
         if (this.checkErrors().length === 0) {
-          const data = {...this.state}
+          const data = { ...this.state }
 
           //Clear the form and the state
           if (this.props.clearOnSubmit) { this.setInitialState() }
@@ -195,7 +195,14 @@ export default class FormBuilder extends React.Component {
           var formData = {}
 
           this.props.elements.filter(e => data[e.accessor].value)
-            .forEach(e => formData[e.accessor] = data[e.accessor].value)
+            .forEach(e => {
+              if (e.inputType === 'password') {
+                const v = data[e.accessor].value
+                formData[e.accessor] = (typeof v === 'string')?v:v.first
+              } else {
+                formData[e.accessor] = data[e.accessor].value
+              }
+            })
 
           this.props.onSubmit(formData)
         } else {

@@ -43,9 +43,14 @@ export default class Landing extends React.Component {
     //TODO matching passwords validation! and feedback signup type errors
     const signUpInputs = [//PUSH IN THE NEW OPTION
       { accessor: `email`, name: `Email`, type: `string`, inputType: `text`, validation: { type: 'email' } },
-      { accessor: `password`, name: `Password`, type: `string`, inputType: `password`, validation: { required: true } },
-      { accessor: `passwordConfirm`, name: `Confirm Password`, type: `string`, inputType: `password`, validation: { required: true } },
+      { accessor: `password`, name: `Password`, type: `string`, inputType: `password`, validation: { required: true, confirm: true } },
       { accessor: `group`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: (groupOptions), validation: { required: true } },
+    ]
+
+    const loginInputs = [
+      { accessor: `email`, name: `Email`, type: `string`, inputType: `text`, validation: { type: 'email' } },
+      { accessor: `password`, name: `Password`, type: `string`, inputType: `password`, validation: { required: true} },
+      
     ]
     return (
       //CSS - Initial
@@ -62,7 +67,7 @@ export default class Landing extends React.Component {
             <FormBuilder
               title="Login"
               key='Login'
-              elements={signUpInputs.slice(0, 2)}
+              elements={loginInputs}
               onSubmit={this.loginSubmit}
               submitValue='Login'
               preventDefault={true}

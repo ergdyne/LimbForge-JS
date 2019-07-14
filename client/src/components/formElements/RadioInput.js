@@ -9,7 +9,7 @@ export default class RadioInput extends React.Component {
       label: this.props.label,
       value: event.target.value,
       validations: this.props.validations,
-      isValid: this.props.isValid
+      isvalid: this.props.isvalid
     }
     this.props.onChange(change)
   }
@@ -19,8 +19,8 @@ export default class RadioInput extends React.Component {
     return (
       <div
         key={this.props.name}
-        className={`FormBuilder-radio ${(this.props.isValid) ? '' : 'invalid'}`}
-        data-tip={(this.props.isValid) ? '' : this.props.errors}
+        className={`FormBuilder-radio ${(this.props.isvalid) ? '' : 'invalid'}`}
+        data-tip={(this.props.isvalid) ? '' : this.props.errors}
 
       >
         {this.props.options.map(o => {
@@ -48,7 +48,7 @@ RadioInput.propTypes = {
     PropTypes.string
   ),
   label: PropTypes.string.isRequired,
-  isValid: PropTypes.bool,
+  isvalid: PropTypes.bool,
   errors: PropTypes.array,
   validations: PropTypes.object
 }

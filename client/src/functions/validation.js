@@ -14,6 +14,15 @@ export default function validation (validations,value,name){
     errors.push(reqText(name))
   }
 
+  if(v.confirm){
+    const first = (typeof value === 'string')?value:value.first
+    const second = (typeof value === 'string')?'':value.second
+
+    if(first !==second){
+      errors.push(`Passwords must match.`)
+    }
+  }
+
   //Type errors
   if(v.type){
     switch (v.type){
