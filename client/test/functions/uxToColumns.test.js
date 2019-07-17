@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import {uxToColumns} from '../../src/functions/uxConvert'
+import { uxToColumns, uxToForm} from '../../src/functions/uxConvert'
 
 const record = [
   { "uXId": 5, "accessor": "patientCols", "recordId": 1, "order": 2, "attribute": "accessor", "value": "name", "type": "string" },
@@ -22,8 +22,56 @@ const records = [
   { "uXId": 5, "accessor": "patientCols", "recordId": 1, "order": 2, "attribute": "inputType", "value": "text", "type": "string" }
 ]
 
+const outRecordsForm = [
+  {
+    recordId: 5,
+    order: 1,
+    accessor: "date",
+    name: "Date",
+    type: "date",
+    inputType: "select",
+    placeholder: "Select Group",
+    optionStore: "groupOptions",
+    validation: {
+      required: true
+    }
+  },
+  {
+    recordId: 1,
+    order: 2,
+    accessor: 'name',
+    name: 'Name',
+    type: 'string',
+    inputType: "text"
+  }
+]
 
-const outRecord = [{
+
+const optionAndValidations = [
+  { "uXId": 5, "accessor": "patientCols", "recordId": 10, "order": 10, "attribute": "accessor", "value": "side", "type": "string" },
+  { "uXId": 5, "accessor": "patientCols", "recordId": 10, "order": 10, "attribute": "name", "value": "Amputation Side", "type": "string" },
+  { "uXId": 5, "accessor": "patientCols", "recordId": 10, "order": 10, "attribute": "type", "value": "string", "type": "string" },
+  { "uXId": 5, "accessor": "patientCols", "recordId": 10, "order": 10, "attribute": "inputType", "value": "radio", "type": "string" },
+  { "uXId": 5, "accessor": "patientCols", "recordId": 10, "order": 10, "attribute": "validation-required", "value": "true", "type": "boolean" },
+  { "uXId": 5, "accessor": "patientCols", "recordId": 10, "order": 10, "attribute": "option-0", "value": "Left", "type": "string" },
+  { "uXId": 5, "accessor": "patientCols", "recordId": 10, "order": 10, "attribute": "option-1", "value": "Right", "type": "string" }
+]
+
+const outOptValForm = [{
+    recordId: 10,
+    order: 10,
+    accessor: 'side',
+    name: 'Amputation Side',
+    type: 'string',
+    inputType: 'radio',
+    validation: {
+      required: true
+    },
+    options: ["Left", "Right"]
+  }]
+
+
+const outRecordCol = [{
   recordId: 1,
   order: 2,
   accessor: 'name',
@@ -31,7 +79,7 @@ const outRecord = [{
   type: 'string'
 }]
 
-const outRecords = [
+const outRecordsCols = [
   {
     recordId: 5,
     order: 1,
@@ -51,9 +99,18 @@ const outRecords = [
 //More test cases are required
 describe("uxToColumns", () => {
   it("converts a single record to column", () => {
-    expect(uxToColumns(record)).to.eql(outRecord)
+    expect(uxToColumns(record)).to.eql(outRecordCol)
   })
   it("converts two records to two columns with correct order", () => {
-    expect(uxToColumns(records)).to.eql(outRecords)
+    expect(uxToColumns(records)).to.eql(outRecordsCols)
+  })
+})
+
+describe("uxToForm", () => {
+  it("converts a single record to an input", () => {
+    expect(uxToForm(optionAndValidations)).to.eql(outOptValForm)
+  })
+  it("converts two records to two form inputs with correct order", () => {
+    expect(uxToForm(records)).to.eql(outRecordsForm)
   })
 })
