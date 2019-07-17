@@ -19,15 +19,20 @@ export default function reducer(state = {
   groupColHeaders: groupColHeaders,
   groupInputs: groupInputs,
   measurementInputs: measurementInputs,
-  patientColHeaders: patientColHeaders,
+  patientColHeaders: [],
   patientInputs: patientInputs,
   usersColHeaders: usersColHeaders,
   usersGroupColHeaders: usersGroupColHeaders,
   userGroupsColHeaders: userGroupsColHeaders
 }, action) {
   switch (action.type) {
-    case "GET_COLS": {
-      return { ...state }
+    case "GET_COL_HEADERS": {
+      switch(action.payload.table){
+        case 'patientCols':{
+          return{...state, patientColHeaders:action.payload.data}
+        }
+        default:return { ...state }
+      }
     }
     case "GET_MEASURE_INPUTS":{
       return {...state, measurementInputs:action.payload}
