@@ -20,7 +20,7 @@ function recordSetToColumn(rows){
 
 function uxToColumns(rows){
   const columnSets = _.pairs(_.groupBy(rows, r=>r.recordId))
-  return columnSets.map(set => recordSetToColumn(set[1]))
+  return _.sortBy(columnSets.map(set => recordSetToColumn(set[1])),'order')
 }
 
 export{
