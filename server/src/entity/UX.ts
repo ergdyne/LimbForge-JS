@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany} from 'typeorm'
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany} from 'typeorm'
 import UXAttribute from './UXAttribute'
 import UXRecord from './UXRecord'
 
@@ -7,6 +7,9 @@ import UXRecord from './UXRecord'
 export class UX{
   @PrimaryGeneratedColumn()
   public id: number
+
+  @Column({ unique: true })
+  public accessor: string
 
   @CreateDateColumn()
   public create_at: Date

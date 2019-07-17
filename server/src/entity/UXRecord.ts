@@ -8,7 +8,7 @@ export class UXRecord{
   public id: number
 
   @Column() 
-  public onList: boolean
+  public order: number //-1 means exclude
 
   @CreateDateColumn()
   public create_at: Date
