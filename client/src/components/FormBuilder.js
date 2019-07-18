@@ -102,7 +102,7 @@ export default class FormBuilder extends React.Component {
       case 'date': {
         return (
           <DateSelect
-            key={element.accessor}
+            key={`${this.props.accessor}-${element.accessor}`}
             onChange={this.handleInputChange}
             name={element.accessor}
             value={this.state[element.accessor].value}
@@ -115,13 +115,14 @@ export default class FormBuilder extends React.Component {
         )
       }
       case 'select': {
+        console.log('select',element)
         return (
           <SelectInput
-            key={element.accessor}
+            key={`${this.props.accessor}-${element.accessor}`}
             onChange={this.handleInputChange}
             name={element.accessor}
             value={this.state[element.accessor].value}
-            options={element.options}
+            options={(element.optionStore) ? this.props.optionStore[element.optionStore] : element.options}
             placeholder={element.placeholder}
             label={element.name}
             instruction={element.instruction}
@@ -134,11 +135,11 @@ export default class FormBuilder extends React.Component {
       case 'radio': {
         return (
           <RadioInput
-            key={element.accessor}
+            key={`${this.props.accessor}-${element.accessor}`}
             onChange={this.handleInputChange}
             name={element.accessor}
             value={this.state[element.accessor].value}
-            options={element.options}
+            options={(element.optionStore) ? this.props.optionStore[element.optionStore] : element.options}
             label={element.name}
             isvalid={this.state[element.accessor].isvalid}
             errors={this.state[element.accessor].errors}
@@ -149,7 +150,7 @@ export default class FormBuilder extends React.Component {
       case 'password': {
         return (
           <PasswordInput
-            key={element.accessor}
+            key={`${this.props.accessor}-${element.accessor}`}
             onChange={this.handleInputChange}
             name={element.accessor}
             value={this.state[element.accessor].value}
@@ -163,7 +164,7 @@ export default class FormBuilder extends React.Component {
       default: {
         return (
           <TextInput
-            key={element.accessor}
+            key={`${this.props.accessor}-${element.accessor}`}
             name={element.accessor} //In form elements name is the accessor; in our datatypes name is the label
             instruction={element.instruction}
             label={element.name}
@@ -182,33 +183,34 @@ export default class FormBuilder extends React.Component {
   render() {
     //CSS - initial
     return (
-      <form onSubmit={() => {
-        if (this.props.preventDefault) { event.preventDefault() } //Stop page reload
+      <form key={this.props.accessor}
+        onSubmit={() => {
+          if (this.props.preventDefault) { event.preventDefault() } //Stop page reload
 
-        if (this.checkErrors().length === 0) {
-          const data = { ...this.state }
+          if (this.checkErrors().length === 0) {
+            const data = { ...this.state }
 
-          //Clear the form and the state
-          if (this.props.clearOnSubmit) { this.setInitialState() }
+            //Clear the form and the state
+            if (this.props.clearOnSubmit) { this.setInitialState() }
 
-          //Each item with a value map to just the value
-          var formData = {}
+            //Each item with a value map to just the value
+            var formData = {}
 
-          this.props.elements.filter(e => data[e.accessor].value)
-            .forEach(e => {
-              if (e.inputType === 'password') {
-                const v = data[e.accessor].value
-                formData[e.accessor] = (typeof v === 'string')?v:v.first
-              } else {
-                formData[e.accessor] = data[e.accessor].value
-              }
-            })
+            this.props.elements.filter(e => data[e.accessor].value)
+              .forEach(e => {
+                if (e.inputType === 'password') {
+                  const v = data[e.accessor].value
+                  formData[e.accessor] = (typeof v === 'string') ? v : v.first
+                } else {
+                  formData[e.accessor] = data[e.accessor].value
+                }
+              })
 
-          this.props.onSubmit(formData)
-        } else {
-          this.setState({ submitError: 'Oh no! Some data is not right. Please fix input errors in red.' })
-        }
-      }}>
+            this.props.onSubmit(formData)
+          } else {
+            this.setState({ submitError: 'Oh no! Some data is not right. Please fix input errors in red.' })
+          }
+        }}>
         <fieldset>
           {(this.props.title) ? <legend>{this.props.title}</legend> : <span />}
           {this.props.elements.map(x => this.generateFormElement(x))}
@@ -227,8 +229,10 @@ export default class FormBuilder extends React.Component {
 
 FormBuilder.propTypes = {
   //onSubmit() callback should take the form's state back with it.
+  accessor: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   submitValue: PropTypes.string.isRequired,
+  optionStore: PropTypes.object,
   preventDefault: PropTypes.bool,
   clearOnSubmit: PropTypes.bool,
   elements: PropTypes.arrayOf(

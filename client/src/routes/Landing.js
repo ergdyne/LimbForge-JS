@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { login } from '../actions/sessionActions'
-import { getGroupOptions } from '../actions/usersActions'
+import { getGroupOptions } from '../actions/displayActions'
 import { signUp } from '../actions/sessionActions'
 import FormBuilder from '../components/FormBuilder';
 //API Call
@@ -13,7 +13,7 @@ import FormBuilder from '../components/FormBuilder';
   return ({
     stored: store,
     sessionUser: store.session.user,
-    groupOptions: store.users.publicGroupOptions
+    groupOptions: store.display.optionStore.publicGroupOptions
   })
 })
 
@@ -66,7 +66,8 @@ export default class Landing extends React.Component {
           <div className="card large">
             <FormBuilder
               title="Login"
-              key='Login'
+              key='login'
+              accessor='login'
               elements={loginInputs}
               onSubmit={this.loginSubmit}
               submitValue='Login'
@@ -80,6 +81,7 @@ export default class Landing extends React.Component {
                   <FormBuilder
                     title="Sign Up"
                     key='signUp'
+                    accessor='signUp'
                     elements={signUpInputs}
                     onSubmit={this.signUpSubmit}
                     submitValue='Sign Up'

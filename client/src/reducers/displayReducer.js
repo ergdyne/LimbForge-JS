@@ -2,9 +2,6 @@
 import {
   groupColHeaders,
   groupInputs,
-  patientColHeaders,
-  patientInputs,
-  measurementInputs,
   usersColHeaders,
   usersGroupColHeaders,
   userGroupsColHeaders
@@ -18,12 +15,18 @@ export default function reducer(state = {
   //Currently all static
   groupColHeaders: groupColHeaders,
   groupInputs: groupInputs,
-  measurementInputs: measurementInputs,
+  selectGroup:{inputs:[]},
+  measurementForm: {inputs:[]},
   patientColHeaders: [],
-  patientInputs: patientInputs,
+  patientForm: {inputs:[]},
+  addBuild: {inputs:[]},
   usersColHeaders: usersColHeaders,
   usersGroupColHeaders: usersGroupColHeaders,
-  userGroupsColHeaders: userGroupsColHeaders
+  userGroupsColHeaders: userGroupsColHeaders,
+  optionStore:{
+    groupOptions:[],
+    publicGroupOptions:['New Group']
+  }
 }, action) {
   switch (action.type) {
     case "GET_COL_HEADERS": {
@@ -34,8 +37,20 @@ export default function reducer(state = {
         default:return { ...state }
       }
     }
-    case "GET_MEASURE_INPUTS":{
-      return {...state, measurementInputs:action.payload}
+    case "GET_FORM":{
+      switch(action.payload.accessor){
+        case 'selectGroup': return {...state, selectGroup:action.payload}
+        case 'patientData': return {...state, patientForm:action.payload}
+        case 'addBuild': return {...state, addBuild:action.payload}
+        default: return { ...state,measurementForm:form }
+      }
+      
+    }
+    case "GET_GROUP_OPTIONS":{
+      const groups = action.payload
+      const pubGroups = groups.concat(['New Group'])
+      const newOps = {...state.optionStore,groupOptions:groups,publicGroupOptions:pubGroups }
+      return{...state, optionStore: newOps}
     }
     default: return state
   }

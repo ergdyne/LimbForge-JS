@@ -2,18 +2,6 @@ import axios from 'axios'
 import{fullUserGroupsToUsers, fullUserGroupsToGroups} from '../functions/convertView'
 import {AXIOS_CONFIG, API_URL} from '../config/API'
 
-export function getGroupOptions(){
-  return function (dispatch) {
-    axios.get(`${API_URL}group/options`,AXIOS_CONFIG)
-      .then((response) => {
-        dispatch({ type: "GET_GROUP_OPTIONS", payload: response.data.groupNames })
-      })
-      .catch((err) => {
-        dispatch({ type: "GET_GROUP_OPTIONS_REJECTED", payload: err })
-      })
-  }
-}
-
 export function getUsers(){
   return function (dispatch) {
     axios.get(`${API_URL}user/all`,AXIOS_CONFIG)

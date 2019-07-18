@@ -44,6 +44,7 @@ export default class Groups extends React.Component {
             title="Create Group"
             className="card large"
             key='group'
+            accessor={'group'}
             elements={this.props.groupInputs}
             onSubmit={this.submitGroup}
             submitValue={`Add`}

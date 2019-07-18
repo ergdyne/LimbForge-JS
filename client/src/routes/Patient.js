@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import FormBuilder from '../components/FormBuilder'
 import PatientData from '../components/PatientData'
 import Download from '../components/Download'
-import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions';
+import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions'
+import { getForm } from '../actions/displayActions'
 import isEmpty from '../functions/isEmpty'
-import { getGroupOptions } from '../actions/usersActions'
-import { getMeasures } from '../actions/displayActions'
+import { getGroupOptions, getMeasures } from '../actions/displayActions'
 
 @connect((store) => {
   return ({
@@ -14,9 +14,10 @@ import { getMeasures } from '../actions/displayActions'
     patient: store.patients.patient,
     measurements: store.patients.measurements,
     level: store.patients.patientFormLevel,
-    groupOptions: store.users.groupOptions,
-    patientInputs: store.display.patientInputs,
-    measurementInputs: store.display.measurementInputs
+    optionStore: store.display.optionStore,
+    groupForm: store.display.selectGroup,
+    patientForm: store.display.patientForm,
+    measurementForm: store.display.measurementForm
   })
 })
 export default class Patient extends React.Component {
@@ -24,11 +25,15 @@ export default class Patient extends React.Component {
     super(props)
     this.state = {
       groupName: null,
-      measuresSRC: null
+      measuresSRC: null,
+      fetchedGroups: false
     }
   }
 
   componentWillMount() {
+    this.props.dispatch(getForm('patientData'))
+    this.props.dispatch(getForm('selectGroup'))
+    this.props.dispatch(getGroupOptions())
     const { patientId } = this.props.match.params
     //well some more filtering than this...? Also there is a 0 index, but not a 0 patientId ;)
     const id = parseInt(patientId)
@@ -40,7 +45,7 @@ export default class Patient extends React.Component {
 
     //TODO should trigger somewhere else?
     //TODO replace with actual device information
-    this.props.dispatch(getMeasures('nothing'))
+    //this.props.dispatch(getMeasures('nothing'))
   }
 
   componentWillUnmount() {
@@ -51,8 +56,8 @@ export default class Patient extends React.Component {
   componentDidUpdate() {
     //Two ways that the groupName can get set automatically
     //New patient for a user with one group
-    if (this.props.groupOptions.length === 1 && this.state.groupName == null) {
-      this.setState({ groupName: this.props.groupOptions[0] })
+    if (this.props.optionStore.groupOptions.length === 1 && this.state.groupName == null && this.state.fetchedGroups) {
+      this.setState({ groupName: this.props.optionStore.groupOptions[0] })
     }
     //existing patient
     if (this.state.groupName == null && this.props.patient.groupName) {
@@ -66,7 +71,7 @@ export default class Patient extends React.Component {
     if (group.group) {
       this.setState({ groupName: group.group })
     } else {
-      this.setState({ groupName: this.props.groupOptions[0] })
+      this.setState({ groupName: this.props.optionStore.groupOptions[0] })
     }
   }
   //Callback for patient Data form.
@@ -81,7 +86,7 @@ export default class Patient extends React.Component {
     }
 
     this.setState({ measuresSRC: this.imageLocation(patient.gender, patient.side) })
-    this.props.dispatch(savePatient(patient, this.props.patientInputs, this.state.groupName))
+    this.props.dispatch(savePatient(patient, this.props.patientForm.inputs, this.state.groupName))
     this.props.dispatch(updateLevel(isEmpty(this.props.measurements) ? 'measurement' : 'preview'))
 
   }
@@ -93,7 +98,8 @@ export default class Patient extends React.Component {
 
   //Callback for measurements form.
   measurementSubmit = (measurements) => {
-    this.props.dispatch(saveMeasurements(measurements, this.props.measurementInputs, this.props.patient.id))
+    //TODO change for correct saving that includes the build
+    this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id))
     this.props.dispatch(updateLevel('preview'))
   }
 
@@ -104,72 +110,53 @@ export default class Patient extends React.Component {
 
   render() {
     const l = this.props.level
-     
+
     //TODO adjust location. This can be pulled when the user logs in. See multiple reducers in action from tutorial.
-    const groupInputs = [{ accessor: `group`, name: `Select a Group for the Patient`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions }]
     return (
       //if new patient and group options exist, give a dropdown.
       //If no option or exising patient display group Name
       //CSS - Initial
       <div className="container">
-        {((!this.props.patient.id) && this.state.groupName == null && this.props.groupOptions.length > 1) ?
-          <div className="row">
-            <FormBuilder
-              className="card large"
-              key='groupSelection'
-              elements={groupInputs}
-              onSubmit={this.groupSubmit}
-              submitValue={`Use Group`}
-              preventDefault={true}
-              initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
-            />
-          </div> :
+        {
           <div>
-            {(l === 'preview' || l === 'measurement') ?
-              <PatientData
-                className="row"
-                patient={this.props.patient}
-                measurementInputs={this.props.measurementInputs}
-                measurements={this.props.measurements}
-                editPatient={() => this.props.dispatch(updateLevel('patient'))}
-                editMeasurement={(l === 'preview') ? () => this.props.dispatch(updateLevel('measurement')) : false}
-              /> :
-              <span />
-            }
-            {/* Patient Form */}
-            {(l === 'patient') ?
-              // TODO - inputs should not be sliced this way.
-              <div className="row">
-                <FormBuilder
-                  title="Patient Data"
-                  key='patient'
-                  className="card large"
-                  elements={this.props.patientInputs.slice(0, this.props.patientInputs.length - 1)}
-                  onSubmit={this.patientSubmit}
-                  submitValue={`Save`}
-                  preventDefault={true}
-                  initial={(this.props.patient) ? this.props.patient : {}}
-                />
-              </div> :
-              <span />
-            }
+            <PatientData
+              className="row"
+
+              hasGroupSelect={(
+                (!this.props.patient.id) &&
+                this.state.groupName == null &&
+                this.props.optionStore.groupOptions.length > 1
+              )}
+              groupForm={this.props.groupForm}
+              optionStore={this.props.optionStore}
+              groupSubmit={this.groupSubmit}
+
+              patient={this.props.patient}
+              editPatient={() => this.props.dispatch(updateLevel('patient'))}
+
+              hasPatientForm={(l === 'patient')}
+              patientForm={this.props.patientForm}
+              patientSubmit={this.patientSubmit}
+            />
+
             {/* Measurement Form */}
             {(l === 'measurement') ?
               <div className="row">
                 <FormBuilder
-                  title="Measurements"
-                  key='measurments'
+                  title={this.props.measurementForm.name}
+                  key={this.props.measurementForm.accessor}
+                  accessor={this.props.measurementForm.accessor}
                   className="card large col-sm"
-                  elements={this.props.measurementInputs}
+                  elements={this.props.measurementForm.inputs}
                   onSubmit={this.measurementSubmit}
-                  submitValue={`Save`}
+                  submitValue={this.props.measurementForm.button}
                   preventDefault={true}
                   initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
                 />
                 <img
                   className="card large col-sm"
                   max-height="500"
-                  src={(this.state.measuresSRC)?this.state.measuresSRC:this.imageLocation(this.props.patient.gender, this.props.patient.side)}
+                  src={(this.state.measuresSRC) ? this.state.measuresSRC : this.imageLocation(this.props.patient.gender, this.props.patient.side)}
                 />
               </div> :
               <span />

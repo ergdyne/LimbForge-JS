@@ -10,20 +10,12 @@ export default function reducer(state={
     email:'',
     isAdmin:'',
     groups:[]
-  },
-  groupOptions:[],
-  publicGroupOptions:['New Group']
+  }
 },action){
 
   switch (action.type){
-    case "GET_GROUP_OPTIONS":{
-      const groups = action.payload
-      const pubGroups = groups.concat(['New Group'])
-      return{...state, groupOptions:groups,publicGroupOptions:pubGroups }
-    }
     case "GET_USERS":{
       const {approvedUsers, requestedUsers} = action.payload
-
       return{...state, approvedUsers:approvedUsers, requestedUsers:requestedUsers}
     }
     
