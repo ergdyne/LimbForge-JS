@@ -24,33 +24,7 @@ function uxToColumns(rows) {
   return _.sortBy(columnSets.map(set => recordSetToColumn(set[1])), 'order')
 }
 
-function valSetToValidation(rows) {
-  var v = {}
-
-  rows.forEach(r => {
-    const attribute = r.attribute.split("-").pop()
-    console.log('VAL ATT', attribute)
-    try {
-      switch (r.type) {
-        case 'boolean': {
-          v[attribute] = new Boolean(r.value).valueOf()
-          break
-        }
-        case 'float': {
-          v[attribute] = parseFloat(r.value)
-          break
-        }
-        default: {
-          v[attribute] = r.value
-        }
-      }
-    } catch (err) {
-      console.log('ERROR in parsing valSetToValidation -> Skipping')
-    }
-  })
-  return v
-}
-
+//Assumed type is string
 function optionSetToOptions(rows) {
   return _.sortBy(rows.map(r => {
     const order = r.attribute.split("-").pop()
@@ -71,6 +45,12 @@ function recordSetToInput(rows) {
   const isOpt = check("option-")
 
   const validations = rows.filter(r => isVal(r))
+    .map(r=>{
+      var nr = {...r}
+      nr.attribute = r.attribute.split("-").pop()
+      return nr 
+    })
+
   const options = rows.filter(r => isOpt(r))
   const attributes = rows.filter(r => !(isOpt(r) || isVal(r)))
 
@@ -80,17 +60,21 @@ function recordSetToInput(rows) {
 
   column.recordId =recordId
   column.order = order
-  if(validations.length>0){column.validation = valSetToValidation(validations)}
+  if(validations.length>0){column.validation = listToJSON(validations)}
   if(options.length>0){column.options = optionSetToOptions(options)}
 
   return column
 }
 
-function uxToForm(rows) {
-  const inputSets = _.pairs(_.groupBy(rows, r => r.recordId))
-  return _.sortBy(inputSets.map(set => recordSetToInput(set[1])), 'order')
+//TODO rename as form inputs
+function uxToForm(accessor,attributes, inputs) {
+  const column = listToJSON(attributes)
+  const inputSets = _.pairs(_.groupBy(inputs, r => r.recordId))
+  return {...column, 
+    accessor: accessor,
+    inputs: _.sortBy(inputSets.map(set => recordSetToInput(set[1])), 'order')
+  }
 }
-
 
 export {
   uxToColumns,

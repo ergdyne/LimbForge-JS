@@ -15,20 +15,24 @@ function keyStringToJSON(keyAttribute, stringAttribute, objectArray){
 }
 
 function keyValueTypeToJSON(keyAttribute, valueAttribute,typeAttribute){
+  //This can be done better
+  //Also there is no error catching on the type parsing
+
   //Group out
   return function (objectArray){
     const strings = objectArray.filter(o=>o[typeAttribute]=='string')
     const dates = objectArray.filter(o=>o[typeAttribute]=='date')
-    const numbers = objectArray.filter(o=>o[typeAttribute]=='number')
+    const numbers = objectArray.filter(o=>o[typeAttribute]=='number'||o[typeAttribute]=='float')
     const ints = objectArray.filter(o=>o[typeAttribute]=='int')
+    const bools = objectArray.filter(o=>o[typeAttribute]=='boolean')
 
-    //This can be better setup...
     var obj = {}
 
     strings.forEach(so=>obj[so[keyAttribute]]=so[valueAttribute])
     dates.forEach(so=>obj[so[keyAttribute]]= new Date(so[valueAttribute]))
     numbers.forEach(so=>obj[so[keyAttribute]]= parseFloat(so[valueAttribute]))
     ints.forEach(so=>obj[so[keyAttribute]]= parseInt(so[valueAttribute]))
+    bools.forEach(so=>obj[so[keyAttribute]]= new Boolean(so[valueAttribute]).valueOf())
     
     return obj
   
