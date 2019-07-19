@@ -15,6 +15,7 @@ import { getGroupOptions, getMeasures } from '../actions/displayActions'
     measurements: store.patients.measurements,
     level: store.patients.patientFormLevel,
     optionStore: store.display.optionStore,
+    addBuildForm: store.display.addBuild,
     groupForm: store.display.selectGroup,
     patientForm: store.display.patientForm,
     measurementForm: store.display.measurementForm
@@ -26,13 +27,14 @@ export default class Patient extends React.Component {
     this.state = {
       groupName: null,
       measuresSRC: null,
-      fetchedGroups: false
+      buildData: {}
     }
   }
 
   componentWillMount() {
     this.props.dispatch(getForm('patientData'))
     this.props.dispatch(getForm('selectGroup'))
+    this.props.dispatch(getForm('addBuild'))
     this.props.dispatch(getGroupOptions())
     const { patientId } = this.props.match.params
     //well some more filtering than this...? Also there is a 0 index, but not a 0 patientId ;)
@@ -56,7 +58,7 @@ export default class Patient extends React.Component {
   componentDidUpdate() {
     //Two ways that the groupName can get set automatically
     //New patient for a user with one group
-    if (this.props.optionStore.groupOptions.length === 1 && this.state.groupName == null && this.state.fetchedGroups) {
+    if (this.props.optionStore.groupOptions.length === 1 && this.state.groupName == null) {
       this.setState({ groupName: this.props.optionStore.groupOptions[0] })
     }
     //existing patient
@@ -96,6 +98,11 @@ export default class Patient extends React.Component {
     this.props.dispatch(deletePatient(patientId))
   }
 
+  addBuild = (buildData) => {
+    this.setState({ buildData: buildData })
+    this.props.dispatch(getForm('transradialBuild'))
+  }
+
   //Callback for measurements form.
   measurementSubmit = (measurements) => {
     //TODO change for correct saving that includes the build
@@ -110,67 +117,78 @@ export default class Patient extends React.Component {
 
   render() {
     const l = this.props.level
-
     //TODO adjust location. This can be pulled when the user logs in. See multiple reducers in action from tutorial.
     return (
       //if new patient and group options exist, give a dropdown.
       //If no option or exising patient display group Name
       //CSS - Initial
       <div className="container">
+        <PatientData
+          className="row"
+          hasGroupSelect={(
+            (!this.props.patient.id) &&
+            this.state.groupName == null &&
+            this.props.optionStore.groupOptions.length > 1
+          )}
+          groupForm={this.props.groupForm}
+          optionStore={this.props.optionStore}
+          groupSubmit={this.groupSubmit}
+          patient={this.props.patient}
+          editPatient={() => this.props.dispatch(updateLevel('patient'))}
+          hasPatientForm={(l === 'patient')}
+          patientForm={this.props.patientForm}
+          patientSubmit={this.patientSubmit}
+        />
         {
-          <div>
-            <PatientData
-              className="row"
+          (this.props.patient.id) ?
+          <div className="row">
+            {/* Add build here */}
+            {/*If any builds, List of builds here */}
+          </div> : <div>NO Add Build</div>
+        }
+        {/* Adjust position of this section... */}
+        { (this.props.measurements)?
+        // On unmount -> clear both patient and measurements.
+        // On add build -> clear measurements
+            <div className="row">
+            {/* Preview and Download Buttons */}
+            {/* Canvas */}
+          </div> : <div>No Preview and Download</div>
+        }
 
-              hasGroupSelect={(
-                (!this.props.patient.id) &&
-                this.state.groupName == null &&
-                this.props.optionStore.groupOptions.length > 1
-              )}
-              groupForm={this.props.groupForm}
-              optionStore={this.props.optionStore}
-              groupSubmit={this.groupSubmit}
-
-              patient={this.props.patient}
-              editPatient={() => this.props.dispatch(updateLevel('patient'))}
-
-              hasPatientForm={(l === 'patient')}
-              patientForm={this.props.patientForm}
-              patientSubmit={this.patientSubmit}
-            />
-
-            {/* Measurement Form */}
-            {(l === 'measurement') ?
-              <div className="row">
-                <FormBuilder
-                  title={this.props.measurementForm.name}
-                  key={this.props.measurementForm.accessor}
-                  accessor={this.props.measurementForm.accessor}
-                  className="card large col-sm"
-                  elements={this.props.measurementForm.inputs}
-                  onSubmit={this.measurementSubmit}
-                  submitValue={this.props.measurementForm.button}
-                  preventDefault={true}
-                  initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
-                />
-                <img
-                  className="card large col-sm"
-                  max-height="500"
-                  src={(this.state.measuresSRC) ? this.state.measuresSRC : this.imageLocation(this.props.patient.gender, this.props.patient.side)}
-                />
-              </div> :
-              <span />
-            }
-            {(l === 'preview') ?
-              <div className="row">
-                <Download
-                  className="card large"
-                  patient={this.props.patient}
-                  measurements={this.props.measurements}
-                />
-              </div> : <span />}
-          </div>}
       </div>
     )
   }
 }
+
+//  {/* Measurement Form */}
+//  {(l === 'measurement') ?
+//  <div className="row">
+//    <FormBuilder
+//      title={this.props.measurementForm.name}
+//      key={this.props.measurementForm.accessor}
+//      accessor={this.props.measurementForm.accessor}
+//      className="card large col-sm"
+//      elements={this.props.measurementForm.inputs}
+//      onSubmit={this.measurementSubmit}
+//      submitValue={this.props.measurementForm.button}
+//      preventDefault={true}
+//      initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
+//    />
+//    <img
+//      className="card large col-sm"
+//      max-height="500"
+//      src={(this.state.measuresSRC) ? this.state.measuresSRC : this.imageLocation(this.props.patient.gender, this.props.patient.side)}
+//    />
+//  </div> :
+//  <span />
+// }
+// {(l === 'preview') ?
+//  <div className="row">
+//    <Download
+//      className="card large"
+//      patient={this.props.patient}
+//      measurements={this.props.measurements}
+//    />
+//  </div> : <span />}
+// </div>}
