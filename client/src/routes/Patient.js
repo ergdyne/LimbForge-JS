@@ -1,33 +1,30 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import FormBuilder from '../components/FormBuilder'
 import PatientData from '../components/PatientData'
-import Download from '../components/Download'
+import PatientDevices from '../components/PatientDevices'
+import PatientDevice from '../components/PatientDevice'
 import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions'
-import { getForm } from '../actions/displayActions'
+import { getForm, getColHeaders } from '../actions/displayActions'
 import isEmpty from '../functions/isEmpty'
-import { getGroupOptions, getMeasures } from '../actions/displayActions'
+import { getGroupOptions } from '../actions/displayActions'
 
 @connect((store) => {
   return ({
     sessionUser: store.session.user, //matters for new patient
     patient: store.patients.patient,
-    measurements: store.patients.measurements,
-    level: store.patients.patientFormLevel,
+    level: store.patients.patientFormLevel, //TODO refactor this to session?
     optionStore: store.display.optionStore,
     addBuildForm: store.display.addBuild,
     groupForm: store.display.selectGroup,
     patientForm: store.display.patientForm,
-    measurementForm: store.display.measurementForm
+    deviceCols: store.display.deviceCols
   })
 })
 export default class Patient extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      groupName: null,
-      measuresSRC: null,
-      buildData: {}
+      groupName: null
     }
   }
 
@@ -35,6 +32,7 @@ export default class Patient extends React.Component {
     this.props.dispatch(getForm('patientData'))
     this.props.dispatch(getForm('selectGroup'))
     this.props.dispatch(getForm('addBuild'))
+    this.props.dispatch(getColHeaders('deviceCols'))
     this.props.dispatch(getGroupOptions())
     const { patientId } = this.props.match.params
     //well some more filtering than this...? Also there is a 0 index, but not a 0 patientId ;)
@@ -89,7 +87,7 @@ export default class Patient extends React.Component {
 
     this.setState({ measuresSRC: this.imageLocation(patient.gender, patient.side) })
     this.props.dispatch(savePatient(patient, this.props.patientForm.inputs, this.state.groupName))
-    this.props.dispatch(updateLevel(isEmpty(this.props.measurements) ? 'measurement' : 'preview'))
+    this.props.dispatch(updateLevel(isEmpty('') ? 'measurement' : 'preview'))//TODO remove
 
   }
 
@@ -108,11 +106,6 @@ export default class Patient extends React.Component {
     //TODO change for correct saving that includes the build
     this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id))
     this.props.dispatch(updateLevel('preview'))
-  }
-
-  //map side and gender to image used
-  imageLocation = (gender, side) => {
-    return `https://limbfore-js-assets.s3.amazonaws.com/${gender.toLowerCase()}-transradial-${side.charAt(0).toUpperCase()}.svg`
   }
 
   render() {
@@ -141,54 +134,25 @@ export default class Patient extends React.Component {
         />
         {
           (this.props.patient.id) ?
-          <div className="row">
-            {/* Add build here */}
-            {/*If any builds, List of builds here */}
-          </div> : <div>NO Add Build</div>
+            <PatientDevices
+              className="row"
+              addDeviceForm={this.props.addBuildForm}
+              addDevice={()=>{}}
+              viewDevice={()=>{console.log('view device')}}
+              deviceCols={this.props.deviceCols}
+              devices={[]}
+
+            /> : <span/>
         }
         {/* Adjust position of this section... */}
-        { (this.props.measurements)?
-        // On unmount -> clear both patient and measurements.
-        // On add build -> clear measurements
-            <div className="row">
-            {/* Preview and Download Buttons */}
-            {/* Canvas */}
-          </div> : <div>No Preview and Download</div>
+        {(l === 'device') ?
+          // On unmount -> clear both patient and measurements.
+          // On add build -> clear measurements
+          <PatientDevice
+            className="row"
+          /> : <span/>
         }
-
       </div>
     )
   }
 }
-
-//  {/* Measurement Form */}
-//  {(l === 'measurement') ?
-//  <div className="row">
-//    <FormBuilder
-//      title={this.props.measurementForm.name}
-//      key={this.props.measurementForm.accessor}
-//      accessor={this.props.measurementForm.accessor}
-//      className="card large col-sm"
-//      elements={this.props.measurementForm.inputs}
-//      onSubmit={this.measurementSubmit}
-//      submitValue={this.props.measurementForm.button}
-//      preventDefault={true}
-//      initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
-//    />
-//    <img
-//      className="card large col-sm"
-//      max-height="500"
-//      src={(this.state.measuresSRC) ? this.state.measuresSRC : this.imageLocation(this.props.patient.gender, this.props.patient.side)}
-//    />
-//  </div> :
-//  <span />
-// }
-// {(l === 'preview') ?
-//  <div className="row">
-//    <Download
-//      className="card large"
-//      patient={this.props.patient}
-//      measurements={this.props.measurements}
-//    />
-//  </div> : <span />}
-// </div>}

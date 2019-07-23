@@ -1,4 +1,3 @@
-//import test data
 import {
   groupColHeaders,
   groupInputs,
@@ -7,7 +6,8 @@ import {
   userGroupsColHeaders
 } from '../config/defaultDisplay'
 
-
+//TEMP
+import {measurementForm} from '../testData'
 
 //Define all the display data that can in the future be pulled from the DB
 export default function reducer(state = {
@@ -16,8 +16,9 @@ export default function reducer(state = {
   groupColHeaders: groupColHeaders,
   groupInputs: groupInputs,
   selectGroup:{inputs:[]},
-  measurementForm: {inputs:[]},
+  measurementForm: measurementForm,//TODO//{inputs:[]},
   patientColHeaders: [],
+  deviceCols:[],
   patientForm: {inputs:[]},
   addBuild: {inputs:[]},
   usersColHeaders: usersColHeaders,
@@ -33,6 +34,9 @@ export default function reducer(state = {
       switch(action.payload.table){
         case 'patientCols':{
           return{...state, patientColHeaders:action.payload.data}
+        }
+        case 'deviceCols':{
+          return{...state, deviceCols:action.payload.data}
         }
         default:return { ...state }
       }
