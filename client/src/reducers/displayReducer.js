@@ -19,6 +19,8 @@ export default function reducer(state = {
   measurementForm: measurementForm,//TODO//{inputs:[]},
   patientColHeaders: [],
   deviceCols:[],
+  showDevice:false,
+  editPatient: false,
   patientForm: {inputs:[]},
   addBuild: {inputs:[]},
   usersColHeaders: usersColHeaders,
@@ -56,6 +58,20 @@ export default function reducer(state = {
       const newOps = {...state.optionStore,groupOptions:groups,publicGroupOptions:pubGroups }
       return{...state, optionStore: newOps}
     }
+
+
+
+    case "TOGGLE_SHOW_DEVICE": {
+      const x = {...state.showDevice}
+      return{...state, showDevice:!x}
+    }
+    case "SET_SHOW_DEVICE": {
+      return{...state, showDevice:action.payload}
+    }
+    case "SET_EDIT_PATIENT": {
+      return{...state, editPatient:action.payload}
+    }
+
     default: return state
   }
 

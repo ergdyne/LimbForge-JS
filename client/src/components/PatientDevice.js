@@ -68,7 +68,7 @@ export default class PatientDevice extends React.Component {
                 className="card large col-sm"
                 elements={this.props.measurementForm.inputs}
                 onSubmit={this.measurementSubmit}
-                submitValue={this.props.measurementForm.button}
+                buttonLabel={this.props.measurementForm.button}
                 preventDefault={true}
                 initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
               />

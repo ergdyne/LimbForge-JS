@@ -70,7 +70,7 @@ export default class Landing extends React.Component {
               accessor='login'
               elements={loginInputs}
               onSubmit={this.loginSubmit}
-              submitValue='Login'
+              buttonLabel='Login'
               preventDefault={true}
             />
           </div>
@@ -84,7 +84,7 @@ export default class Landing extends React.Component {
                     accessor='signUp'
                     elements={signUpInputs}
                     onSubmit={this.signUpSubmit}
-                    submitValue='Sign Up'
+                    buttonLabel='Sign Up'
                     preventDefault={true}
                   />
                 </div>

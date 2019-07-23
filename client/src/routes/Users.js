@@ -58,7 +58,7 @@ export default class Users extends React.Component {
               accessor='user'
               elements={userInputs}
               onSubmit={this.addUser}
-              submitValue={`Add`}
+              buttonLabel={`Add`}
               preventDefault={true}
               clearOnSubmit={true}
             />

@@ -4,15 +4,15 @@ import PatientData from '../components/PatientData'
 import PatientDevices from '../components/PatientDevices'
 import PatientDevice from '../components/PatientDevice'
 import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions'
-import { getForm, getColHeaders } from '../actions/displayActions'
-import isEmpty from '../functions/isEmpty'
+import { getForm, getColHeaders,toggleItem,setEditPatient } from '../actions/displayActions'
 import { getGroupOptions } from '../actions/displayActions'
 
 @connect((store) => {
   return ({
     sessionUser: store.session.user, //matters for new patient
     patient: store.patients.patient,
-    level: store.patients.patientFormLevel, //TODO refactor this to session?
+    editPatient: store.display.editPatient,
+    showDevice: store.display.showDevice,
     optionStore: store.display.optionStore,
     addBuildForm: store.display.addBuild,
     groupForm: store.display.selectGroup,
@@ -39,8 +39,11 @@ export default class Patient extends React.Component {
     const id = parseInt(patientId)
     if (patientId && !(isNaN(id))) {
       this.props.dispatch(getPatient(id))
+      this.props.dispatch(setEditPatient(false))
     } else {
       this.props.dispatch(getGroupOptions())
+      console.log('edit patient is', this.props.editPatient)
+      this.props.dispatch(setEditPatient(true))
     }
 
     //TODO should trigger somewhere else?
@@ -84,13 +87,12 @@ export default class Patient extends React.Component {
     if (!this.props.patient.amputationLevel) {
       patient.amputationLevel = `Transradial`
     }
-
-    this.setState({ measuresSRC: this.imageLocation(patient.gender, patient.side) })
+    //TODO some part of this still will have to happen, but not here
+    //this.setState({ measuresSRC: this.imageLocation(patient.gender, patient.side) })
     this.props.dispatch(savePatient(patient, this.props.patientForm.inputs, this.state.groupName))
-    this.props.dispatch(updateLevel(isEmpty('') ? 'measurement' : 'preview'))//TODO remove
-
   }
 
+  //TODO add to patient data
   removePatient = (patientId) => {
     console.log("Would be like are you sure?")
     this.props.dispatch(deletePatient(patientId))
@@ -105,11 +107,9 @@ export default class Patient extends React.Component {
   measurementSubmit = (measurements) => {
     //TODO change for correct saving that includes the build
     this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id))
-    this.props.dispatch(updateLevel('preview'))
   }
 
   render() {
-    const l = this.props.level
     //TODO adjust location. This can be pulled when the user logs in. See multiple reducers in action from tutorial.
     return (
       //if new patient and group options exist, give a dropdown.
@@ -127,8 +127,8 @@ export default class Patient extends React.Component {
           optionStore={this.props.optionStore}
           groupSubmit={this.groupSubmit}
           patient={this.props.patient}
-          editPatient={() => this.props.dispatch(updateLevel('patient'))}
-          hasPatientForm={(l === 'patient')}
+          editPatient={() => console.log('EDIT')}
+          hasPatientForm={this.props.editPatient}
           patientForm={this.props.patientForm}
           patientSubmit={this.patientSubmit}
         />
@@ -145,7 +145,7 @@ export default class Patient extends React.Component {
             /> : <span/>
         }
         {/* Adjust position of this section... */}
-        {(l === 'device') ?
+        {(this.props.showDevice) ?
           // On unmount -> clear both patient and measurements.
           // On add build -> clear measurements
           <PatientDevice

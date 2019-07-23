@@ -29,7 +29,7 @@ export default class PatientDevices extends React.Component {
             accessor={this.props.addDeviceForm.accessor}
             elements={this.props.addDeviceForm.inputs}
             onSubmit={this.addDevice}
-            submitValue={this.props.addDeviceForm.button}
+            buttonLabel={this.props.addDeviceForm.button}
             clearOnSubmit={true}
             preventDefault={true}
           />

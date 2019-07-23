@@ -47,7 +47,7 @@ export default class Groups extends React.Component {
             accessor={'group'}
             elements={this.props.groupInputs}
             onSubmit={this.submitGroup}
-            submitValue={`Add`}
+            buttonLabel={`Add`}
             clearOnSubmit={true}
             preventDefault={true}
           />

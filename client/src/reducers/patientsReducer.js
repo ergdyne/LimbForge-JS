@@ -7,8 +7,6 @@ const emptyPatient ={
 
 export default function reducer(state={
   //The outside layer is patients. Access by state.patients.item
-  //state.patients.patients, state.patients.patientFormLevel
-  patientFormLevel:'patient',
   patients:[],
   patient:emptyPatient,
   measurements:{}
@@ -35,10 +33,6 @@ export default function reducer(state={
     case "SAVE_MEASUREMENTS":{
       //would only save the measurements to the db based on the patient information
       return {...state,measurements:action.payload}
-    }
-
-    case "UPDATE_FORM_LEVEL":{
-      return {...state,patientFormLevel:action.payload.level}
     }
 
     case "DELETE_PATIENT":{

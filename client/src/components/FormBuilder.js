@@ -115,7 +115,6 @@ export default class FormBuilder extends React.Component {
         )
       }
       case 'select': {
-        console.log('select',element)
         return (
           <SelectInput
             key={`${this.props.accessor}-${element.accessor}`}
@@ -216,7 +215,7 @@ export default class FormBuilder extends React.Component {
           {this.props.elements.map(x => this.generateFormElement(x))}
           <input
             className='FormBuilder-button'
-            value={(this.props.submitValue) ? this.props.submitValue : `Submit`}
+            value={(this.props.buttonLabel) ? this.props.buttonLabel : `Submit`}
             type="submit"
             data-tip={this.state.submitError}
           />
@@ -231,7 +230,7 @@ FormBuilder.propTypes = {
   //onSubmit() callback should take the form's state back with it.
   accessor: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
-  submitValue: PropTypes.string.isRequired,
+  buttonLabel: PropTypes.string,
   optionStore: PropTypes.object,
   preventDefault: PropTypes.bool,
   clearOnSubmit: PropTypes.bool,

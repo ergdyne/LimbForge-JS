@@ -6,8 +6,11 @@ import formatValue from '../functions/formatValue'
 export default class PatientData extends React.Component {
   attributeMap = (x, p) => {
     return ((p[x.accessor]) ?
-      <label key={`header-${x.accessor}`} className="row">{`${x.name}: `}
-        <span className="col-sm-2" > {formatValue(x.type, p[x.accessor])}</span>
+      <label key={`header-${x.accessor}`} className="row">
+        {`${x.name}: `}
+        <span className="col-sm-2" >
+          {formatValue(x.type, p[x.accessor])}
+        </span>
       </label> : <span />
     )
   }
@@ -28,7 +31,7 @@ export default class PatientData extends React.Component {
             elements={this.props.groupForm.inputs}
             optionStore={this.props.optionStore}
             onSubmit={this.props.groupSubmit}
-            submitValue={this.props.groupForm.button}
+            buttonLabel={this.props.groupForm.button}
             preventDefault={true}
           /> :
           <div>
@@ -39,8 +42,8 @@ export default class PatientData extends React.Component {
                 accessor={this.props.patientForm.accessor}
                 className="card large"
                 elements={this.props.patientForm.inputs}
-                onSubmit={this.patientSubmit}
-                submitValue={this.props.patientForm.button}
+                onSubmit={this.props.patientSubmit}
+                buttonLabel={this.props.patientForm.button}
                 preventDefault={true}
                 initial={(this.props.patient) ? this.props.patient : {}}
               /> :

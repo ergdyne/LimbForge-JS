@@ -4,9 +4,9 @@ import { uxToColumns, uxToForm } from '../functions/uxConvert'
 
 import { AXIOS_CONFIG, API_URL } from '../config/API'
 
-export function getGroupOptions(){
+export function getGroupOptions() {
   return function (dispatch) {
-    axios.get(`${API_URL}group/options`,AXIOS_CONFIG)
+    axios.get(`${API_URL}group/options`, AXIOS_CONFIG)
       .then((response) => {
         dispatch({ type: "GET_GROUP_OPTIONS", payload: response.data.groupNames })
       })
@@ -28,21 +28,21 @@ export function getColHeaders(table) {
             data: columns
           }
         })
-      }).catch(err=>{ dispatch({type: "GET_COL_HEADERS_REJECTED",payload:err})})
+      }).catch(err => { dispatch({ type: "GET_COL_HEADERS_REJECTED", payload: err }) })
   }
 }
 
-export function getForm(formAccessor){
-  return function (dispatch){
+export function getForm(formAccessor) {
+  return function (dispatch) {
     axios.get(`${API_URL}ux/${formAccessor}`)
-    .then(response=>{
-      const {accessor,attributes,records} = response.data
-      const form = uxToForm(accessor,attributes,records)
-      dispatch({
-        type: "GET_FORM",
-        payload: form
-      })
-    }).catch(err=>{ dispatch({type: "GET_FORM_REJECTED",payload:err})})
+      .then(response => {
+        const { accessor, attributes, records } = response.data
+        const form = uxToForm(accessor, attributes, records)
+        dispatch({
+          type: "GET_FORM",
+          payload: form
+        })
+      }).catch(err => { dispatch({ type: "GET_FORM_REJECTED", payload: err }) })
   }
 }
 
@@ -59,5 +59,25 @@ export function getMeasures(device) {
       }).catch(err => {
         dispatch({ type: "GET_MEASURE_INPUTS_REJECTED", payload: err })
       })
+  }
+}
+
+export function setEditPatient(b){
+  return {
+    type: "SET_EDIT_PATIENT",
+    payload: b
+  }
+}
+
+export function toggleItem(item) {
+  switch (item) {
+    case 'showDevice': return {
+      type: "TOGGLE_SHOW_DEVICE",
+      payload: null
+    }
+    default: return {
+      type: "NULL_TOGGLE",
+      payload: null
+    }
   }
 }

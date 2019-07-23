@@ -61,10 +61,10 @@ export function savePatient(patient, inputs, groupName) {
         groupName: groupName
       }, AXIOS_CONFIG)
         .then((response) => {
-          //We only need the patient id
-
+          //This updates the patient id locally
           patient.id = response.data.patientId
           dispatch({ type: "SAVE_PATIENT", payload: patient })
+          dispatch({type: "SET_EDIT_PATIENT", payload: false})
         })
         .catch((err) => {
           dispatch({ type: "SAVE_PATIENT_REJECTED", payload: err })
@@ -108,12 +108,6 @@ export function saveMeasurements(measurements, measurementInputs, patientId) {
   }
 }
 
-export function updateLevel(level) {
-  return {
-    type: "UPDATE_FORM_LEVEL",
-    payload: { level: level }
-  }
-}
 
 export function deletePatient(patientId) {
   return {
