@@ -49,7 +49,7 @@ export default function reducer(state = {
         case 'selectGroup': return {...state, selectGroup:action.payload}
         case 'patientData': return {...state, patientForm:action.payload}
         case 'addBuild': return {...state, addBuild:action.payload}
-        default: return { ...state,measurementForm:form }
+        default: return { ...state,measurementForm:action.payload }
       }
       
     }

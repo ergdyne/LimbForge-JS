@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { patientStatesToPatients, patientMeasurementStatesToMeasurements } from '../functions/convertView'
+import { recordsToPatients, patientMeasurementStatesToMeasurements } from '../functions/convertView'
 import {AXIOS_CONFIG, API_URL} from '../config/API'
 
 export function getPatients() {
   return function (dispatch) {
     axios.get(`${API_URL}patient/all`,AXIOS_CONFIG)
       .then((response) => {
-        const patients = patientStatesToPatients(response.data)
+        const patients = recordsToPatients(response.data)
         dispatch({ type: "GET_PATIENTS", payload: patients })
       })
       .catch((err) => {
@@ -22,16 +22,15 @@ export function getPatient(patientId) {
     },AXIOS_CONFIG)
       .then((response) => {
         //Well really just one patient...
-        const patients = patientStatesToPatients(response.data.patientStates)
+        const patients = recordsToPatients(response.data.patientRecords)
         
-        //MEASURE
-        const measurements = patientMeasurementStatesToMeasurements(response.data.patientMeasurementStates)
+        //TODO add devices?
         //But just in case there is a problem...TODO should ===1?
         if (patients.length > 0) {
           var patient = patients[0]
           //add the groupName to the patient
           patient.groupName = response.data.groupName
-          dispatch({ type: "GET_PATIENT", payload: {patient: patient, measurements:measurements} })
+          dispatch({ type: "GET_PATIENT", payload: {patient: patient, measurements:[]} })
         }else{
           dispatch({ type: "GET_PATIENT_REJECTED", payload: 'Something wrong with data.' })
         }

@@ -4,7 +4,7 @@ import PatientData from '../components/PatientData'
 import PatientDevices from '../components/PatientDevices'
 import PatientDevice from '../components/PatientDevice'
 import { getPatient, saveMeasurements, savePatient, deletePatient, clearPatient } from '../actions/patientsActions'
-import { getForm, getColHeaders,setEditPatient, setEditDevice } from '../actions/displayActions'
+import { getForm, getColHeaders,setEditPatient, setEditDevice,setShowDevice } from '../actions/displayActions'
 import { getGroupOptions } from '../actions/displayActions'
 
 @connect((store) => {
@@ -29,21 +29,21 @@ export default class Patient extends React.Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(getForm('patientData'))
-    this.props.dispatch(getForm('selectGroup'))
-    this.props.dispatch(getForm('addBuild'))
-    this.props.dispatch(getColHeaders('deviceCols'))
-    this.props.dispatch(getGroupOptions())
+    const d = this.props.dispatch
+    d(getForm('patientData'))
+    d(getForm('selectGroup'))
+    d(getForm('addBuild'))
+    d(getColHeaders('deviceCols'))
+    d(getGroupOptions())
     const { patientId } = this.props.match.params
     //well some more filtering than this...? Also there is a 0 index, but not a 0 patientId ;)
     const id = parseInt(patientId)
     if (patientId && !(isNaN(id))) {
-      this.props.dispatch(getPatient(id))
-      this.props.dispatch(setEditPatient(false))
+      d(getPatient(id))
+      d(setEditPatient(false))
     } else {
-      this.props.dispatch(getGroupOptions())
-      console.log('edit patient is', this.props.isEditPatient)
-      this.props.dispatch(setEditPatient(true))
+      d(getGroupOptions())
+      d(setEditPatient(true))
     }
 
     //TODO should trigger somewhere else?
@@ -94,6 +94,7 @@ export default class Patient extends React.Component {
 
   addDevice = (deviceData) => {
     console.log('Device data', deviceData) //TODO move to store
+    this.props.dispatch(setShowDevice(true))
     this.props.dispatch(setEditDevice(true))
     this.props.dispatch(getForm('transradialBuild'))
   }
@@ -132,7 +133,7 @@ export default class Patient extends React.Component {
             <PatientDevices
               className="row"
               addDeviceForm={this.props.addBuildForm}
-              addDevice={()=>{}}
+              addDevice={this.addDevice}
               viewDevice={()=>{console.log('view device')}}
               deviceCols={this.props.deviceCols}
               devices={[]}

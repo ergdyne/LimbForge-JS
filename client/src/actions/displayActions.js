@@ -76,6 +76,13 @@ export function setEditDevice(b){
   }
 }
 
+export function setShowDevice(b){
+  return {
+    type: "SET_SHOW_DEVICE",
+    payload: b
+  }
+}
+
 export function toggleItem(item) {
   switch (item) {
     case 'showDevice': return {

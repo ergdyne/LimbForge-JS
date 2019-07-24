@@ -40,5 +40,6 @@ function keyValueTypeToJSON(keyAttribute, valueAttribute,typeAttribute){
 }
 
 const listToJSON = keyValueTypeToJSON('attribute', 'value', 'type')
+const accessorToJSON = keyValueTypeToJSON('accessor', 'value', 'type')
 
-export {keyNumberToJSON, keyStringToJSON,listToJSON}
+export {keyNumberToJSON, keyStringToJSON,listToJSON,accessorToJSON}

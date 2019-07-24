@@ -1,4 +1,4 @@
-import { keyStringToJSON, listToJSON } from './ergJSON'
+import { keyStringToJSON, listToJSON,accessorToJSON } from './ergJSON'
 import _ from 'underscore'
 
 function groupStatesToGroups(ats) {
@@ -58,11 +58,11 @@ function measureStatesToMeasures(mss) {
   })
 }
 
-function patientStatesToPatients(pss) {
+function recordsToPatients(pss) {
   const patientSets = _.pairs(_.groupBy(pss, (ps) => ps.patientId))
   return patientSets.map(s => {
     //The second part of the pair is the list of attributes.
-    var patient = listToJSON(s[1])
+    var patient = accessorToJSON(s[1])
     //The first part of the pair is the patient Id
     patient.id = parseInt(s[0])
 
@@ -87,6 +87,6 @@ export {
   groupStatesToGroups,
   listToValidationObject,
   measureStatesToMeasures,
-  patientStatesToPatients,
+  recordsToPatients,
   patientMeasurementStatesToMeasurements
 }

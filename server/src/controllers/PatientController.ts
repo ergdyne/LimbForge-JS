@@ -5,11 +5,12 @@ import { PatientRecord } from '../entity/PatientRecord'
 import { Record } from '../entity/Record'
 import { Group } from '../entity/Group'
 import { PatientGroup } from '../entity/PatientGroup'
+import {PatientRecordState} from '../entity/ViewPatientRecordState'
 import { groupAccess } from "../functions/access"
 import { ViewPatientGroup } from "../entity/ViewPatientGroup"
 import { GroupState } from "../entity/ViewGroupState";
 
-async function inputToPatientRecord(patient: Patient, input: { recordId: number, value: string }){
+async function inputToPatientRecord(patient: Patient, input: { recordId: number; value: string; }){
   return getRepository(Record).findOneOrFail(input.recordId).then(
     (r )=> {
       let p = new PatientRecord()
@@ -21,7 +22,7 @@ async function inputToPatientRecord(patient: Patient, input: { recordId: number,
   ).catch(err => { return new PatientRecord() })
 }
 
-async function inputsToPatientRecords(p: Patient, inputs: { attribute: string; value: string; type: string; }[]) {
+async function inputsToPatientRecords(p: Patient, inputs: { recordId: number; value: string; }[]) {
   return Promise.all(inputs.map(i=>inputToPatientRecord(p,i)))
 }
 
@@ -43,7 +44,7 @@ export default class PatientController {
           //TODO confirm existing works
           getRepository(Patient).findOneOrFail(patientId).then(patient => {
             getManager().transaction(async transactionalEntityManager => {
-              let records = (await inputsToPatientRecords(newPatient, patientInputs)).filter(r => r.value != null)
+              let records = (await inputsToPatientRecords(patient, patientInputs)).filter(r => r.value != null)
               await transactionalEntityManager.save(records)
             }).then(_ => {
               res.send({ patientId: patientId, msg: 'updated' })
@@ -96,84 +97,82 @@ export default class PatientController {
 
   //Admin - all
   //groupAdmin or User -> only if patient in a group that the user has user or groupAdmin access for
-  //Untested due to reloading killing cookie
-  // static getPatient = async (req: Request, res: Response) => {
-  //   let { patientId } = req.body
-  //   const sessionUser = req.session.user
+  static getPatient = async (req: Request, res: Response) => {
+    let { patientId } = req.body
+    const sessionUser = req.session.user
 
-  //   if (sessionUser == null) {
+    //TODO error handling for not found
+    if (sessionUser == null) {
+      res.status(400).send({ msg: 'session failed' })
+    }
+    getRepository(PatientRecordState).find({ where: { patientId: patientId } })
+      .then(pss => {
+        //TODO get device
+        //getRepository(PatientMeasurementState).find({ where: { patientId: patientId } })
+        //  .then(pmss => {
+            try {
+              //Get patient's groupName
+              if (sessionUser.siteAccess == 'admin') {
+                //get the group name
+                getRepository(ViewPatientGroup)
+                  .findOneOrFail({ where: { patientId: patientId } })
+                  .then(group => {
+                    //Get the group name
+                    res.send({
+                      patientRecords: pss,
+                      //patientMeasurementStates: pmss,
+                      groupName: group.groupName
+                    })
+                  })
+              } else {
+                //For users and groupAdmins, seeing a patient is group limited
+                const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
+                getRepository(ViewPatientGroup)
+                  .findOneOrFail({
+                    where: {
+                      patientId: patientId,
+                      groupId: In(acceptableGroupIds)
+                    }
+                  }).then(group => {
+                    //Get the group name
+                    res.send({
+                      patientRecords: pss,
+                      //patientMeasurementStates: pmss,
+                      groupName: group.groupName
+                    })
+                  })
+              }
+            } catch{
+              res.status(400).send({ msg: 'no access' })
+              return
+            }
+         // })
+      })
+      .catch(err => res.status(400).send(err))
+  }
 
-  //     res.status(400).send({ msg: 'session failed' })
-  //   }
-  //   getRepository(PatientState).find({ where: { patientId: patientId } })
-  //     .then(pss => {
-  //       getRepository(PatientMeasurementState).find({ where: { patientId: patientId } })
-  //         .then(pmss => {
-  //           try {
-  //             //Get patient's groupName
-  //             if (sessionUser.siteAccess == 'admin') {
-  //               //get the group name
-  //               getRepository(ViewPatientGroup)
-  //                 .findOneOrFail({ where: { patientId: patientId } })
-  //                 .then(group => {
-  //                   //Get the group name
-  //                   res.send({
-  //                     patientStates: pss,
-  //                     patientMeasurementStates: pmss,
-  //                     groupName: group.groupName
-  //                   })
-  //                 })
-  //             } else {
-  //               //For users and groupAdmins, saving a patient is group limited
-  //               const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
-  //               getRepository(ViewPatientGroup)
-  //                 .findOneOrFail({
-  //                   where: {
-  //                     patientId: patientId,
-  //                     groupId: In(acceptableGroupIds)
-  //                   }
-  //                 }).then(group => {
-  //                   //Get the group name
-  //                   res.send({
-  //                     patientStates: pss,
-  //                     patientMeasurementStates: pmss,
-  //                     groupName: group.groupName
-  //                   })
-  //                 })
-  //             }
-  //           } catch{
-  //             res.status(400).send({ msg: 'no access' })
-  //             return
-  //           }
-  //         })
-
-  //     })
-  //     .catch(err => res.status(400).send(err))
-  // }
-
-  //START HERE
   //Admin - all
   //groupAdmin or User -> only patients in groups that the user has user or groupAdmin access for
   //Tested for user... seems to work
-  // static getAllPatients = async (req: Request, res: Response) => {
-  //   //Auth stuff and limit to user's groups, or no limit if admin
-  //   const sessionUser = req.session.user
-  //   if (sessionUser == null) {
-  //     res.status(400).send({ msg: 'session failed' })
-  //   }
-  //   if (sessionUser.siteAccess == 'admin') {
-  //     getRepository(PatientState).find()
-  //       .then(patients => {
-  //         res.send(patients)
-  //       }).catch(err => res.status(400).send(err))
-  //   } else {
-  //     const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
-  //     getRepository(PatientState).find({ where: { groupId: In(acceptableGroupIds) } })
-  //       .then(patients => {
-  //         res.send(patients)
-  //       }).catch(err => res.status(400).send(err))
-  //   }
-  // }
+  static getAllPatients = async (req: Request, res: Response) => {
+    //Auth stuff and limit to user's groups, or no limit if admin
+    const sessionUser = req.session.user
+    if (sessionUser == null) {
+      res.status(400).send({ msg: 'session failed' })
+    }
+    if (sessionUser.siteAccess == 'admin') {
+      getRepository(PatientRecordState).find()
+        .then(patients => {
+          res.send(patients)
+        }).catch(err => res.status(400).send(err))
+    } else {
+      const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
+      getRepository(PatientRecordState).find({ where: { groupId: In(acceptableGroupIds) } })
+        .then(patients => {
+          res.send(patients)
+        }).catch(err => res.status(400).send(err))
+    }
+  }
 
   // static saveMeasurement = async (req: Request, res: Response) => {
   //   let { measurements, patientId } = req.body
