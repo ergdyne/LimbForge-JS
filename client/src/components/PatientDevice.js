@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import FormBuilder from './FormBuilder'
 import Download from './Download'
 import isEmpty from '../functions/isEmpty'
+import {setEditDevice} from '../actions/displayActions'
 
 
 //If a build is selected
@@ -12,12 +13,11 @@ import isEmpty from '../functions/isEmpty'
 //--then populate store from here for some things
 @connect((store) => {
   return ({
-    //START HERE
     patient: store.patients.patient,
     measurements: store.patients.measurements,
-    level: store.patients.patientFormLevel, //TODO refactor this to session?
     optionStore: store.display.optionStore,
-    measurementForm: store.display.measurementForm
+    measurementForm: store.display.measurementForm,
+    isEditDevice: store.display.editDevice,
   })
 })
 export default class PatientDevice extends React.Component {
@@ -35,15 +35,22 @@ export default class PatientDevice extends React.Component {
   }
 
   editDevice = () => {
-
+    //show the form
+    this.props.dispatch(setEditDevice(true))
     console.log("Edit device clicked")
-    //Change levels
   }
+
+  submitMeasurements = (measurements)=> {
+    console.log("measurements", measurements)
+
+    this.props.dispatch(setEditDevice(false))
+  }
+
   render() {
     return (
       <div className="container">
         {
-          (this.props.patientDeviceId || true) ?
+          (!isEmpty(this.props.measurements)) ?
             <div className="row">
               <div className="container">
               <div className="row"> Device DATA</div>
@@ -58,7 +65,7 @@ export default class PatientDevice extends React.Component {
             </div> : <span />
         }
         {
-          (this.props.isEditDevice || true) ?
+          (this.props.isEditDevice ) ?
             <div className="row">
               {/* If edit */}
               <FormBuilder
@@ -67,7 +74,7 @@ export default class PatientDevice extends React.Component {
                 accessor={this.props.measurementForm.accessor}
                 className="card large col-sm"
                 elements={this.props.measurementForm.inputs}
-                onSubmit={this.measurementSubmit}
+                onSubmit={this.submitMeasurements}
                 buttonLabel={this.props.measurementForm.button}
                 preventDefault={true}
                 initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
@@ -79,7 +86,7 @@ export default class PatientDevice extends React.Component {
               />
             </div> :
             // We only have the download card if device has been saved...
-            <div>{(this.props.patientDeviceId) ?
+            <div>{(!isEmpty(this.props.measurements)) ?
               <div className="row">
                 <Download
                   className="card large"

@@ -3,15 +3,15 @@ import { connect } from 'react-redux'
 import PatientData from '../components/PatientData'
 import PatientDevices from '../components/PatientDevices'
 import PatientDevice from '../components/PatientDevice'
-import { getPatient, saveMeasurements, savePatient, updateLevel, deletePatient, clearPatient } from '../actions/patientsActions'
-import { getForm, getColHeaders,toggleItem,setEditPatient } from '../actions/displayActions'
+import { getPatient, saveMeasurements, savePatient, deletePatient, clearPatient } from '../actions/patientsActions'
+import { getForm, getColHeaders,setEditPatient, setEditDevice } from '../actions/displayActions'
 import { getGroupOptions } from '../actions/displayActions'
 
 @connect((store) => {
   return ({
     sessionUser: store.session.user, //matters for new patient
     patient: store.patients.patient,
-    editPatient: store.display.editPatient,
+    isEditPatient: store.display.editPatient,
     showDevice: store.display.showDevice,
     optionStore: store.display.optionStore,
     addBuildForm: store.display.addBuild,
@@ -24,7 +24,7 @@ export default class Patient extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      groupName: null
+      groupName: null //TODO move to store
     }
   }
 
@@ -42,7 +42,7 @@ export default class Patient extends React.Component {
       this.props.dispatch(setEditPatient(false))
     } else {
       this.props.dispatch(getGroupOptions())
-      console.log('edit patient is', this.props.editPatient)
+      console.log('edit patient is', this.props.isEditPatient)
       this.props.dispatch(setEditPatient(true))
     }
 
@@ -79,16 +79,10 @@ export default class Patient extends React.Component {
   }
   //Callback for patient Data form.
   patientSubmit = (patient) => {
-    //This might be ok without a check?
+    //Check if patient exists
     if (this.props.patient.id) {
       patient.id = this.props.patient.id
     }
-
-    if (!this.props.patient.amputationLevel) {
-      patient.amputationLevel = `Transradial`
-    }
-    //TODO some part of this still will have to happen, but not here
-    //this.setState({ measuresSRC: this.imageLocation(patient.gender, patient.side) })
     this.props.dispatch(savePatient(patient, this.props.patientForm.inputs, this.state.groupName))
   }
 
@@ -98,8 +92,9 @@ export default class Patient extends React.Component {
     this.props.dispatch(deletePatient(patientId))
   }
 
-  addBuild = (buildData) => {
-    this.setState({ buildData: buildData })
+  addDevice = (deviceData) => {
+    console.log('Device data', deviceData) //TODO move to store
+    this.props.dispatch(setEditDevice(true))
     this.props.dispatch(getForm('transradialBuild'))
   }
 
@@ -127,8 +122,8 @@ export default class Patient extends React.Component {
           optionStore={this.props.optionStore}
           groupSubmit={this.groupSubmit}
           patient={this.props.patient}
-          editPatient={() => console.log('EDIT')}
-          hasPatientForm={this.props.editPatient}
+          editPatient={() => this.props.dispatch(setEditPatient(true))}
+          hasPatientForm={this.props.isEditPatient}
           patientForm={this.props.patientForm}
           patientSubmit={this.patientSubmit}
         />

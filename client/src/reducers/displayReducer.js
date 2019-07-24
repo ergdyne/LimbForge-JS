@@ -21,6 +21,7 @@ export default function reducer(state = {
   deviceCols:[],
   showDevice:false,
   editPatient: false,
+  editDevice: false,
   patientForm: {inputs:[]},
   addBuild: {inputs:[]},
   usersColHeaders: usersColHeaders,
@@ -71,6 +72,11 @@ export default function reducer(state = {
     case "SET_EDIT_PATIENT": {
       return{...state, editPatient:action.payload}
     }
+
+    case "SET_EDIT_DEVICE": {
+      return{...state, editDevice:action.payload}
+    }
+
 
     default: return state
   }

@@ -43,15 +43,16 @@ export function getPatient(patientId) {
 }
 
 export function savePatient(patient, inputs, groupName) {
+  console.log("inputs", inputs)
   const patientAttributes = inputs.map(i => (
     {
-      attribute: i.accessor,
-      value: patient[i.accessor], //TODO add safety...
-      type: i.type
+      recordId: i.recordId,
+      value: patient[i.accessor]
     }
   )
   ).filter(a => a.value != null)
 
+  console.log('p ats', patientAttributes)
   //TODO check if changes
   if (patientAttributes.length > 0) {
     return function (dispatch) {
@@ -94,8 +95,9 @@ export function saveMeasurements(measurements, measurementInputs, patientId) {
         measurements: patientMeasurements
       },AXIOS_CONFIG)
         .then((response) => {
-          //The response doesn't matter much...
+          //use the response to set device id
           dispatch({ type: "SAVE_MEASUREMENTS", payload: measurements })
+          dispatch({type: "SET_EDIT_DEVICE", payload:false})
         })
         .catch((err) => {
           dispatch({ type: "SAVE_MEASUREMENTS_REJECTED", payload: err })

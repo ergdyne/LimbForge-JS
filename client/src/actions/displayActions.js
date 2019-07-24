@@ -69,6 +69,13 @@ export function setEditPatient(b){
   }
 }
 
+export function setEditDevice(b){
+  return {
+    type: "SET_EDIT_DEVICE",
+    payload: b
+  }
+}
+
 export function toggleItem(item) {
   switch (item) {
     case 'showDevice': return {
