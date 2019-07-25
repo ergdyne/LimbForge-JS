@@ -4,11 +4,18 @@ const emptyPatient ={
   id:null,
     //Other attributes exists in patient but are not given defaults.
 }
+const emptyDevice ={
+  deviceId:null,
+  patientDeviceId:null,
+  side:null,
+  nozzleSize:null
+}
 
 export default function reducer(state={
   //The outside layer is patients. Access by state.patients.item
   patients:[],
   patient:emptyPatient,
+  device:emptyDevice,
   measurements:{}
 
 },action){
@@ -26,6 +33,10 @@ export default function reducer(state={
       return {...state,patient:patient,measurements:measurements,patientFormLevel:'preview'}
     }
 
+    case "SET_DEVICE":{
+      return {...state,device:action.payload}
+    }
+
     case "SAVE_PATIENT":{
       return {...state,patient:action.payload}
     }
@@ -40,7 +51,7 @@ export default function reducer(state={
     }
 
     case "CLEAR_PATIENT":{
-      return {...state,patient:emptyPatient,measurements:{},patientFormLevel:'patient'}
+      return {...state,patient:emptyPatient,measurements:{},device:emptyDevice}
     }
     
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PatientData from '../components/PatientData'
 import PatientDevices from '../components/PatientDevices'
 import PatientDevice from '../components/PatientDevice'
-import { getPatient, saveMeasurements, savePatient, deletePatient, clearPatient } from '../actions/patientsActions'
+import { getPatient, savePatient, deletePatient, clearPatient,setDevice } from '../actions/patientsActions'
 import { getForm, getColHeaders,setEditPatient, setEditDevice,setShowDevice } from '../actions/displayActions'
 import { getGroupOptions } from '../actions/displayActions'
 
@@ -94,15 +94,16 @@ export default class Patient extends React.Component {
 
   addDevice = (deviceData) => {
     console.log('Device data', deviceData) //TODO move to store
-    this.props.dispatch(setShowDevice(true))
-    this.props.dispatch(setEditDevice(true))
-    this.props.dispatch(getForm('transradialBuild'))
-  }
-
-  //Callback for measurements form.
-  measurementSubmit = (measurements) => {
-    //TODO change for correct saving that includes the build
-    this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id))
+    const d = this.props.dispatch
+    d(setDevice({
+      deviceId:1,
+      patientDeviceId:null,
+      side:deviceData.side,
+      nozzleSize:deviceData.nozzleSize
+    }))
+    d(setShowDevice(true))
+    d(setEditDevice(true))
+    d(getForm('transradialBuild'))
   }
 
   render() {

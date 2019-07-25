@@ -4,9 +4,14 @@ import FormBuilder from './FormBuilder'
 import Download from './Download'
 import isEmpty from '../functions/isEmpty'
 import {setEditDevice} from '../actions/displayActions'
+import {saveMeasurements} from '../actions/patientsActions'
 
+//START HERE -
+//records for transradial , side, and nozzle? 
+//save device
+//view devices list
 
-//If a build is selected
+//If a device is selected
 //Connect directly to store?
 //--simplifies transactions
 //--can have patient id, (patient-device id), device id, side, flow down
@@ -18,6 +23,7 @@ import {setEditDevice} from '../actions/displayActions'
     optionStore: store.display.optionStore,
     measurementForm: store.display.measurementForm,
     isEditDevice: store.display.editDevice,
+    device: store.patients.device
   })
 })
 export default class PatientDevice extends React.Component {
@@ -42,11 +48,12 @@ export default class PatientDevice extends React.Component {
 
   submitMeasurements = (measurements)=> {
     console.log("measurements", measurements)
-
+    this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id,this.props.device))
     this.props.dispatch(setEditDevice(false))
   }
 
   render() {
+    console.log('device',this.props.device)
     return (
       <div className="container">
         {

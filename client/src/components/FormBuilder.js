@@ -45,7 +45,12 @@ export default class FormBuilder extends React.Component {
         item.value = this.props.initial[element.accessor]
       } else {
         if (element.default) {
-          item.value = element.default
+          if(['radio','select'].includes(element.inputType)){
+            const options=(element.optionStore) ? this.props.optionStore[element.optionStore] : element.options
+            item.value = (options.length>0)?options[0]:''
+          }else{
+            item.value = element.default
+          }
         } else {
           item.value = ''
         }

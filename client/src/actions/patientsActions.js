@@ -77,15 +77,25 @@ export function savePatient(patient, inputs, groupName) {
   }
 }
 
+export function setDevice(device){
+  return {
+    type:"SET_DEVICE",
+    payload:device
+  }
+}
+
 //TODO better define what inputs is and such
-export function saveMeasurements(measurements, measurementInputs, patientId) {
+export function saveMeasurements(measurements, measurementInputs, patientId, device) {
   const patientMeasurements = measurementInputs.map(i => (
     {
-      accessor: i.accessor,
+      recordId: i.recordId,
       value: measurements[i.accessor]//parse float?
     }
   )
   ).filter(a => a.value != null)
+
+    console.log("to send", patientMeasurements, patientId, device)
+
   //TODO validate data and check for changes
   if (patientMeasurements.length > 0) {
     return function (dispatch) {
