@@ -97,10 +97,7 @@ export default class Patient extends React.Component {
     const d = this.props.dispatch
     d(setDevice({
       deviceId:1,
-      patientDeviceId:null,
-      side:deviceData.side,
-      nozzleSize:deviceData.nozzleSize
-    }))
+      patientDeviceId:null},deviceData,this.props.addBuildForm.inputs))
     d(setShowDevice(true))
     d(setEditDevice(true))
     d(getForm('transradialBuild'))

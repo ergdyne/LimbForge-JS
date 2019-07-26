@@ -43,7 +43,7 @@ export function getPatient(patientId) {
 
 export function savePatient(patient, inputs, groupName) {
   console.log("inputs", inputs)
-  const patientAttributes = inputs.map(i => (
+  var patientAttributes = inputs.map(i => (
     {
       recordId: i.recordId,
       value: patient[i.accessor]
@@ -77,7 +77,16 @@ export function savePatient(patient, inputs, groupName) {
   }
 }
 
-export function setDevice(device){
+export function setDevice(device,deviceData,deviceInputs){
+  const deviceAttributes = deviceInputs.map(i => (
+    {
+      recordId: i.recordId,
+      value: deviceData[i.accessor]
+    }
+  )
+  ).filter(a => a.value != null)
+
+  device.deviceData=deviceAttributes
   return {
     type:"SET_DEVICE",
     payload:device
@@ -86,7 +95,7 @@ export function setDevice(device){
 
 //TODO better define what inputs is and such
 export function saveMeasurements(measurements, measurementInputs, patientId, device) {
-  const patientMeasurements = measurementInputs.map(i => (
+  const deviceMeasurements = measurementInputs.map(i => (
     {
       recordId: i.recordId,
       value: measurements[i.accessor]//parse float?
@@ -94,17 +103,21 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
   )
   ).filter(a => a.value != null)
 
-    console.log("to send", patientMeasurements, patientId, device)
+    console.log("to send", deviceMeasurements, patientId, device)
 
   //TODO validate data and check for changes
-  if (patientMeasurements.length > 0) {
+  if (deviceMeasurements.length > 0) {
     return function (dispatch) {
-      axios.post(`${API_URL}patient/save_measurements`, {
+      axios.post(`${API_URL}patient/save_device`, {
         patientId: patientId,
-        measurements: patientMeasurements
+        deviceId: device.deviceId,
+        patientDeviceId: device.patientDeviceId,
+        measurements: deviceMeasurements.concat(device.deviceData)
       },AXIOS_CONFIG)
         .then((response) => {
           //use the response to set device id
+
+          console.log("resp on save data",response.data)
           dispatch({ type: "SAVE_MEASUREMENTS", payload: measurements })
           dispatch({type: "SET_EDIT_DEVICE", payload:false})
         })

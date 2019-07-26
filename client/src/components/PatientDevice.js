@@ -43,17 +43,14 @@ export default class PatientDevice extends React.Component {
   editDevice = () => {
     //show the form
     this.props.dispatch(setEditDevice(true))
-    console.log("Edit device clicked")
   }
 
   submitMeasurements = (measurements)=> {
-    console.log("measurements", measurements)
     this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id,this.props.device))
     this.props.dispatch(setEditDevice(false))
   }
 
   render() {
-    console.log('device',this.props.device)
     return (
       <div className="container">
         {

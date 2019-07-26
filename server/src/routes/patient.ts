@@ -4,7 +4,7 @@ import PatientController from '../controllers/PatientController'
 const router = Router()
 
 router.post('/save',PatientController.savePatient)
-// router.post('/save_measurements', PatientController.saveMeasurement)
+router.post('/save_device', PatientController.saveDevice)
 router.get('/all',PatientController.getAllPatients)
 router.post('/one',PatientController.getPatient)
 

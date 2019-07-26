@@ -44,11 +44,15 @@ export default class FormBuilder extends React.Component {
       if (this.props.initial && this.props.initial[element.accessor]) {
         item.value = this.props.initial[element.accessor]
       } else {
-        if (element.default) {
-          if(['radio','select'].includes(element.inputType)){
-            const options=(element.optionStore) ? this.props.optionStore[element.optionStore] : element.options
-            item.value = (options.length>0)?options[0]:''
-          }else{
+        if (element.default || ['radio', 'select'].includes(element.inputType)) {
+          if (['radio', 'select'].includes(element.inputType)) {
+            const options = (element.optionStore) ? this.props.optionStore[element.optionStore] : element.options
+            if(options.length === 1){
+              item.value = options[0] 
+            }else{
+              item.value = (options.length > 0) ? options[0] : ''
+            }
+          } else {
             item.value = element.default
           }
         } else {
@@ -120,20 +124,29 @@ export default class FormBuilder extends React.Component {
         )
       }
       case 'select': {
+        const ops = (element.optionStore) ? this.props.optionStore[element.optionStore] : element.options
         return (
-          <SelectInput
-            key={`${this.props.accessor}-${element.accessor}`}
-            onChange={this.handleInputChange}
-            name={element.accessor}
-            value={this.state[element.accessor].value}
-            options={(element.optionStore) ? this.props.optionStore[element.optionStore] : element.options}
-            placeholder={element.placeholder}
-            label={element.name}
-            instruction={element.instruction}
-            isvalid={this.state[element.accessor].isvalid}
-            errors={this.state[element.accessor].errors}
-            validations={element.validation}
-          />
+          (ops.length === 1) ?
+            <input
+              key={`${this.props.accessor}-${element.accessor}`}
+              name={element.accessor}
+              value={ops[0]}
+              style={{display:"none"}}
+            /> :
+
+            <SelectInput
+              key={`${this.props.accessor}-${element.accessor}`}
+              onChange={this.handleInputChange}
+              name={element.accessor}
+              value={this.state[element.accessor].value}
+              options={ops}
+              placeholder={element.placeholder}
+              label={element.name}
+              instruction={element.instruction}
+              isvalid={this.state[element.accessor].isvalid}
+              errors={this.state[element.accessor].errors}
+              validations={element.validation}
+            />
         )
       }
       case 'radio': {

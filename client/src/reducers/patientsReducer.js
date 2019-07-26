@@ -7,8 +7,7 @@ const emptyPatient ={
 const emptyDevice ={
   deviceId:null,
   patientDeviceId:null,
-  side:null,
-  nozzleSize:null
+  deviceData:[]
 }
 
 export default function reducer(state={

@@ -8,7 +8,9 @@ import { PatientGroup } from '../entity/PatientGroup'
 import {PatientRecordState} from '../entity/ViewPatientRecordState'
 import { groupAccess } from "../functions/access"
 import { ViewPatientGroup } from "../entity/ViewPatientGroup"
-import { GroupState } from "../entity/ViewGroupState";
+import { GroupState } from "../entity/ViewGroupState"
+import {PatientBuild} from "../entity/PatientBuild"
+import {PatientBuildRecord} from "../entity/PatientBuildRecord"
 
 async function inputToPatientRecord(patient: Patient, input: { recordId: number; value: string; }){
   return getRepository(Record).findOneOrFail(input.recordId).then(
@@ -174,44 +176,55 @@ export default class PatientController {
     }
   }
 
-  // static saveMeasurement = async (req: Request, res: Response) => {
-  //   let { measurements, patientId } = req.body
-  //   //Going to create Patient Measurements
-  //   //For any user, groupadmin, or admin go ahead
-  //   const sessionUser = req.session.user
-  //   if (sessionUser == null) {
-  //     res.status(400).send({ msg: 'session failed' })
-  //     return
-  //   }
-  //   if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
-  //     try {
-  //       //Get the patient
-  //       //TODO this should be a transaction...
-  //       getRepository(Patient).findOneOrFail(patientId).then(patient => {
-  //         measurements.forEach((m: { accessor: string; value: string; }) => {
-  //           let measurement = new PatientMeasurement()
-  //           getRepository(MeasureState).findOne({ where: { attribute: 'accessor', value: m.accessor } })
-  //             .then(ms => {
-  //               getRepository(Measure).findOne({ where: { id: ms.measureId } })
-  //                 .then(measure => {
-  //                   measurement.patient = patient
-  //                   measurement.measure = measure
-  //                   measurement.value = parseFloat(m.value)//not safe
-  //                   getRepository(PatientMeasurement).save(measurement)
-  //                 })
-  //             })
-  //         })
-  //       })
-  //       res.send({ patientId: patientId, msg: 'measurements saved' })
-  //       return
-  //     } catch (err) {
-  //       res.status(400).send(err)
-  //       return
-  //     }
-  //   } else {
-  //     res.status(400).send({ msg: 'not authorized' })
-  //     return
-  //   }
-  // }
+  static saveDevice = async (req: Request, res: Response) => {
+    let { measurements,deviceId,patientDeviceId, patientId } = req.body
+    //Going to create Patient Measurements
+    //For any user, groupadmin, or admin go ahead
+    const sessionUser = req.session.user
+
+    console.log('Incoming', measurements)
+    if (sessionUser == null) {
+      res.status(400).send({ msg: 'session failed' })
+      return
+    }
+    if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
+      try {
+        //Get the patient
+        getRepository(Patient).findOneOrFail(patientId).then(patient => {
+          //new or existing device
+          if(device.patientDeviceId != null){
+            //existing device
+            getRepository(PatientBuild).findOneOrFail(device.patientDeviceId).then(pDevice =>{
+
+            })
+          }else{
+            //new device
+          }
+
+          // measurements.forEach((m: { accessor: string; value: string; }) => {
+          //   let measurement = new PatientMeasurement()
+          //   getRepository(MeasureState).findOne({ where: { attribute: 'accessor', value: m.accessor } })
+          //     .then(ms => {
+          //       getRepository(Measure).findOne({ where: { id: ms.measureId } })
+          //         .then(measure => {
+          //           measurement.patient = patient
+          //           measurement.measure = measure
+          //           measurement.value = parseFloat(m.value)//not safe
+          //           getRepository(PatientMeasurement).save(measurement)
+          //         })
+          //     })
+          // })
+        })
+        res.send({ patientId: patientId, msg: 'measurements saved' })
+        return
+      } catch (err) {
+        res.status(400).send(err)
+        return
+      }
+    } else {
+      res.status(400).send({ msg: 'not authorized' })
+      return
+    }
+  }
 
 }
