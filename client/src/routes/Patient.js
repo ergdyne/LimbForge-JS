@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PatientData from '../components/PatientData'
 import PatientDevices from '../components/PatientDevices'
 import PatientDevice from '../components/PatientDevice'
-import { getPatient, savePatient, deletePatient, clearPatient,setDevice } from '../actions/patientsActions'
+import { getPatient, savePatient, deletePatient, clearPatient,setDevice,viewDevice } from '../actions/patientsActions'
 import { getForm, getColHeaders,setEditPatient, setEditDevice,setShowDevice } from '../actions/displayActions'
 import { getGroupOptions } from '../actions/displayActions'
 
@@ -17,7 +17,8 @@ import { getGroupOptions } from '../actions/displayActions'
     addBuildForm: store.display.addBuild,
     groupForm: store.display.selectGroup,
     patientForm: store.display.patientForm,
-    deviceCols: store.display.deviceCols
+    deviceCols: store.display.deviceCols,
+    devices: store.patients.devices
   })
 })
 export default class Patient extends React.Component {
@@ -93,13 +94,26 @@ export default class Patient extends React.Component {
   }
 
   addDevice = (deviceData) => {
-    console.log('Device data', deviceData) //TODO move to store
     const d = this.props.dispatch
     d(setDevice({
+      measurements:{},
       deviceId:1,
       patientDeviceId:null},deviceData,this.props.addBuildForm.inputs))
     d(setShowDevice(true))
     d(setEditDevice(true))
+    d(getForm('transradialBuild'))
+  }
+
+  viewDevice = (patientDeviceId) =>{
+    console.log('view', patientDeviceId)
+    console.log('posit', this.props.devices.find(d=>d.patientDeviceId === patientDeviceId))
+    console.log('posit ==', this.props.devices.find(d=>d.patientDeviceId == patientDeviceId))
+    const device = this.props.devices.find(d=>d.patientDeviceId === patientDeviceId)
+    
+    const d = this.props.dispatch
+    d(viewDevice(device))
+    d(setShowDevice(true))
+    d(setEditDevice(false))
     d(getForm('transradialBuild'))
   }
 
@@ -132,9 +146,9 @@ export default class Patient extends React.Component {
               className="row"
               addDeviceForm={this.props.addBuildForm}
               addDevice={this.addDevice}
-              viewDevice={()=>{console.log('view device')}}
+              viewDevice={this.viewDevice}
               deviceCols={this.props.deviceCols}
-              devices={[]}
+              devices={this.props.devices}
 
             /> : <span/>
         }

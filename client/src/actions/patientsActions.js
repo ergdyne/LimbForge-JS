@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { recordsToPatients, patientMeasurementStatesToMeasurements } from '../functions/convertView'
-import {AXIOS_CONFIG, API_URL} from '../config/API'
+import { recordsToPatients, recordsToDevices } from '../functions/convertView'
+import { AXIOS_CONFIG, API_URL } from '../config/API'
 
 export function getPatients() {
   return function (dispatch) {
-    axios.get(`${API_URL}patient/all`,AXIOS_CONFIG)
+    axios.get(`${API_URL}patient/all`, AXIOS_CONFIG)
       .then((response) => {
         const patients = recordsToPatients(response.data)
         dispatch({ type: "GET_PATIENTS", payload: patients })
@@ -19,19 +19,19 @@ export function getPatient(patientId) {
   return function (dispatch) {
     axios.post(`${API_URL}patient/one`, {
       patientId: patientId
-    },AXIOS_CONFIG)
+    }, AXIOS_CONFIG)
       .then((response) => {
         //Well really just one patient...
         const patients = recordsToPatients(response.data.patientRecords)
-        
+        const devices = recordsToDevices(response.data.patientDeviceRecords)
         //TODO add devices?
         //But just in case there is a problem...TODO should ===1?
         if (patients.length > 0) {
           var patient = patients[0]
           //add the groupName to the patient
           patient.groupName = response.data.groupName
-          dispatch({ type: "GET_PATIENT", payload: {patient: patient, measurements:[]} })
-        }else{
+          dispatch({ type: "GET_PATIENT", payload: { patient: patient, devices: devices } })
+        } else {
           dispatch({ type: "GET_PATIENT_REJECTED", payload: 'Something wrong with data.' })
         }
       })
@@ -42,7 +42,6 @@ export function getPatient(patientId) {
 }
 
 export function savePatient(patient, inputs, groupName) {
-  console.log("inputs", inputs)
   var patientAttributes = inputs.map(i => (
     {
       recordId: i.recordId,
@@ -50,8 +49,6 @@ export function savePatient(patient, inputs, groupName) {
     }
   )
   ).filter(a => a.value != null)
-
-  console.log('p ats', patientAttributes)
   //TODO check if changes
   if (patientAttributes.length > 0) {
     return function (dispatch) {
@@ -64,7 +61,7 @@ export function savePatient(patient, inputs, groupName) {
           //This updates the patient id locally
           patient.id = response.data.patientId
           dispatch({ type: "SAVE_PATIENT", payload: patient })
-          dispatch({type: "SET_EDIT_PATIENT", payload: false})
+          dispatch({ type: "SET_EDIT_PATIENT", payload: false })
         })
         .catch((err) => {
           dispatch({ type: "SAVE_PATIENT_REJECTED", payload: err })
@@ -77,7 +74,14 @@ export function savePatient(patient, inputs, groupName) {
   }
 }
 
-export function setDevice(device,deviceData,deviceInputs){
+export function viewDevice(device){
+  return {
+    type: "SET_DEVICE",
+    payload: device
+  }
+}
+
+export function setDevice(device, deviceData, deviceInputs) {
   const deviceAttributes = deviceInputs.map(i => (
     {
       recordId: i.recordId,
@@ -86,10 +90,10 @@ export function setDevice(device,deviceData,deviceInputs){
   )
   ).filter(a => a.value != null)
 
-  device.deviceData=deviceAttributes
+  device.deviceData = deviceAttributes
   return {
-    type:"SET_DEVICE",
-    payload:device
+    type: "SET_DEVICE",
+    payload: device
   }
 }
 
@@ -102,10 +106,8 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
     }
   )
   ).filter(a => a.value != null)
-
-    console.log("to send", deviceMeasurements, patientId, device)
-
   //TODO validate data and check for changes
+  //TODO on save device might also have to reload patient data (esp device list)
   if (deviceMeasurements.length > 0) {
     return function (dispatch) {
       axios.post(`${API_URL}patient/save_device`, {
@@ -113,21 +115,20 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
         deviceId: device.deviceId,
         patientDeviceId: device.patientDeviceId,
         measurements: deviceMeasurements.concat(device.deviceData)
-      },AXIOS_CONFIG)
+      }, AXIOS_CONFIG)
         .then((response) => {
           //use the response to set device id
-
-          console.log("resp on save data",response.data)
-          dispatch({ type: "SAVE_MEASUREMENTS", payload: measurements })
-          dispatch({type: "SET_EDIT_DEVICE", payload:false})
+          const newDevice = { ...device, patientDeviceId: response.data.patientDeviceId, measurements: measurements }
+          dispatch({ type: "SET_DEVICE", payload: newDevice })
+          dispatch({ type: "SET_EDIT_DEVICE", payload: false })
         })
         .catch((err) => {
-          dispatch({ type: "SAVE_MEASUREMENTS_REJECTED", payload: err })
+          dispatch({ type: "SAVE_DEVICE_REJECTED", payload: err })
         })
     }
   }
   return {
-    type: "SAVE_MEASUREMENTS_REJECTED",
+    type: "SAVE_DEVICE_REJECTED",
     payload: {}
   }
 }

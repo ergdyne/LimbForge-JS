@@ -27,7 +27,6 @@ export default class Group extends React.Component {
   }
 
   render() {
-    console.log("group is ", this.props.group)
     //TODO change these columns up.
     const userColumns = formatColumns(this.props.usersGroupColHeaders, this.viewUser, `View`)
     //CSS - initial

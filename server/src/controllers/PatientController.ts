@@ -5,16 +5,18 @@ import { PatientRecord } from '../entity/PatientRecord'
 import { Record } from '../entity/Record'
 import { Group } from '../entity/Group'
 import { PatientGroup } from '../entity/PatientGroup'
-import {PatientRecordState} from '../entity/ViewPatientRecordState'
+import { PatientRecordState } from '../entity/ViewPatientRecordState'
 import { groupAccess } from "../functions/access"
 import { ViewPatientGroup } from "../entity/ViewPatientGroup"
 import { GroupState } from "../entity/ViewGroupState"
-import {PatientBuild} from "../entity/PatientBuild"
-import {PatientBuildRecord} from "../entity/PatientBuildRecord"
+import { PatientBuild } from "../entity/PatientBuild"
+import { PatientBuildRecord } from "../entity/PatientBuildRecord"
+import { PatientBuildRecordState } from "../entity/ViewPatientBuildRecordState"
+import { Build } from "../entity/Build"
 
-async function inputToPatientRecord(patient: Patient, input: { recordId: number; value: string; }){
+async function inputToPatientRecord(patient: Patient, input: { recordId: number; value: string; }) {
   return getRepository(Record).findOneOrFail(input.recordId).then(
-    (r )=> {
+    (r) => {
       let p = new PatientRecord()
       p.patient = patient
       p.record = r
@@ -24,8 +26,24 @@ async function inputToPatientRecord(patient: Patient, input: { recordId: number;
   ).catch(err => { return new PatientRecord() })
 }
 
+async function inputToPatientDeviceRecord(d: PatientBuild, input: { recordId: number; value: string; }) {
+  return getRepository(Record).findOneOrFail(input.recordId).then(
+    (r) => {
+      let p = new PatientBuildRecord()
+      p.patientBuild = d
+      p.record = r
+      p.value = input.value
+      return p
+    }
+  ).catch(err => { return new PatientBuildRecord() })
+}
+
 async function inputsToPatientRecords(p: Patient, inputs: { recordId: number; value: string; }[]) {
-  return Promise.all(inputs.map(i=>inputToPatientRecord(p,i)))
+  return Promise.all(inputs.map(i => inputToPatientRecord(p, i)))
+}
+
+async function inputsToPatientDeviceRecords(d: PatientBuild, inputs: { recordId: number; value: string; }[]) {
+  return Promise.all(inputs.map(i => inputToPatientDeviceRecord(d, i)))
 }
 
 export default class PatientController {
@@ -109,9 +127,10 @@ export default class PatientController {
     }
     getRepository(PatientRecordState).find({ where: { patientId: patientId } })
       .then(pss => {
+        //START HERE
         //TODO get device
-        //getRepository(PatientMeasurementState).find({ where: { patientId: patientId } })
-        //  .then(pmss => {
+        getRepository(PatientBuildRecordState).find({ where: { patientId: patientId } })
+          .then(devices => {
             try {
               //Get patient's groupName
               if (sessionUser.siteAccess == 'admin') {
@@ -122,7 +141,7 @@ export default class PatientController {
                     //Get the group name
                     res.send({
                       patientRecords: pss,
-                      //patientMeasurementStates: pmss,
+                      patientDeviceRecords: devices,
                       groupName: group.groupName
                     })
                   })
@@ -139,7 +158,7 @@ export default class PatientController {
                     //Get the group name
                     res.send({
                       patientRecords: pss,
-                      //patientMeasurementStates: pmss,
+                      patientDeviceRecords: devices,
                       groupName: group.groupName
                     })
                   })
@@ -148,7 +167,7 @@ export default class PatientController {
               res.status(400).send({ msg: 'no access' })
               return
             }
-         // })
+          })
       })
       .catch(err => res.status(400).send(err))
   }
@@ -177,46 +196,51 @@ export default class PatientController {
   }
 
   static saveDevice = async (req: Request, res: Response) => {
-    let { measurements,deviceId,patientDeviceId, patientId } = req.body
+    let { measurements, deviceId, patientDeviceId, patientId } = req.body
     //Going to create Patient Measurements
     //For any user, groupadmin, or admin go ahead
     const sessionUser = req.session.user
-
-    console.log('Incoming', measurements)
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
       return
     }
     if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
       try {
-        //Get the patient
-        getRepository(Patient).findOneOrFail(patientId).then(patient => {
-          //new or existing device
-          if(device.patientDeviceId != null){
-            //existing device
-            getRepository(PatientBuild).findOneOrFail(device.patientDeviceId).then(pDevice =>{
+        if (patientDeviceId != null) {
+          //existing device
+          getRepository(PatientBuild).findOneOrFail(patientDeviceId).then(pDevice => {
+            //Save measurements
+            getManager().transaction(async transactionalEntityManager => {
+              let records = (await inputsToPatientDeviceRecords(pDevice, measurements)).filter(r => r.value != null)
+              await transactionalEntityManager.save(records)
 
+            }).then(_ => {
+              res.send({ patientDeviceId: pDevice.id, msg: 'device updated' })
+              return
             })
-          }else{
-            //new device
-          }
+          })
+        } else {
+          //new device
+          //Get the patient
+          getRepository(Patient).findOneOrFail(patientId).then(patient => {
+            //Get the device
+            getRepository(Build).findOneOrFail(deviceId).then(device => {
+              let pDevice = new PatientBuild()
+              pDevice.patient = patient
+              pDevice.build = device
+              getManager().transaction(async transactionalEntityManager => {
+                await transactionalEntityManager.save(pDevice)
+                let records = (await inputsToPatientDeviceRecords(pDevice, measurements)).filter(r => r.value != null)
+                await transactionalEntityManager.save(records)
 
-          // measurements.forEach((m: { accessor: string; value: string; }) => {
-          //   let measurement = new PatientMeasurement()
-          //   getRepository(MeasureState).findOne({ where: { attribute: 'accessor', value: m.accessor } })
-          //     .then(ms => {
-          //       getRepository(Measure).findOne({ where: { id: ms.measureId } })
-          //         .then(measure => {
-          //           measurement.patient = patient
-          //           measurement.measure = measure
-          //           measurement.value = parseFloat(m.value)//not safe
-          //           getRepository(PatientMeasurement).save(measurement)
-          //         })
-          //     })
-          // })
-        })
-        res.send({ patientId: patientId, msg: 'measurements saved' })
-        return
+              }).then(_ => {
+                res.send({ patientDeviceId: pDevice.id, msg: 'new device' })
+                return
+              })
+            })
+          })
+        }
+
       } catch (err) {
         res.status(400).send(err)
         return

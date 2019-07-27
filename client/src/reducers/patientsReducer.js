@@ -7,7 +7,8 @@ const emptyPatient ={
 const emptyDevice ={
   deviceId:null,
   patientDeviceId:null,
-  deviceData:[]
+  deviceData:[],
+  measurements:{}
 }
 
 export default function reducer(state={
@@ -15,7 +16,7 @@ export default function reducer(state={
   patients:[],
   patient:emptyPatient,
   device:emptyDevice,
-  measurements:{}
+  devices:[]
 
 },action){
   switch(action.type){
@@ -24,12 +25,12 @@ export default function reducer(state={
     }
     case "GET_PATIENT":{
       const patient = action.payload.patient
-      const measurements = action.payload.measurements
-      if(isEmpty(measurements)){
-        return {...state,patient:patient,patientFormLevel:'measurement'}
+      const devices = action.payload.devices
+      if(isEmpty(devices)){
+        return {...state,patient:patient}
       }
 
-      return {...state,patient:patient,measurements:measurements,patientFormLevel:'preview'}
+      return {...state,patient:patient,devices:devices}
     }
 
     case "SET_DEVICE":{
@@ -40,17 +41,12 @@ export default function reducer(state={
       return {...state,patient:action.payload}
     }
 
-    case "SAVE_MEASUREMENTS":{
-      //would only save the measurements to the db based on the patient information
-      return {...state,measurements:action.payload}
-    }
-
     case "DELETE_PATIENT":{
       return {...state}
     }
 
     case "CLEAR_PATIENT":{
-      return {...state,patient:emptyPatient,measurements:{},device:emptyDevice}
+      return {...state,patient:emptyPatient,devices:[],device:emptyDevice}
     }
     
 

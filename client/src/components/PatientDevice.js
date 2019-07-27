@@ -7,8 +7,6 @@ import {setEditDevice} from '../actions/displayActions'
 import {saveMeasurements} from '../actions/patientsActions'
 
 //START HERE -
-//records for transradial , side, and nozzle? 
-//save device
 //view devices list
 
 //If a device is selected
@@ -19,11 +17,11 @@ import {saveMeasurements} from '../actions/patientsActions'
 @connect((store) => {
   return ({
     patient: store.patients.patient,
-    measurements: store.patients.measurements,
     optionStore: store.display.optionStore,
     measurementForm: store.display.measurementForm,
     isEditDevice: store.display.editDevice,
     device: store.patients.device
+
   })
 })
 export default class PatientDevice extends React.Component {
@@ -51,10 +49,12 @@ export default class PatientDevice extends React.Component {
   }
 
   render() {
+    console.log("device", this.props.measurementForm)
+    const ms = this.props.device.measurments
     return (
       <div className="container">
         {
-          (!isEmpty(this.props.measurements)) ?
+          (!isEmpty(ms)) ?
             <div className="row">
               <div className="container">
               <div className="row"> Device DATA</div>
@@ -81,7 +81,7 @@ export default class PatientDevice extends React.Component {
                 onSubmit={this.submitMeasurements}
                 buttonLabel={this.props.measurementForm.button}
                 preventDefault={true}
-                initial={(!isEmpty(this.props.measurements)) ? this.props.measurements : {}}
+                initial={(!isEmpty(ms)) ? ms : {}}
               />
               <img
                 className="card large col-sm"
@@ -90,12 +90,12 @@ export default class PatientDevice extends React.Component {
               />
             </div> :
             // We only have the download card if device has been saved...
-            <div>{(!isEmpty(this.props.measurements)) ?
+            <div>{(!isEmpty(ms)) ?
               <div className="row">
                 <Download
                   className="card large"
                   patient={this.props.patient}
-                  measurements={this.props.measurements}
+                  measurements={ms}
                 />
               </div> : <span />
             }</div>

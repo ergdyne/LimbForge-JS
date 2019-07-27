@@ -47,16 +47,6 @@ function listToValidationObject(vs) {
   }))
 }
 
-function measureStatesToMeasures(mss) {
-  const measureSets = _.pairs(_.groupBy(mss, (ms) => ms.measureId))
-  return measureSets.map(set => {
-    const validations = set[1].filter(i => i.attribute.includes('validation-'))
-    const attributes = set[1].filter(i => !i.attribute.includes('validation-'))
-    var measure = listToJSON(attributes)
-    measure.validation = listToValidationObject(validations)
-    return measure
-  })
-}
 
 function recordsToPatients(pss) {
   const patientSets = _.pairs(_.groupBy(pss, (ps) => ps.patientId))
@@ -70,23 +60,28 @@ function recordsToPatients(pss) {
   })
 }
 
-function patientMeasurementStatesToMeasurements(pmss) {
-  //ARG this is the wrong way to do this, should just have a better view!
-  var measurements = {}
-  pmss.forEach(pms => {
-    measurements[pms.accessor] = parseFloat(pms.value)
+function recordsToDevices(rs){
+  const deviceSets = _.pairs(_.groupBy(rs, (r) => r.patientBuildId))
+  return deviceSets.map(s=>{
+    //These are measurements and the device settings (left/right, amputation level...)
+    var device = accessorToJSON(s[1])
+    device.measurments = {...device}
+    device.id = parseInt(s[0])
+    device.deviceId = null
+    device.patientDeviceId = parseInt(s[0])
+    device.deviceData=[]
+     //this funky bit is to make tables work better.
+    //TODO refactor to remove the .deviceData and .measurements part and just have the device opbject be everything.
+
+    return device
   })
-  return measurements
 }
-
-
 
 export {
   fullUserGroupsToGroups,
   fullUserGroupsToUsers,
   groupStatesToGroups,
   listToValidationObject,
-  measureStatesToMeasures,
   recordsToPatients,
-  patientMeasurementStatesToMeasurements
+  recordsToDevices
 }
