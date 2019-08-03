@@ -93,3 +93,6 @@ typings/
 dist/
 
 server/ormconfig.json
+
+*.crt
+*.key
