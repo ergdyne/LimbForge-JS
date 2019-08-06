@@ -6,6 +6,7 @@ export default class OAuth extends Component {
 
   componentDidMount() {
     const { socket, provider, onLogIn} = this.props
+    console.log('did mount', socket, provider)
     socket.on(provider, _=> { 
       this.popup.close()
       onLogIn()
@@ -27,7 +28,7 @@ export default class OAuth extends Component {
     const left = (window.innerWidth / 2) - (width / 2)
     const top = (window.innerHeight / 2) - (height / 2)
     const url = `${apiURL}auth/${provider}?socketId=${socket.id}`
-
+    console.log("url", url)
     return window.open(url, '',       
       `toolbar=no, location=no, directories=no, status=no, menubar=no, 
       scrollbars=no, resizable=no, copyhistory=no, width=${width}, 

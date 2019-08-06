@@ -27,9 +27,12 @@ function siteAccess(vg: FullUserGroup[]) {
 }
 
 export default class AuthController {
-  static google = async(req: Request, res: Response) =>{
+  static google = async (req: Request, res: Response) => {
     console.log('google auth')
-    res.send("hello from google")
+    const io = req.app.get('io')
+    console.log(req.session.socketId)
+    io.in(req.session.socketId).emit('google', { loggedIn: true })
+    res.end()
   }
   static logout = async (req: Request, res: Response) => {
     req.session.destroy(() => res.send({ msg: 'logged out' }))

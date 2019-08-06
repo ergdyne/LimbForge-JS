@@ -8,7 +8,7 @@ import FormBuilder from '../components/FormBuilder'
 import OAuth from '../components/OAuth'
 import { API_URL } from '../config/API'
 
-const socket = io(API_URL)
+const socket = io('https://127.0.0.1:3000')
 //API Call
 //Will provide the login/signup page in the future and access to a demo.
 

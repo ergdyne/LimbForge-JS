@@ -23,4 +23,4 @@ DB setup & Server setup
   in seperate terminals run two commands:
     npm run watch-ts
     npm run watch-node
-  connecting to localhost:3000 should respond with "Welcome..."
+  connecting to 127.0.0.1:3000 should respond with "Welcome..."
