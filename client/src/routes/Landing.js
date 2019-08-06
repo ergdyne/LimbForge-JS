@@ -12,8 +12,6 @@ const socket = io('https://127.0.0.1:3000')
 //API Call
 //Will provide the login/signup page in the future and access to a demo.
 
-//For testing add a login button or two.
-
 @connect((store) => {
   return ({
     stored: store,
@@ -40,37 +38,18 @@ export default class Landing extends React.Component {
 
   logIn = () => {
     console.log('logged in with google')
-  }
-
-  loginSubmit = (userData) => {
-    this.props.dispatch(login(userData))
+    this.props.dispatch(login())
   }
 
   render() {
-    //TODO adjust location of inputs (maybe?)
     const groupOptions = this.props.groupOptions
-    //TODO matching passwords validation! and feedback signup type errors
-    const signUpInputs = [//PUSH IN THE NEW OPTION
-      { accessor: `email`, name: `Email`, type: `string`, inputType: `text`, validation: { type: 'email' } },
-      { accessor: `password`, name: `Password`, type: `string`, inputType: `password`, validation: { required: true, confirm: true } },
+    const signUpInputs = [
       { accessor: `group`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: (groupOptions), validation: { required: true } },
     ]
 
-    const loginInputs = [
-      { accessor: `email`, name: `Email`, type: `string`, inputType: `text`, validation: { type: 'email' } },
-      { accessor: `password`, name: `Password`, type: `string`, inputType: `password`, validation: { required: true } },
-
-    ]
     return (
       //CSS - Initial
       <div className="container">
-        {/* TEMPORARY */}
-        <div className="row">
-          <button onClick={() => this.props.dispatch(login('admin'))}>Login Admin</button>
-          <button onClick={() => this.props.dispatch(login('user'))}>Login User</button>
-          <button onClick={() => this.props.dispatch(login('groupAdmin'))}>Login Group Admin</button>
-        </div>
-        {/* END TEMPORARY */}
         <div className="row">
           <div className="card large">
             <OAuth
@@ -80,16 +59,8 @@ export default class Landing extends React.Component {
               apiURL={API_URL}
               socket={socket}
             />
-            <FormBuilder
-              title="Login"
-              key='login'
-              accessor='login'
-              elements={loginInputs}
-              onSubmit={this.loginSubmit}
-              buttonLabel='Login'
-              preventDefault={true}
-            />
           </div>
+          {/* Will become and option for a user with no groups or site access */}
           <span>{(this.props.groupOptions.length > 0) ?
             <span>{(this.props.sessionUser.siteAccess === 'requested') ?
               <span>{'Access Requested'}</span> :

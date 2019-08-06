@@ -29,40 +29,9 @@ function userDataToUser(response) {
   return ourUser
 }
 
-export function login(payload) {
-  //Can preprocess the login credentials within the axios
-  //TEMP quick login
-  var email = ''
-  var password = ''
-  // TEMPORARY
-  if (isString(payload)) {
-    switch (payload) {
-      case 'admin': {
-        email = 'admin@admin.com'
-        password = 'a'
-        break
-      }
-      case 'groupAdmin': {
-        email = 'j@j.com'
-        password = 'moo'
-        break
-      }
-      case 'user': {
-        email = 'x@b.com'
-        password = 'as'
-        break
-      }
-    }
-  } else { //END TEMPORARY
-    email = payload.email
-    password = payload.password
-  }
-
+export function login() {
   return function (dispatch) {
-    axios.post(`${API_URL}auth/login`, {
-      email: email,
-      auth: password
-    }, AXIOS_CONFIG)
+    axios.get(`${API_URL}auth/login`, AXIOS_CONFIG)
       .then((response) => {
         dispatch({ type: "LOGIN", payload: userDataToUser(response) })
       })

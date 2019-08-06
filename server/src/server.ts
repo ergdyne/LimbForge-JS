@@ -53,14 +53,6 @@ createConnection().then(async (connection) => {
   const io = socketio(server)
   app.set('io', io)
 
-  //move to auth
-  // //Link socket id to session
-  // app.use((req, res, next)=>{
-  //   console.log('socket middleware q/s', req.query.socketId,req.session.socketId)
-  //   req.session.socketId = req.query.socketId
-  //   next()
-  // })
-
   app.use("/api/", routes)
 
   app.get('*',

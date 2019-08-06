@@ -6,14 +6,6 @@ import isEmpty from '../functions/isEmpty'
 import {setEditDevice} from '../actions/displayActions'
 import {saveMeasurements} from '../actions/patientsActions'
 
-//START HERE -
-//view devices list
-
-//If a device is selected
-//Connect directly to store?
-//--simplifies transactions
-//--can have patient id, (patient-device id), device id, side, flow down
-//--then populate store from here for some things
 @connect((store) => {
   return ({
     patient: store.patients.patient,

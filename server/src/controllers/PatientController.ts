@@ -127,8 +127,6 @@ export default class PatientController {
     }
     getRepository(PatientRecordState).find({ where: { patientId: patientId } })
       .then(pss => {
-        //START HERE
-        //TODO get device
         getRepository(PatientBuildRecordState).find({ where: { patientId: patientId } })
           .then(devices => {
             try {
