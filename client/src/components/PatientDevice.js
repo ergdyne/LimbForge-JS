@@ -41,7 +41,6 @@ export default class PatientDevice extends React.Component {
   }
 
   render() {
-    console.log("device", this.props.measurementForm)
     const ms = this.props.device.measurments
     return (
       <div className="container">

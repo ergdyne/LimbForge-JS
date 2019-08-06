@@ -7,5 +7,6 @@ router.post("/add",GroupController.addGroup)
 router.get("/all", GroupController.getAll)
 router.get("/options", GroupController.getGroupOptions)
 router.post("/one", GroupController.getGroup)
+router.post("/signup",GroupController.signUp)
 
 export default router

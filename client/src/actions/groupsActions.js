@@ -1,6 +1,6 @@
 import axios from 'axios'
 import _ from 'underscore'
-import { fullUserGroupsToUsers, groupStatesToGroups } from '../functions/convertView'
+import { fullUserGroupsToUsers, groupStatesToGroups, userDataToUser } from '../functions/convertView'
 import { AXIOS_CONFIG, API_URL } from '../config/API'
 
 export function getGroups() {
@@ -51,3 +51,17 @@ export function addGroup(newGroup) {
   }
 }
 
+export function signUp(groupData) {
+  const { group } = groupData
+  return function (dispatch) {
+    axios.post(`${API_URL}group/signup`, {
+      groupName: group
+    }, AXIOS_CONFIG)
+      .then((response) => {
+        dispatch({ type: "SIGN_UP", payload: userDataToUser(response) })
+      })
+      .catch((err) => {
+        dispatch({ type: "SIGN_UP_REJECTED", payload: err })
+      })
+  }
+}
