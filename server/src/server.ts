@@ -31,9 +31,12 @@ createConnection().then(async (connection) => {
     https.createServer(devCert, app) :
     http.createServer(app)
 
+  
+
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
   app.use(passport.initialize())
+  passportConfig()
 
   app.use(cors({ origin: process.env.CLIENT_ORIGIN, credentials: true }))
   app.use(session({
@@ -47,16 +50,16 @@ createConnection().then(async (connection) => {
       secure: false //temporary before https
     }
   }))
-  passportConfig()
   const io = socketio(server)
   app.set('io', io)
 
-  //Link socket id to session
-  app.use((req, res, next)=>{
-    console.log('socket middleware q/s', req.query.socketId,req.session.socketId)
-    req.session.socketId = req.query.socketId
-    next()
-  })
+  //move to auth
+  // //Link socket id to session
+  // app.use((req, res, next)=>{
+  //   console.log('socket middleware q/s', req.query.socketId,req.session.socketId)
+  //   req.session.socketId = req.query.socketId
+  //   next()
+  // })
 
   app.use("/api/", routes)
 

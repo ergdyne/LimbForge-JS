@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, Request,Response,NextFunction } from 'express'
 import AuthController from '../controllers/AuthController'
 import passport from 'passport'
 
@@ -12,6 +12,11 @@ router.post('/signup',AuthController.signUp)
 
 router.get('/google/callback', googleAuth, AuthController.google)
 
-router.get('/google', googleAuth)
+function addSocketIdtoSession(req:Request, res:Response, next:NextFunction){
+  req.session.socketId = req.query.socketId
+  next()
+}
+
+router.get('/google', addSocketIdtoSession, googleAuth)
 
 export default router
