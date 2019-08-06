@@ -30,7 +30,7 @@ export default class AuthController {
   static google = async (req: Request, res: Response) => {
     console.log('google auth')
     const io = req.app.get('io')
-    console.log(req.session.socketId)
+    console.log('socket id',req.session.socketId)
     io.in(req.session.socketId).emit('google', { loggedIn: true })
     res.end()
   }
