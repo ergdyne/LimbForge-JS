@@ -21,7 +21,7 @@ export class PatientRecord{
   record: Record
 
   //Many to one Patient
-  @ManyToOne(type=> Patient, patient => patient.patientRecords)
+  @ManyToOne(type=> Patient, patient => patient.patientRecords,{ onDelete: 'CASCADE' })
   patient: Patient
 }
 

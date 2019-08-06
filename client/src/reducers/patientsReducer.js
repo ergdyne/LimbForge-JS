@@ -1,6 +1,7 @@
 import isEmpty from '../functions/isEmpty'
 
-const emptyPatient ={
+//TODO with bouncing around to different patient locations, sometime, the patient is not cleared
+const emptyPatient = {
   id:null,
     //Other attributes exists in patient but are not given defaults.
 }

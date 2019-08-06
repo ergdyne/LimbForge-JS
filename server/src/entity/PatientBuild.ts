@@ -21,7 +21,7 @@ export class PatientBuild{
   build: Build
 
   //One ties to many PatientBuildRecords (data collected to build the build)
-  @OneToMany(type => PatientBuildRecord, patientBuildRecord => patientBuildRecord.patientBuild)
+  @OneToMany(type => PatientBuildRecord, patientBuildRecord => patientBuildRecord.patientBuild,{ onDelete: 'CASCADE' })
   patientBuildRecords: PatientBuildRecord[]
 }
 

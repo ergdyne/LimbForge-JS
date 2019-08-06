@@ -1,25 +1,12 @@
-
--- Inserts for test case if I have to rebuild the DB
-
---Probably need a user seed too
-
--- write a seed...
-
-drop view full_user_group ;
-drop view group_state ;
-drop view user_group_state;
-drop view view_admin_access ;
-drop view view_patient_group;
-drop view view_site_auth ;
-drop view ux_state;
-drop view ux_record_state;
-drop view patient_record_state;
-drop view patient_build_record_state;
+SELECT 'DROP VIEW ' || table_name || ';' 
+FROM information_schema.views 
+WHERE table_schema NOT IN ('pg_catalog', 'information_schema') 
+AND table_name !~ '^pg_';
 
 drop table migrations;
 drop table typeorm_metadata;
 
---Version 0.4
+--Version 0.4 seed
 
 insert into "build" (create_at) values (current_timestamp);
 
@@ -50,6 +37,9 @@ insert into "ux" ("accessor") values ('addBuild');insert into ux_attribute (attr
 insert into "ux" ("accessor") values ('transradialBuild');insert into ux_attribute (attribute, "value","type","uXId") values ('name','Measurements','string',4);insert into ux_attribute (attribute, "value","type","uXId") values ('button','Save','string',4);insert into ux_attribute (attribute, "value","type","uXId") values ('preventDefault',TRUE,'boolean',4);insert into ux_record ("order", "recordId","uXId") values (0,14,4);insert into ux_record ("order", "recordId","uXId") values (1,15,4);insert into ux_record ("order", "recordId","uXId") values (2,16,4);insert into ux_record ("order", "recordId","uXId") values (3,17,4);insert into ux_record ("order", "recordId","uXId") values (4,18,4);insert into ux_record ("order", "recordId","uXId") values (5,19,4);insert into ux_record ("order", "recordId","uXId") values (6,20,4);
 insert into "ux" ("accessor") values ('patientCols');insert into ux_record ("order", "recordId","uXId") values (0,2,5);insert into ux_record ("order", "recordId","uXId") values (1,3,5);insert into ux_record ("order", "recordId","uXId") values (2,4,5);insert into ux_record ("order", "recordId","uXId") values (3,5,5);insert into ux_record ("order", "recordId","uXId") values (4,6,5);insert into ux_record ("order", "recordId","uXId") values (5,7,5);insert into ux_record ("order", "recordId","uXId") values (6,8,5);insert into ux_record ("order", "recordId","uXId") values (7,9,5);insert into ux_record ("order", "recordId","uXId") values (8,11,5);insert into ux_record ("order", "recordId","uXId") values (9,13,5);insert into ux_record ("order", "recordId","uXId") values (10,10,5);insert into ux_record ("order", "recordId","uXId") values (11,1,5);
 insert into "ux" ("accessor") values ('deviceCols');insert into ux_attribute (attribute, "value","type","uXId") values ('name','Devices','string',6);insert into ux_record ("order", "recordId","uXId") values (0,2,6);insert into ux_record ("order", "recordId","uXId") values (1,13,6);insert into ux_record ("order", "recordId","uXId") values (2,10,6);
+
+
+
 --TEST DATA
 insert into ux_record ("order", "recordId","uXId") values (-1,12,3);
 insert into ux_record ("order", "recordId","uXId") values (1,12,3);

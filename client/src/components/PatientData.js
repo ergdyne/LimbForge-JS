@@ -36,17 +36,27 @@ export default class PatientData extends React.Component {
           /> :
           <div>
             {(this.props.hasPatientForm) ?
-              <FormBuilder
-                title={this.props.patientForm.name}
-                key={this.props.patientForm.accessor}
-                accessor={this.props.patientForm.accessor}
-                className="card large"
-                elements={this.props.patientForm.inputs}
-                onSubmit={this.props.patientSubmit}
-                buttonLabel={this.props.patientForm.button}
-                preventDefault={true}
-                initial={(this.props.patient) ? this.props.patient : {}}
-              /> :
+              <div className='container'>
+                <div className='row'>
+                  <FormBuilder
+                    title={this.props.patientForm.name}
+                    key={this.props.patientForm.accessor}
+                    accessor={this.props.patientForm.accessor}
+                    className="card large"
+                    elements={this.props.patientForm.inputs}
+                    onSubmit={this.props.patientSubmit}
+                    buttonLabel={this.props.patientForm.button}
+                    preventDefault={true}
+                    initial={(this.props.patient) ? this.props.patient : {}}
+                  />
+                </div>
+                {(this.props.patient.id >0)?
+                  <div className='row'>
+                    <button onClick={() => this.props.deletePatient()}>{`Delete Patient`}</button>
+                  </div>:
+                  <span/>
+                }
+              </div> :
               <div className="Patient container">
 
                 <h2 className='row'>
@@ -74,6 +84,7 @@ export default class PatientData extends React.Component {
   }
 }
 
+//TODO all props
 PatientData.propTypes = {
   patient: PropTypes.object,
   patientInputs: PropTypes.array

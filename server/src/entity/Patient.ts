@@ -12,15 +12,15 @@ export class Patient{
   public create_at: Date
 
   //One Patient to many PatientRecords
-  @OneToMany(type => PatientRecord, patientRecord => patientRecord.patient)
+  @OneToMany(type => PatientRecord, patientRecord => patientRecord.patient,{ onDelete: 'CASCADE' })
   patientRecords: PatientRecord[]
 
   //One Patient to many Builds
-  @OneToMany(type => PatientBuild, patientBuild => patientBuild.patient)
+  @OneToMany(type => PatientBuild, patientBuild => patientBuild.patient,{ onDelete: 'CASCADE' })
   patientBuilds: PatientBuild[]
 
   //One Patient to many patientGroups, but typically only care about 1.
-  @OneToMany(type => PatientGroup, patientGroup => patientGroup.patient)
+  @OneToMany(type => PatientGroup, patientGroup => patientGroup.patient,{ onDelete: 'CASCADE' })
   patientGroups: PatientGroup[]
 
   //Should be deletable -> plus recursive

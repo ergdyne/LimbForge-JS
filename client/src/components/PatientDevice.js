@@ -4,7 +4,7 @@ import FormBuilder from './FormBuilder'
 import Download from './Download'
 import isEmpty from '../functions/isEmpty'
 import {setEditDevice} from '../actions/displayActions'
-import {saveMeasurements} from '../actions/patientsActions'
+import {saveMeasurements,getPatient} from '../actions/patientsActions'
 
 @connect((store) => {
   return ({
@@ -38,6 +38,7 @@ export default class PatientDevice extends React.Component {
   submitMeasurements = (measurements)=> {
     this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id,this.props.device))
     this.props.dispatch(setEditDevice(false))
+    
   }
 
   render() {

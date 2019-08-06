@@ -16,6 +16,7 @@ export function getPatients() {
 }
 
 export function getPatient(patientId) {
+  console.log('get patient', patientId)
   return function (dispatch) {
     axios.post(`${API_URL}patient/one`, {
       patientId: patientId
@@ -119,8 +120,10 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
         .then((response) => {
           //use the response to set device id
           const newDevice = { ...device, patientDeviceId: response.data.patientDeviceId, measurements: measurements }
+          
           dispatch({ type: "SET_DEVICE", payload: newDevice })
           dispatch({ type: "SET_EDIT_DEVICE", payload: false })
+          dispatch(getPatient(patientId))
         })
         .catch((err) => {
           dispatch({ type: "SAVE_DEVICE_REJECTED", payload: err })

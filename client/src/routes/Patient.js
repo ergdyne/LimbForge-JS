@@ -87,7 +87,7 @@ export default class Patient extends React.Component {
     this.props.dispatch(savePatient(patient, this.props.patientForm.inputs, this.state.groupName))
   }
 
-  //TODO add to patient data
+  //TODO wire
   removePatient = (patientId) => {
     console.log("Would be like are you sure?")
     this.props.dispatch(deletePatient(patientId))
@@ -136,6 +136,7 @@ export default class Patient extends React.Component {
           groupSubmit={this.groupSubmit}
           patient={this.props.patient}
           editPatient={() => this.props.dispatch(setEditPatient(true))}
+          deletePatient={this.removePatient}
           hasPatientForm={this.props.isEditPatient}
           patientForm={this.props.patientForm}
           patientSubmit={this.patientSubmit}

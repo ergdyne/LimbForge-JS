@@ -11,7 +11,7 @@ export class PatientGroup{
   public create_at: Date
 
   //Many to one Patient
-  @ManyToOne(type=> Patient, patient => patient.patientGroups)
+  @ManyToOne(type=> Patient, patient => patient.patientGroups,{ onDelete: 'CASCADE' })
   patient: Patient
 
   //Many to one Group
