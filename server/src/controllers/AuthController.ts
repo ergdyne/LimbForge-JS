@@ -28,9 +28,10 @@ function siteAccess(vg: FullUserGroup[]) {
 
 export default class AuthController {
   static google = async (req: Request, res: Response) => {
-    console.log('google auth')
+    console.log('google authcontroller')
     const io = req.app.get('io')
-    console.log('socket id',req.session.socketId)
+    console.log('session socket id',req.session.socketId)
+    console.log('query socket id',req.query.socketId)
     io.in(req.session.socketId).emit('google', { loggedIn: true })
     res.end()
   }

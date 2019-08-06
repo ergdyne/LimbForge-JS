@@ -37,6 +37,7 @@
     "@types/express-session": "^1.15.12",
     "@types/lodash": "^4.14.136",
     "@types/passport-google-oauth": "^1.0.41",
+    "@types/passport-google-oauth20": "^2.0.2",
     "@types/pg": "^7.4.14",
     "@types/socket.io": "^2.1.2",
     "@types/underscore": "^1.9.2",

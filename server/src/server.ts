@@ -26,6 +26,7 @@ createConnection().then(async (connection) => {
   await connection.synchronize()
 
   const app = express()
+  //This is odd naming this this way
   const server = (process.env.NODE_ENV !== 'production') ?
     https.createServer(devCert, app) :
     http.createServer(app)
@@ -52,6 +53,7 @@ createConnection().then(async (connection) => {
 
   //Link socket id to session
   app.use((req, res, next)=>{
+    console.log('socket middleware q/s', req.query.socketId,req.session.socketId)
     req.session.socketId = req.query.socketId
     next()
   })

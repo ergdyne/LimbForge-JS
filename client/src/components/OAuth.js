@@ -16,6 +16,7 @@ export default class OAuth extends Component {
   checkPopup = () =>{
     const check = setInterval(() => {
       const {popup} = this
+      console.log('check popup')
       if (!popup || popup.closed || popup.closed === undefined) {
         clearInterval(check)
       }
@@ -29,6 +30,8 @@ export default class OAuth extends Component {
     const top = (window.innerHeight / 2) - (height / 2)
     const url = `${apiURL}auth/${provider}?socketId=${socket.id}`
     console.log("url", url)
+
+    console.log('open popup')
     return window.open(url, '',       
       `toolbar=no, location=no, directories=no, status=no, menubar=no, 
       scrollbars=no, resizable=no, copyhistory=no, width=${width}, 
@@ -38,6 +41,7 @@ export default class OAuth extends Component {
 
   startAuth = () => {
     //disable the button here
+      console.log('start auth')
     this.popup = this.openPopup()  
     this.checkPopup()
   }
