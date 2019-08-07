@@ -141,9 +141,10 @@ export function deletePatient(patientId) {
     axios.post(`${API_URL}patient/delete`, {
       patientId: patientId
     }, AXIOS_CONFIG).then(response => {
+      dispatch({ type: "SET_EDIT_DEVICE", payload: false })
       dispatch({
         type: "DELETE_PATIENT",
-        payload: { }
+        payload: {}
       })
       dispatch(getPatients())
 
@@ -152,9 +153,11 @@ export function deletePatient(patientId) {
 }
 
 export function clearPatient() {
-  return {
-    type: "CLEAR_PATIENT",
-    payload: {}
+  return function (dispatch) {
+    dispatch({ type: "SET_EDIT_DEVICE", payload: false })
+    // dispatch({ type: "CLEAR_DEVICE", payload: {} })
+    // dispatch({ type: "CLEAR_DEVICES", payload: {} })
+    dispatch({type: "CLEAR_PATIENT",payload: {}})
   }
 }
 

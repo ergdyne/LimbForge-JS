@@ -1,19 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import FormBuilder from './FormBuilder'
-import formatValue from '../functions/formatValue'
+import attributeMap from '../functions/attributeMap'
 
 export default class PatientData extends React.Component {
-  attributeMap = (x, p) => {
-    return ((p[x.accessor]) ?
-      <label key={`header-${x.accessor}`} className="row">
-        {`${x.name}: `}
-        <span className="col-sm-2" >
-          {formatValue(x.type, p[x.accessor])}
-        </span>
-      </label> : <span />
-    )
-  }
+  
 
   render() {
     //CSS
@@ -22,7 +13,7 @@ export default class PatientData extends React.Component {
     const extraData = this.props.patientForm.inputs.filter(x => !explicitData.includes(x.accessor))
 
     return (
-      <div className="container">
+      <div >
         {(this.props.hasGroupSelect) ?
           <FormBuilder
             className="card large"
@@ -57,7 +48,7 @@ export default class PatientData extends React.Component {
                   <span/>
                 }
               </div> :
-              <div className="Patient container">
+              <div className="Patient container card large">
 
                 <h2 className='row'>
                   {`Patient: ${(p.firstName) ? p.firstName : ''} ${(p.lastName) ? p.lastName : ''}`}
@@ -67,7 +58,7 @@ export default class PatientData extends React.Component {
                 </h3>
                 {/* Temporary formating */}
                 <div>
-                  {extraData.map(x => this.attributeMap(x, p))}
+                  {extraData.map(x => attributeMap(x, p))}
 
                 </div >
                 <div>{(this.props.editPatient) ?

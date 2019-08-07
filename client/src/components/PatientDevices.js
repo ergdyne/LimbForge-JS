@@ -18,13 +18,12 @@ export default class PatientDevices extends React.Component {
       )
 
     return (
-      <div>
+      <div >
         {/* This form (and list) will just adjust settings on the Patient Device area */}
-        <div className="row">
+        <div className="card large">
           {/* TODO add in amputation level selection - decide what to do with nozzle --- in the download form?*/}
           <FormBuilder
             title={this.props.addDeviceForm.name}
-            className="card large"
             key={this.props.addDeviceForm.accessor}
             accessor={this.props.addDeviceForm.accessor}
             elements={this.props.addDeviceForm.inputs}
@@ -36,7 +35,7 @@ export default class PatientDevices extends React.Component {
         </div>
         {(this.props.devices.length>0)?
           <ReactTable
-            className="row"
+            className="card large"
             data={this.props.devices}
             columns={columns}
             filterable={true}

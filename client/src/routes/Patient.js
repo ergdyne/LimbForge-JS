@@ -49,6 +49,7 @@ export default class Patient extends React.Component {
   }
 
   componentWillUnmount() {
+    console.log('ON will unmount patient')
     this.props.dispatch(clearPatient())
     this.setState({ measuresSRC: null })
   }
@@ -122,9 +123,8 @@ export default class Patient extends React.Component {
       //if new patient and group options exist, give a dropdown.
       //If no option or exising patient display group Name
       //CSS - Initial
-      <div className="container">
+      <div className="container row">
         <PatientData
-          className="row"
           hasGroupSelect={(
             (!this.props.patient.id) &&
             this.state.groupName == null &&
@@ -140,27 +140,23 @@ export default class Patient extends React.Component {
           patientForm={this.props.patientForm}
           patientSubmit={this.patientSubmit}
         />
+        {(this.props.showDevice) ?
+          <PatientDevice
+          /> : <span />
+        }
+
         {
           (this.props.patient.id) ?
             <PatientDevices
-              className="row"
               addDeviceForm={this.props.addDeviceForm}
               addDevice={this.addDevice}
               viewDevice={this.viewDevice}
               deviceCols={this.props.deviceCols}
               devices={this.props.devices}
-
             /> : <span />
         }
-        {/* Adjust position of this section... */}
-        {(this.props.showDevice) ?
-          // On unmount -> clear both patient and measurements.
-          // On add build -> clear measurements
-          <PatientDevice
-            className="row"
-          /> : <span />
-        }
-      </div>
+
+      </div >
     )
   }
 }
