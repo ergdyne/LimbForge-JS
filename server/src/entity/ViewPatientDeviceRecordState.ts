@@ -3,20 +3,20 @@ import { ViewEntity, ViewColumn} from "typeorm"
 //Results in an entry for each userID, groupId, and attribute, which must be merged into a single group-access object.
 @ViewEntity({
   expression: `
-  select pb."patientId", pb.id as "patientBuildId", ot."recordId", ot."value", ras.accessor,rts."type"  from
-    patient_build as pb
+  select pb."patientId", pb.id as "patientDeviceId", ot."recordId", ot."value", ras.accessor,rts."type"  from
+    patient_device as pb
     inner join
       (
         select 
-          "patientBuildId" as parentId, 
+          "patientDeviceId" as parentId, 
           max(create_at) as latest, 
           "recordId"
-        from patient_build_record
-        group by "patientBuildId", "recordId"
+        from patient_device_record
+        group by "patientDeviceId", "recordId"
       ) as l
     on l.parentId = pb.id
-    inner join patient_build_record as ot
-    on l.parentId = ot."patientBuildId" and l.latest = ot.create_at and l."recordId" = ot."recordId"  
+    inner join patient_device_record as ot
+    on l.parentId = ot."patientDeviceId" and l.latest = ot.create_at and l."recordId" = ot."recordId"  
     inner join
     (select l.parentId as "recordId", ot.value as accessor from 
       (
@@ -49,12 +49,12 @@ import { ViewEntity, ViewColumn} from "typeorm"
     on ot."recordId" = rts."recordId"
   `
 })
-export class PatientBuildRecordState{   
+export class PatientDeviceRecordState{   
   @ViewColumn()
   patientId: number
 
   @ViewColumn()
-  patientBuildId: number
+  patientDeviceId: number
 
   @ViewColumn()
   recordId: number

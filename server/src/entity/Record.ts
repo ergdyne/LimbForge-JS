@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany} from 'typeorm'
 import RecordAttribute from './RecordAttribute'
 import PatientRecord from './PatientRecord'
-import PatientBuildRecord from './PatientBuildRecord'
+import PatientDeviceRecord from './PatientDeviceRecord'
 import UXRecord from './UXRecord'
 
 //Record is a type of data point
@@ -17,9 +17,9 @@ export class Record{
   @OneToMany(type => RecordAttribute, recordAttribute => recordAttribute.record)
   recordAttributes: RecordAttribute[]
 
-  //Patient Build Records
-  @OneToMany(type => PatientBuildRecord, patientBuildRecord => patientBuildRecord.record)
-  patientBuildRecords: PatientBuildRecord[]
+  //Patient Device Records
+  @OneToMany(type => PatientDeviceRecord, patientDeviceRecord => patientDeviceRecord.record)
+  patientDeviceRecords: PatientDeviceRecord[]
 
   //Patient Records
   @OneToMany(type => PatientRecord, patientRecord => patientRecord.record)

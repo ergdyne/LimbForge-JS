@@ -1,19 +1,19 @@
 import {Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany} from 'typeorm'
-import PatientBuild from './PatientBuild'
+import PatientDevice from './PatientDevice'
 
 //The list of things that go in a zip file
 @Entity()
-export class Build{
+export class Device{
   @PrimaryGeneratedColumn()
   public id: number
 
   @CreateDateColumn()
   public create_at: Date
 
-  //Patient Builds
-  @OneToMany(type => PatientBuild, patientBuild => patientBuild.build)
-  patientBuilds: PatientBuild[]
+  //Patient Devices
+  @OneToMany(type => PatientDevice, patientDevice => patientDevice.device)
+  patientDevices: PatientDevice[]
 
 }
 
-export default Build
+export default Device

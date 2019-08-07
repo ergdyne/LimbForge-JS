@@ -14,7 +14,7 @@ import { getGroupOptions } from '../actions/displayActions'
     isEditPatient: store.display.editPatient,
     showDevice: store.display.showDevice,
     optionStore: store.display.optionStore,
-    addBuildForm: store.display.addBuild,
+    addDeviceForm: store.display.addDevice,
     groupForm: store.display.selectGroup,
     patientForm: store.display.patientForm,
     deviceCols: store.display.deviceCols,
@@ -33,7 +33,7 @@ export default class Patient extends React.Component {
     const d = this.props.dispatch
     d(getForm('patientData'))
     d(getForm('selectGroup'))
-    d(getForm('addBuild'))
+    d(getForm('addDevice'))
     d(getColHeaders('deviceCols'))
     d(getGroupOptions())
     const { patientId } = this.props.match.params
@@ -97,10 +97,10 @@ export default class Patient extends React.Component {
       measurements: {},
       deviceId: 1,
       patientDeviceId: null
-    }, deviceData, this.props.addBuildForm.inputs))
+    }, deviceData, this.props.addDeviceForm.inputs))
     d(setShowDevice(true))
     d(setEditDevice(true))
-    d(getForm('transradialBuild'))
+    d(getForm('transradialDevice'))
   }
 
   viewDevice = (patientDeviceId) => {
@@ -113,7 +113,7 @@ export default class Patient extends React.Component {
     d(viewDevice(device))
     d(setShowDevice(true))
     d(setEditDevice(false))
-    d(getForm('transradialBuild'))
+    d(getForm('transradialDevice'))
   }
 
   render() {
@@ -144,7 +144,7 @@ export default class Patient extends React.Component {
           (this.props.patient.id) ?
             <PatientDevices
               className="row"
-              addDeviceForm={this.props.addBuildForm}
+              addDeviceForm={this.props.addDeviceForm}
               addDevice={this.addDevice}
               viewDevice={this.viewDevice}
               deviceCols={this.props.deviceCols}

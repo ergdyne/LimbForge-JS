@@ -62,9 +62,10 @@ function recordsToPatients(pss) {
 }
 
 function recordsToDevices(rs){
-  const deviceSets = _.pairs(_.groupBy(rs, (r) => r.patientBuildId))
+  const deviceSets = _.pairs(_.groupBy(rs, (r) => r.patientDeviceId))
   return deviceSets.map(s=>{
     //These are measurements and the device settings (left/right, amputation level...)
+    console.log('device',s)
     var device = accessorToJSON(s[1])
     device.measurments = {...device}
     device.id = parseInt(s[0])

@@ -2,7 +2,7 @@ import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne} fro
 import Patient from "./Patient"
 import Record from "./Record"
 
-//Records the are linked directly to a patient (not through a particular build).
+//Records the are linked directly to a patient (not through a particular device).
 //The Name of the patient is always the same regardless of the device being built (stored here).
 //A Patient may have a left side device and a right side device with different measurements (not stored here).
 @Entity()

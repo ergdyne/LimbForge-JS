@@ -23,7 +23,7 @@ export default function reducer(state = {
   editPatient: false,
   editDevice: false,
   patientForm: {inputs:[]},
-  addBuild: {inputs:[]},
+  addDevice: {inputs:[]},
   usersColHeaders: usersColHeaders,
   usersGroupColHeaders: usersGroupColHeaders,
   userGroupsColHeaders: userGroupsColHeaders,
@@ -48,7 +48,7 @@ export default function reducer(state = {
       switch(action.payload.accessor){
         case 'selectGroup': return {...state, selectGroup:action.payload}
         case 'patientData': return {...state, patientForm:action.payload}
-        case 'addBuild': return {...state, addBuild:action.payload}
+        case 'addDevice': return {...state, addDevice:action.payload}
         default: return { ...state,measurementForm:action.payload }
       }
       

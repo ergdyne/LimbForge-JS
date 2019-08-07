@@ -18,7 +18,7 @@ export class UX{
   @OneToMany(type => UXAttribute, uXAttribute => uXAttribute.uX)
   uXAttributes: UXAttribute[]
 
-  //Patient Build UXs
+  //Patient Device UXs
   @OneToMany(type => UXRecord, uXRecord => uXRecord.uX)
   uXRecords: UXRecord[]
 

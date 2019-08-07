@@ -5,13 +5,11 @@ import { login } from '../actions/sessionActions'
 import { getGroupOptions } from '../actions/displayActions'
 import FormBuilder from '../components/FormBuilder'
 import OAuth from '../components/OAuth'
-import { API_URL } from '../config/API'
-import {signUp} from '../actions/groupsActions'
+import { API_URL, API_DOMAIN } from '../config/API'
+import { signUp } from '../actions/groupsActions'
 import home from '../functions/home'
 
-const socket = io('https://127.0.0.1:3000') //TODO recentralize
-//API Call
-//Will provide the login/signup page in the future and access to a demo.
+const socket = io(API_DOMAIN)
 
 @connect((store) => {
   return ({
@@ -27,7 +25,7 @@ export default class Landing extends React.Component {
     this.props.dispatch(login())
   }
   componentDidUpdate() {
-    if(this.props.sessionUser.loggedIn && this.props.sessionUser.siteAccess != 'requested'){
+    if (this.props.sessionUser.loggedIn && this.props.sessionUser.siteAccess != 'requested') {
       this.props.history.push(home(this.props.sessionUser.siteAccess))
     }
 
@@ -50,22 +48,23 @@ export default class Landing extends React.Component {
       { accessor: `group`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: (groupOptions), validation: { required: true } },
     ]
 
+    console.log('urls', API_DOMAIN, API_URL)
     return (
       //CSS - Initial
       <div className="container">
         <div className="row">
-          {(this.props.sessionUser.loggedIn)?
-            <span/>:
-            <OAuth
+          {(this.props.sessionUser.loggedIn) ?
+            <span /> :
+            <div className="card small Landing-Spacer"><OAuth
               onLogIn={this.logIn}
               provider={'google'}
               key={'google'}
               apiURL={API_URL}
               socket={socket}
-            />}
+            /></div>}
           {/* Will become and option for a user with no groups or site access */}
           <span>{(this.props.groupOptions.length > 0 && this.props.sessionUser.siteAccess === 'requested') ?
-            <span>{( this.props.sessionUser.groups.length >0) ?
+            <span>{(this.props.sessionUser.groups.length > 0) ?
               <span>{'Access Requested'}</span> :
               <div className="card large" >
                 <FormBuilder

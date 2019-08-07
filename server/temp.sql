@@ -1,14 +1,6 @@
-SELECT 'DROP VIEW ' || table_name || ';' 
-FROM information_schema.views 
-WHERE table_schema NOT IN ('pg_catalog', 'information_schema') 
-AND table_name !~ '^pg_';
-
-drop table migrations;
-drop table typeorm_metadata;
-
 --Version 0.4 seed
 
-insert into "build" (create_at) values (current_timestamp);
+insert into "device" (create_at) values (current_timestamp);
 
 insert into "record" (create_at) values (current_timestamp);insert into record_attribute (attribute, "value","type","recordId") values ('accessor','groupName','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('name','Group','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('type','string','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('inputType','select','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('placeholder','Select Group','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('optionStore','groupOptions','string',1);insert into record_attribute (attribute, "value","type","recordId") values ('validation-required',TRUE,'boolean',1);
 insert into "record" (create_at) values (current_timestamp);insert into record_attribute (attribute, "value","type","recordId") values ('accessor','id','string',2);insert into record_attribute (attribute, "value","type","recordId") values ('type','id','string',2);
@@ -33,10 +25,13 @@ insert into "record" (create_at) values (current_timestamp);insert into record_a
 
 insert into "ux" ("accessor") values ('selectGroup');insert into ux_attribute (attribute, "value","type","uXId") values ('button','Select','string',1);insert into ux_attribute (attribute, "value","type","uXId") values ('preventDefault',TRUE,'boolean',1);insert into ux_record ("order", "recordId","uXId") values (0,1,1);
 insert into "ux" ("accessor") values ('patientData');insert into ux_attribute (attribute, "value","type","uXId") values ('name','Patient','string',2);insert into ux_attribute (attribute, "value","type","uXId") values ('button','Save','string',2);insert into ux_attribute (attribute, "value","type","uXId") values ('preventDefault',TRUE,'boolean',2);insert into ux_record ("order", "recordId","uXId") values (0,3,2);insert into ux_record ("order", "recordId","uXId") values (1,4,2);insert into ux_record ("order", "recordId","uXId") values (2,5,2);insert into ux_record ("order", "recordId","uXId") values (3,6,2);insert into ux_record ("order", "recordId","uXId") values (4,7,2);insert into ux_record ("order", "recordId","uXId") values (5,8,2);insert into ux_record ("order", "recordId","uXId") values (6,9,2);insert into ux_record ("order", "recordId","uXId") values (7,11,2);
-insert into "ux" ("accessor") values ('addBuild');insert into ux_attribute (attribute, "value","type","uXId") values ('name','Add Build','string',3);insert into ux_attribute (attribute, "value","type","uXId") values ('button','Add','string',3);insert into ux_attribute (attribute, "value","type","uXId") values ('preventDefault',TRUE,'boolean',3);insert into ux_record ("order", "recordId","uXId") values (0,10,3);insert into ux_record ("order", "recordId","uXId") values (1,12,3);insert into ux_record ("order", "recordId","uXId") values (2,13,3);
-insert into "ux" ("accessor") values ('transradialBuild');insert into ux_attribute (attribute, "value","type","uXId") values ('name','Measurements','string',4);insert into ux_attribute (attribute, "value","type","uXId") values ('button','Save','string',4);insert into ux_attribute (attribute, "value","type","uXId") values ('preventDefault',TRUE,'boolean',4);insert into ux_record ("order", "recordId","uXId") values (0,14,4);insert into ux_record ("order", "recordId","uXId") values (1,15,4);insert into ux_record ("order", "recordId","uXId") values (2,16,4);insert into ux_record ("order", "recordId","uXId") values (3,17,4);insert into ux_record ("order", "recordId","uXId") values (4,18,4);insert into ux_record ("order", "recordId","uXId") values (5,19,4);insert into ux_record ("order", "recordId","uXId") values (6,20,4);
+insert into "ux" ("accessor") values ('addDevice');insert into ux_attribute (attribute, "value","type","uXId") values ('name','Add Device','string',3);insert into ux_attribute (attribute, "value","type","uXId") values ('button','Add','string',3);insert into ux_attribute (attribute, "value","type","uXId") values ('preventDefault',TRUE,'boolean',3);insert into ux_record ("order", "recordId","uXId") values (0,10,3);insert into ux_record ("order", "recordId","uXId") values (1,12,3);insert into ux_record ("order", "recordId","uXId") values (2,13,3);
+insert into "ux" ("accessor") values ('transradialDevice');insert into ux_attribute (attribute, "value","type","uXId") values ('name','Measurements','string',4);insert into ux_attribute (attribute, "value","type","uXId") values ('button','Save','string',4);insert into ux_attribute (attribute, "value","type","uXId") values ('preventDefault',TRUE,'boolean',4);insert into ux_record ("order", "recordId","uXId") values (0,14,4);insert into ux_record ("order", "recordId","uXId") values (1,15,4);insert into ux_record ("order", "recordId","uXId") values (2,16,4);insert into ux_record ("order", "recordId","uXId") values (3,17,4);insert into ux_record ("order", "recordId","uXId") values (4,18,4);insert into ux_record ("order", "recordId","uXId") values (5,19,4);insert into ux_record ("order", "recordId","uXId") values (6,20,4);
 insert into "ux" ("accessor") values ('patientCols');insert into ux_record ("order", "recordId","uXId") values (0,2,5);insert into ux_record ("order", "recordId","uXId") values (1,3,5);insert into ux_record ("order", "recordId","uXId") values (2,4,5);insert into ux_record ("order", "recordId","uXId") values (3,5,5);insert into ux_record ("order", "recordId","uXId") values (4,6,5);insert into ux_record ("order", "recordId","uXId") values (5,7,5);insert into ux_record ("order", "recordId","uXId") values (6,8,5);insert into ux_record ("order", "recordId","uXId") values (7,9,5);insert into ux_record ("order", "recordId","uXId") values (8,11,5);insert into ux_record ("order", "recordId","uXId") values (9,13,5);insert into ux_record ("order", "recordId","uXId") values (10,10,5);insert into ux_record ("order", "recordId","uXId") values (11,1,5);
 insert into "ux" ("accessor") values ('deviceCols');insert into ux_attribute (attribute, "value","type","uXId") values ('name','Devices','string',6);insert into ux_record ("order", "recordId","uXId") values (0,2,6);insert into ux_record ("order", "recordId","uXId") values (1,13,6);insert into ux_record ("order", "recordId","uXId") values (2,10,6);
+
+--after initial user - seed the admin (confirm user id)
+insert into "admin_access" ("isAdmin","userId") values (true, 1);
 
 
 
@@ -48,15 +43,23 @@ insert into ux_record ("order", "recordId","uXId") values (1,3,3);
 insert into ux_record ("order", "recordId","uXId") values (-1,3,3);
 
 insert into "patient" (create_at) values (current_timestamp); --27
---build is 1 or 2
+--device is 1 or 2
 
-insert into patient_build ("patientId", "buildId") values (27,1); --1
+insert into patient_device ("patientId", "deviceId") values (27,1); --1
 
 insert into patient_record ("patientId", "recordId", "value") values (27,3, 'John');
 insert into patient_record ("patientId", "recordId", "value") values (27,4, 'Smite');
 insert into patient_record ("patientId", "recordId", "value") values (27,4, 'Smith');
 insert into patient_record ("patientId", "recordId", "value") values (27,5, current_timestamp);
 
-insert into patient_build_record ("patientBuildId", "recordId", "value") values (1,14, '27.4');
-insert into patient_build_record ("patientBuildId", "recordId", "value") values (1,15, '16.4');
-insert into patient_build_record ("patientBuildId", "recordId", "value") values (1,15, '17.4');
+insert into patient_device_record ("patientDeviceId", "recordId", "value") values (1,14, '27.4');
+insert into patient_device_record ("patientDeviceId", "recordId", "value") values (1,15, '16.4');
+insert into patient_device_record ("patientDeviceId", "recordId", "value") values (1,15, '17.4');
+
+SELECT 'DROP VIEW ' || table_name || ';' 
+FROM information_schema.views 
+WHERE table_schema NOT IN ('pg_catalog', 'information_schema') 
+AND table_name !~ '^pg_';
+
+drop table migrations;
+drop table typeorm_metadata;

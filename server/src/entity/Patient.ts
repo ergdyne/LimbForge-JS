@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, CreateDateColumn,OneToMany} from 'typeorm'
 import PatientGroup from './PatientGroup'
 import PatientRecord from './PatientRecord'
-import PatientBuild from './PatientBuild'
+import PatientDevice from './PatientDevice'
 
 @Entity()
 export class Patient{
@@ -15,9 +15,9 @@ export class Patient{
   @OneToMany(type => PatientRecord, patientRecord => patientRecord.patient)
   patientRecords: PatientRecord[]
 
-  //One Patient to many Builds
-  @OneToMany(type => PatientBuild, patientBuild => patientBuild.patient)
-  patientBuilds: PatientBuild[]
+  //One Patient to many Devices
+  @OneToMany(type => PatientDevice, patientDevice => patientDevice.patient)
+  patientDevices: PatientDevice[]
 
   //One Patient to many patientGroups, but typically only care about 1.
   @OneToMany(type => PatientGroup, patientGroup => patientGroup.patient)

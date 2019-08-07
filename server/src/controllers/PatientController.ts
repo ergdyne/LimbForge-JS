@@ -9,10 +9,10 @@ import { PatientRecordState } from '../entity/ViewPatientRecordState'
 import { groupAccess } from "../functions/access"
 import { ViewPatientGroup } from "../entity/ViewPatientGroup"
 import { GroupState } from "../entity/ViewGroupState"
-import { PatientBuild } from "../entity/PatientBuild"
-import { PatientBuildRecord } from "../entity/PatientBuildRecord"
-import { PatientBuildRecordState } from "../entity/ViewPatientBuildRecordState"
-import { Build } from "../entity/Build"
+import { PatientDevice } from "../entity/PatientDevice"
+import { PatientDeviceRecord } from "../entity/PatientDeviceRecord"
+import { PatientDeviceRecordState } from "../entity/ViewPatientDeviceRecordState"
+import { Device } from "../entity/Device"
 
 async function inputToPatientRecord(patient: Patient, input: { recordId: number; value: string; }) {
   return getRepository(Record).findOneOrFail(input.recordId).then(
@@ -26,23 +26,23 @@ async function inputToPatientRecord(patient: Patient, input: { recordId: number;
   ).catch(err => { return new PatientRecord() })
 }
 
-async function inputToPatientDeviceRecord(d: PatientBuild, input: { recordId: number; value: string; }) {
+async function inputToPatientDeviceRecord(d: PatientDevice, input: { recordId: number; value: string; }) {
   return getRepository(Record).findOneOrFail(input.recordId).then(
     (r) => {
-      let p = new PatientBuildRecord()
-      p.patientBuild = d
+      let p = new PatientDeviceRecord()
+      p.patientDevice = d
       p.record = r
       p.value = input.value
       return p
     }
-  ).catch(err => { return new PatientBuildRecord() })
+  ).catch(err => { return new PatientDeviceRecord() })
 }
 
 async function inputsToPatientRecords(p: Patient, inputs: { recordId: number; value: string; }[]) {
   return Promise.all(inputs.map(i => inputToPatientRecord(p, i)))
 }
 
-async function inputsToPatientDeviceRecords(d: PatientBuild, inputs: { recordId: number; value: string; }[]) {
+async function inputsToPatientDeviceRecords(d: PatientDevice, inputs: { recordId: number; value: string; }[]) {
   return Promise.all(inputs.map(i => inputToPatientDeviceRecord(d, i)))
 }
 
@@ -157,10 +157,11 @@ export default class PatientController {
     //TODO error handling for not found
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
+      return
     }
     getRepository(PatientRecordState).find({ where: { patientId: patientId } })
       .then(pss => {
-        getRepository(PatientBuildRecordState).find({ where: { patientId: patientId } })
+        getRepository(PatientDeviceRecordState).find({ where: { patientId: patientId } })
           .then(devices => {
             try {
               //Get patient's groupName
@@ -211,6 +212,7 @@ export default class PatientController {
     const sessionUser = req.session.user
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
+      return
     }
     if (sessionUser.siteAccess == 'admin') {
       getRepository(PatientRecordState).find()
@@ -239,7 +241,7 @@ export default class PatientController {
       try {
         if (patientDeviceId != null) {
           //existing device
-          getRepository(PatientBuild).findOneOrFail(patientDeviceId).then(pDevice => {
+          getRepository(PatientDevice).findOneOrFail(patientDeviceId).then(pDevice => {
             //Save measurements
             getManager().transaction(async transactionalEntityManager => {
               let records = (await inputsToPatientDeviceRecords(pDevice, measurements)).filter(r => r.value != null)
@@ -255,10 +257,10 @@ export default class PatientController {
           //Get the patient
           getRepository(Patient).findOneOrFail(patientId).then(patient => {
             //Get the device
-            getRepository(Build).findOneOrFail(deviceId).then(device => {
-              let pDevice = new PatientBuild()
+            getRepository(Device).findOneOrFail(deviceId).then(device => {
+              let pDevice = new PatientDevice()
               pDevice.patient = patient
-              pDevice.build = device
+              pDevice.device = device
               getManager().transaction(async transactionalEntityManager => {
                 await transactionalEntityManager.save(pDevice)
                 let records = (await inputsToPatientDeviceRecords(pDevice, measurements)).filter(r => r.value != null)

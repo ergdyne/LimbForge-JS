@@ -45,7 +45,7 @@ export default function () {
 						//Does the email already exist?
 						getRepository(User).findOne({ where: { email: email.toLowerCase() } })
 							.then(user => {
-								//Yes -> create site auth - NOT TESTED
+								//Yes -> create site auth
 								if (user) {
 									console.log('premade user', user)
 									getManager().transaction(async transactionalEntityManager => {

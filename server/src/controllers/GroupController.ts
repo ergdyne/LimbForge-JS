@@ -17,6 +17,7 @@ export default class GroupController {
     const sessionUser = req.session.user
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
+      return
     }
 
     const acceptableGroupIds = groupAccess(['groupAdmin'], sessionUser.viewGroups)
@@ -66,6 +67,7 @@ export default class GroupController {
     const sessionUser = req.session.user
     if (sessionUser == null) {
       res.status(400).send({ msg: 'not authorized' })
+      return
     }
     //Find the group or none
     const isNewGroup = (groupName === 'New Group')
@@ -118,6 +120,7 @@ export default class GroupController {
     const sessionUser = req.session.user
     if (sessionUser == null || sessionUser.siteAccess != 'admin') {
       res.status(400).send({ msg: 'not authorized' })
+      return
     }
     try {
       const groupAttributes = await getRepository(GroupState).find()
@@ -140,6 +143,7 @@ export default class GroupController {
     const sessionUser = req.session.user
     if (sessionUser == null || sessionUser.siteAccess != 'admin') {
       res.status(400).send({ msg: 'not authorized' })
+      return
     }
 
     //Does the name exist

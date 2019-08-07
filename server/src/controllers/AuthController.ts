@@ -33,6 +33,7 @@ export default class AuthController {
     io.in(req.session.socketId).emit('google', { loggedIn: true })
     res.end()//on login, run the request for user details
   }
+  
   static logout = async (req: Request, res: Response) => {
     req.session.destroy(() => res.send({ msg: 'logged out' }))
   }

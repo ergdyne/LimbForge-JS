@@ -33,6 +33,7 @@ export default class UserController {
     const sessionUser = req.session.user
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
+      return
     }
     //Need the user, admin access (for promotion option), and groups
     try {
@@ -75,6 +76,7 @@ export default class UserController {
     const sessionUser = req.session.user
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
+      return
     }
     //if user admin -All
     //if user groupAdmin -user from their groups
@@ -108,6 +110,7 @@ export default class UserController {
     const sessionUser = req.session.user
     if (sessionUser == null) {
       res.status(400).send({ msg: 'session failed' })
+      return
     }
 
     //Find if the user exists.

@@ -34,9 +34,9 @@ const optionAndValidations = [
 
 const inFormRecords = records.concat(optionAndValidations)
 const inFormAttributes = [
-  {"uXId":4,"accessor":"transradialBuild","attribute":"name","value":"Measurements","type":"string"},
-  {"uXId":4,"accessor":"transradialBuild","attribute":"button","value":"Save","type":"string"},
-  {"uXId":4,"accessor":"transradialBuild","attribute":"preventDefault","value":"true","type":"boolean"}
+  {"uXId":4,"accessor":"transradialDevice","attribute":"name","value":"Measurements","type":"string"},
+  {"uXId":4,"accessor":"transradialDevice","attribute":"button","value":"Save","type":"string"},
+  {"uXId":4,"accessor":"transradialDevice","attribute":"preventDefault","value":"true","type":"boolean"}
 ]
 const inFormAccessor = 'tempe'
 
