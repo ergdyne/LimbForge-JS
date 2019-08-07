@@ -117,6 +117,39 @@ export default class PatientController {
 
   //Admin - all
   //groupAdmin or User -> only if patient in a group that the user has user or groupAdmin access for
+  static deletePatient = async (req: Request, res: Response) => {
+    let { patientId } = req.body
+    const sessionUser = req.session.user
+
+    //TODO error handling for not found
+    if (sessionUser == null) {
+      return res.status(400).send({ msg: 'session failed' })
+    }
+
+    if (sessionUser.siteAccess == 'admin') {
+      getRepository(Patient).delete(patientId).then(_r => {
+        
+        res.status(200).send({ msg: 'success' })//success is redundent with 200
+      }).catch(err => res.status(403).send(err))
+    } else {
+      //For users and groupAdmins, deleting a patient is group limited
+      const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
+      getRepository(ViewPatientGroup)
+        .findOneOrFail({
+          where: {
+            patientId: patientId,
+            groupId: In(acceptableGroupIds)
+          }
+        }).then(_group => {
+          //Delete
+          getRepository(Patient).delete(patientId).then(_r => {
+            res.status(200).send({ msg: 'success' })
+          })
+        }).catch(err => res.status(403).send(err))
+    }
+  }
+  //Admin - all
+  //groupAdmin or User -> only if patient in a group that the user has user or groupAdmin access for
   static getPatient = async (req: Request, res: Response) => {
     let { patientId } = req.body
     const sessionUser = req.session.user

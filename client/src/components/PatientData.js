@@ -52,7 +52,7 @@ export default class PatientData extends React.Component {
                 </div>
                 {(this.props.patient.id >0)?
                   <div className='row'>
-                    <button onClick={() => this.props.deletePatient()}>{`Delete Patient`}</button>
+                    <button onClick={() => this.props.deletePatient(this.props.patient.id)}>{`Delete Patient`}</button>
                   </div>:
                   <span/>
                 }

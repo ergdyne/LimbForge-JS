@@ -38,7 +38,11 @@ export default class AuthController {
   }
 
   static login = async (req: Request, res: Response) => {
-    const id = req.session.passport.user
+    if(!req.session.passport){
+      return res.status(400).send({msg:'failed to auth'})
+    }
+
+    const id =  req.session.passport.user
 
     //FullUserGroup can be converted into "Group" objects in a non-typesafe way on the client side.
     //See that function for more explaination.
@@ -50,7 +54,7 @@ export default class AuthController {
               const admin = (adminAccess == null) ? false : adminAccess.isAdmin
               const userData = {
                 id: user.id,
-                email: user.email,
+                email: user.email, //needed for admin
                 viewGroups: viewGroups,
                 siteAccess: admin ? 'admin' : siteAccess(viewGroups)
               }

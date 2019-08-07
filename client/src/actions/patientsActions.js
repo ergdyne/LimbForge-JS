@@ -16,7 +16,6 @@ export function getPatients() {
 }
 
 export function getPatient(patientId) {
-  console.log('get patient', patientId)
   return function (dispatch) {
     axios.post(`${API_URL}patient/one`, {
       patientId: patientId
@@ -75,7 +74,7 @@ export function savePatient(patient, inputs, groupName) {
   }
 }
 
-export function viewDevice(device){
+export function viewDevice(device) {
   return {
     type: "SET_DEVICE",
     payload: device
@@ -120,7 +119,7 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
         .then((response) => {
           //use the response to set device id
           const newDevice = { ...device, patientDeviceId: response.data.patientDeviceId, measurements: measurements }
-          
+
           dispatch({ type: "SET_DEVICE", payload: newDevice })
           dispatch({ type: "SET_EDIT_DEVICE", payload: false })
           dispatch(getPatient(patientId))
@@ -138,9 +137,15 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
 
 
 export function deletePatient(patientId) {
-  return {
-    type: "DELETE_PATIENT",
-    payload: { patientId: patientId }
+  return function (dispatch) {
+    axios.post(`${API_URL}patient/delete`, {
+      patientId: patientId
+    }, AXIOS_CONFIG).then(response => {
+      dispatch({
+        type: "DELETE_PATIENT",
+        payload: { patientId: patientId }
+      })
+    })
   }
 }
 

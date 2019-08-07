@@ -13,7 +13,7 @@ export class PatientBuild{
   public create_at: Date
 
   //Many to one Patient
-  @ManyToOne(type=> Patient, patient => patient.patientBuilds)
+  @ManyToOne(type=> Patient, patient => patient.patientBuilds,{onDelete:'CASCADE'})
   patient: Patient
 
   //Many to one Build
@@ -21,7 +21,7 @@ export class PatientBuild{
   build: Build
 
   //One ties to many PatientBuildRecords (data collected to build the build)
-  @OneToMany(type => PatientBuildRecord, patientBuildRecord => patientBuildRecord.patientBuild,{ onDelete: 'CASCADE' })
+  @OneToMany(type => PatientBuildRecord, patientBuildRecord => patientBuildRecord.patientBuild)
   patientBuildRecords: PatientBuildRecord[]
 }
 

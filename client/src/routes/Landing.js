@@ -7,6 +7,7 @@ import FormBuilder from '../components/FormBuilder'
 import OAuth from '../components/OAuth'
 import { API_URL } from '../config/API'
 import {signUp} from '../actions/groupsActions'
+import home from '../functions/home'
 
 const socket = io('https://127.0.0.1:3000') //TODO recentralize
 //API Call
@@ -23,10 +24,13 @@ const socket = io('https://127.0.0.1:3000') //TODO recentralize
 export default class Landing extends React.Component {
   componentWillMount() {
     this.props.dispatch(getGroupOptions())
+    this.props.dispatch(login())
   }
   componentDidUpdate() {
-    //only redirect if not '/' as home, otherwise infinite loop!
-    if (this.props.sessionUser.loggedIn && this.props.sessionUser.home != '/') { this.props.history.push(this.props.sessionUser.home) }
+    if(this.props.sessionUser.loggedIn && this.props.sessionUser.siteAccess != 'requested'){
+      this.props.history.push(home(this.props.sessionUser.siteAccess))
+    }
+
   }
 
   signUpSubmit = (groupData) => {
@@ -45,7 +49,6 @@ export default class Landing extends React.Component {
     const signUpInputs = [
       { accessor: `group`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: (groupOptions), validation: { required: true } },
     ]
-    console.log('session user', this.props.sessionUser)
 
     return (
       //CSS - Initial

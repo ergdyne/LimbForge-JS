@@ -46,10 +46,6 @@ export default class Patient extends React.Component {
       d(getGroupOptions())
       d(setEditPatient(true))
     }
-
-    //TODO should trigger somewhere else?
-    //TODO replace with actual device information
-    //this.props.dispatch(getMeasures('nothing'))
   }
 
   componentWillUnmount() {

@@ -1,5 +1,6 @@
 import { keyStringToJSON, listToJSON,accessorToJSON } from './ergJSON'
 import _ from 'underscore'
+import home from './home'
 
 function groupStatesToGroups(ats) {
   const groupSets = _.pairs(_.groupBy(ats, (g) => g.groupId))
@@ -79,13 +80,7 @@ function recordsToDevices(rs){
 
 //Temp
 function userDataToUser(response) {
-  function home(siteAccess) {
-    switch (siteAccess) {
-      case 'admin': return '/users/'
-      case 'requested': return '/'
-      default: return '/patients/'
-    }
-  }
+  
 
   const { id, email, viewGroups, siteAccess } = response.data
   const ourUser = {
