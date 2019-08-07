@@ -69,8 +69,8 @@ export default class Patient extends React.Component {
 
   groupSubmit = (group) => {
     //TODO fix the form instead of using this hack
-    if (group.group) {
-      this.setState({ groupName: group.group })
+    if (group.groupName) {
+      this.setState({ groupName: group.groupName})
     } else {
       this.setState({ groupName: this.props.optionStore.groupOptions[0] })
     }
@@ -118,6 +118,8 @@ export default class Patient extends React.Component {
   }
 
   render() {
+    console.log('group name',this.state.groupName)
+    console.log('group from', this.props.groupForm)
     //TODO adjust location. This can be pulled when the user logs in. See multiple reducers in action from tutorial.
     return (
       //if new patient and group options exist, give a dropdown.

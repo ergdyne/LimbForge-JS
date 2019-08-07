@@ -1,36 +1,32 @@
 import {
   groupColHeaders,
   groupInputs,
+  userGroupsColHeaders,
   usersColHeaders,
-  usersGroupColHeaders,
-  userGroupsColHeaders
+  usersGroupColHeaders
 } from '../config/defaultDisplay'
 
-//TEMP
-import {measurementForm} from '../testData'
-
-//Define all the display data that can in the future be pulled from the DB
+//Define all the display items that is or could be pulled in from the DB.
+//Named Forms and Tables.
 export default function reducer(state = {
-  //Named Forms and Tables with eventually multiple versions
-  //Currently all static
-  groupColHeaders: groupColHeaders,
-  groupInputs: groupInputs,
-  selectGroup:{inputs:[]},
-  measurementForm: measurementForm,//TODO//{inputs:[]},
-  patientColHeaders: [],
+  addDevice: {inputs:[]},
   deviceCols:[],
-  showDevice:false,
   editPatient: false,
   editDevice: false,
-  patientForm: {inputs:[]},
-  addDevice: {inputs:[]},
-  usersColHeaders: usersColHeaders,
-  usersGroupColHeaders: usersGroupColHeaders,
-  userGroupsColHeaders: userGroupsColHeaders,
+  groupColHeaders: groupColHeaders,
+  groupInputs: groupInputs,
+  measurementForm: {inputs:[]},
   optionStore:{
     groupOptions:[],
     publicGroupOptions:['New Group']
-  }
+  },
+  patientColHeaders: [],
+  patientForm: {inputs:[]},
+  selectGroup:{inputs:[]},
+  showDevice:false,
+  usersColHeaders: usersColHeaders,
+  userGroupsColHeaders: userGroupsColHeaders,
+  usersGroupColHeaders: usersGroupColHeaders
 }, action) {
   switch (action.type) {
     case "GET_COL_HEADERS": {
@@ -51,7 +47,6 @@ export default function reducer(state = {
         case 'addDevice': return {...state, addDevice:action.payload}
         default: return { ...state,measurementForm:action.payload }
       }
-      
     }
     case "GET_GROUP_OPTIONS":{
       const groups = action.payload
@@ -59,25 +54,16 @@ export default function reducer(state = {
       const newOps = {...state.optionStore,groupOptions:groups,publicGroupOptions:pubGroups }
       return{...state, optionStore: newOps}
     }
-
-
-
-    case "TOGGLE_SHOW_DEVICE": {
-      const x = {...state.showDevice}
-      return{...state, showDevice:!x}
-    }
+    
     case "SET_SHOW_DEVICE": {
       return{...state, showDevice:action.payload}
     }
     case "SET_EDIT_PATIENT": {
       return{...state, editPatient:action.payload}
     }
-
     case "SET_EDIT_DEVICE": {
       return{...state, editDevice:action.payload}
     }
-
-
     default: return state
   }
 

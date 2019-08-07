@@ -63,3 +63,7 @@ AND table_name !~ '^pg_';
 
 drop table migrations;
 drop table typeorm_metadata;
+
+
+
+ 

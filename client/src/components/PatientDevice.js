@@ -38,8 +38,7 @@ export default class PatientDevice extends React.Component {
 
   submitMeasurements = (measurements) => {
     this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id, this.props.device))
-    this.props.dispatch(setEditDevice(false))
-
+  
   }
 
   render() {

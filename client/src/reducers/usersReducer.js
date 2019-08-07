@@ -5,7 +5,7 @@ export default function reducer(state={
   //state.users.approvedUsers, state.users.user...
   approvedUsers:[],
   requestedUsers:[],
-  user:{ //for looking at a particular user
+  user:{ //When a particular user's information is accessed, it loads here to be displayed.
     id:null,
     email:'',
     isAdmin:'',
@@ -18,9 +18,7 @@ export default function reducer(state={
       const {approvedUsers, requestedUsers} = action.payload
       return{...state, approvedUsers:approvedUsers, requestedUsers:requestedUsers}
     }
-    
     case "GET_USER":{
-
       return {...state, user:action.payload}
     }
     case "APPROVE_USER":{

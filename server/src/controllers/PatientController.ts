@@ -221,6 +221,7 @@ export default class PatientController {
         }).catch(err => res.status(400).send(err))
     } else {
       const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
+      
       getRepository(PatientRecordState).find({ where: { groupId: In(acceptableGroupIds) } })
         .then(patients => {
           res.send(patients)

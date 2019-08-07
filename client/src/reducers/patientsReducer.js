@@ -5,6 +5,7 @@ const emptyPatient = {
   id:null,
     //Other attributes exists in patient but are not given defaults.
 }
+//TODO simplify device store
 const emptyDevice ={
   deviceId:null,
   patientDeviceId:null,
@@ -33,11 +34,9 @@ export default function reducer(state={
 
       return {...state,patient:patient,devices:devices}
     }
-
     case "SET_DEVICE":{
       return {...state,device:action.payload}
     }
-
     case "SAVE_PATIENT":{
       return {...state,patient:action.payload}
     }
@@ -46,8 +45,6 @@ export default function reducer(state={
     case "CLEAR_PATIENT":{
       return {...state,patient:emptyPatient,devices:[],device:emptyDevice}
     }
-    
-
     default: return state
   }
 
