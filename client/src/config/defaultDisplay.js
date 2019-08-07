@@ -1,3 +1,5 @@
+//Fairly static forms and tables are altered here.
+//These could be added to the Database and altered there instead.
 const groupColHeaders = [
   { accessor: `id`, name: ``, type: `id` },
   { accessor: `name`, name: `Name`, type: `string` },

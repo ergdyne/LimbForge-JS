@@ -1,7 +1,7 @@
 import _ from 'underscore'
 import {listToJSON} from './ergJSON'
 
-//This is a quick path, but misses code reuse
+//This is a quick path, but misses code reuse.
 function recordSetToColumn(rows) {
   const { recordId, order } = rows[0]
 
@@ -19,12 +19,7 @@ function recordSetToColumn(rows) {
   return (column)
 }
 
-function uxToColumns(rows) {
-  const columnSets = _.pairs(_.groupBy(rows, r => r.recordId))
-  return _.sortBy(columnSets.map(set => recordSetToColumn(set[1])), 'order')
-}
-
-//Assumed type is string
+//Converts a set of options to a list string options.
 function optionSetToOptions(rows) {
   return _.sortBy(rows.map(r => {
     const order = r.attribute.split("-").pop()
@@ -35,6 +30,7 @@ function optionSetToOptions(rows) {
   }),'order').map(r=>r.value)
 }
 
+//Converts a set of records to an individual input field.
 function recordSetToInput(rows) {
   function check(s) {
     return function (record) {
@@ -66,7 +62,13 @@ function recordSetToInput(rows) {
   return column
 }
 
-//TODO rename as form inputs
+//Converts list of ux records to a list of columns that can be consummed by formatColumns.
+function uxToColumns(rows) {
+  const columnSets = _.pairs(_.groupBy(rows, r => r.recordId))
+  return _.sortBy(columnSets.map(set => recordSetToColumn(set[1])), 'order')
+}
+
+//Converts list of attributes and input records from DB to a Form object.
 function uxToForm(accessor,attributes, inputs) {
   const column = listToJSON(attributes)
   const inputSets = _.pairs(_.groupBy(inputs, r => r.recordId))

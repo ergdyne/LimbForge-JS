@@ -38,16 +38,6 @@ function fullUserGroupsToUsers(ugs) {
   })
 }
 
-//TODO think about how to handle some other cases...
-//A boolean type without a value is true kind of things
-function listToValidationObject(vs) {
-  return listToJSON(vs.map(v => {
-    var newV = { ...v }
-    newV.attribute = v.attribute.split("-").pop()
-    return newV
-  }))
-}
-
 
 function recordsToPatients(pss) {
   const patientSets = _.pairs(_.groupBy(pss, (ps) => ps.patientId))
@@ -78,10 +68,7 @@ function recordsToDevices(rs){
   })
 }
 
-//Temp
 function userDataToUser(response) {
-  
-
   const { id, email, viewGroups, siteAccess } = response.data
   const ourUser = {
     id: id,
@@ -94,12 +81,10 @@ function userDataToUser(response) {
   return ourUser
 }
 
-
 export {
   fullUserGroupsToGroups,
   fullUserGroupsToUsers,
   groupStatesToGroups,
-  listToValidationObject,
   recordsToPatients,
   recordsToDevices,
   userDataToUser

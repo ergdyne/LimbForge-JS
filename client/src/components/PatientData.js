@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import FormBuilder from './FormBuilder'
-import attributeMap from '../functions/attributeMap'
+import SimpleAttribute from './SimpleAttribute'
 
 export default class PatientData extends React.Component {
   render() {
@@ -55,7 +55,7 @@ export default class PatientData extends React.Component {
                 </h3>
                 {/* Temporary formating */}
                 <div>
-                  {extraData.map(x => attributeMap(x, p))}
+                  {extraData.map(x => SimpleAttribute(x, p))}
 
                 </div >
                 <div>{(this.props.editPatient) ?

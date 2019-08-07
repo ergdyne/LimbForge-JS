@@ -1,8 +1,8 @@
-import formatValue from './formatValue'
+import formatValue from '../functions/formatValue'
 import React from 'react'
 
 
-export default function attributeMap(x, obj){
+export default function SimpleAttribute(x, obj){
   return ((obj[x.accessor]) ?
     <label key={`header-${x.accessor}`} className="row">
       {`${x.name}: `}

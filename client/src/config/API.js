@@ -1,3 +1,4 @@
+//Set header files for API calls to include cookies
 let AXIOS_CONFIG = {
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
@@ -6,10 +7,7 @@ let AXIOS_CONFIG = {
   withCredentials: true
 }
 
-//DEPLOY: When deploying change this. This is good enough set up.
-//change to load env
-
-
+//API url is mapped from the package.json file as part of the build script.
 let API_DOMAIN = process.env.API_URL
 let API_URL = `${API_DOMAIN}/api/`
 

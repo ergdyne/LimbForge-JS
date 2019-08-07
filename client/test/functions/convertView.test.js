@@ -1,7 +1,6 @@
 import { expect } from 'chai'
 import { 
 
-  listToValidationObject,
   measureStatesToMeasures,
   patientMeasurementStatesToMeasurements 
 } from '../../src/functions/convertView'
@@ -51,10 +50,6 @@ const measurementsOutput = {
 describe("convertView", () => {
   it("measureStatesToMeasures generates expected object", () => {
     expect(measureStatesToMeasures(measureInput)).to.eql(measureOutput)
-  })
-  
-  it("listToValidationObject generates expected object", () => {
-    expect(listToValidationObject(validationInput)).to.eql(validationOutput)
   })
 
   it("patientMeasurementStatesToMeasurements generates expected measurements", () =>{

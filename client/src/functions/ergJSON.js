@@ -1,12 +1,5 @@
 import _ from 'underscore'
 
-function keyNumberToJSON(keyAttribute, numberAttribute, objectArray){
-  return (
-    JSON.parse(`{${objectArray
-      .map(o => `"${o[keyAttribute]}":${o[numberAttribute]}`)
-      .join(',')}}`))
-}
-
 function keyStringToJSON(keyAttribute, stringAttribute, objectArray){
   return (
     JSON.parse(`{${objectArray
@@ -42,4 +35,4 @@ function keyValueTypeToJSON(keyAttribute, valueAttribute,typeAttribute){
 const listToJSON = keyValueTypeToJSON('attribute', 'value', 'type')
 const accessorToJSON = keyValueTypeToJSON('accessor', 'value', 'type')
 
-export {keyNumberToJSON, keyStringToJSON,listToJSON,accessorToJSON}
+export { keyStringToJSON,listToJSON,accessorToJSON}

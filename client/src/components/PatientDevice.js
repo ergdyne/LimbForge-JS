@@ -5,7 +5,7 @@ import Download from './Download'
 import isEmpty from '../functions/isEmpty'
 import { setEditDevice } from '../actions/displayActions'
 import { saveMeasurements } from '../actions/patientsActions'
-import attributeMap from '../functions/attributeMap'
+import SimpleAttribute from './SimpleAttribute'
 
 @connect((store) => {
   return ({
@@ -51,7 +51,7 @@ export default class PatientDevice extends React.Component {
                   {`${d.amputationLevel} - ${d.side} - ${d.nozzleSize}`}
                 </h3>
                 <div >
-                  {extraData.map(x => attributeMap(x, d))}
+                  {extraData.map(x => SimpleAttribute(x, d))}
                 </div>
                 <div className="row">{(true) ? //TODO based on level
                   <button onClick={() => this.editDevice()}>{`Edit`}</button> :
