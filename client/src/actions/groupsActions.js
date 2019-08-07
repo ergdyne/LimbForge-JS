@@ -51,6 +51,7 @@ export function addGroup(newGroup) {
   }
 }
 
+//When a user requests access through the sign in button, they will be prompted to signup for a group.
 export function signUp(groupData) {
   const { group } = groupData
   return function (dispatch) {

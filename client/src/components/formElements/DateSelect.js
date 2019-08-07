@@ -17,7 +17,6 @@ export default class DateSelect extends React.Component {
   }
 
   render() {
-    //CSS - initial
     return (
       <div className={`FormBuilder-date`}>
         <label

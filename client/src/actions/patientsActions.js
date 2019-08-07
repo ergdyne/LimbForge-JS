@@ -6,6 +6,7 @@ export function getPatients() {
   return function (dispatch) {
     axios.get(`${API_URL}patient/all`, AXIOS_CONFIG)
       .then((response) => {
+        //Records are Lists of attributes that must be converted to objects.
         const patients = recordsToPatients(response.data)
         dispatch({ type: "GET_PATIENTS", payload: patients })
       })
@@ -21,11 +22,9 @@ export function getPatient(patientId) {
       patientId: patientId
     }, AXIOS_CONFIG)
       .then((response) => {
-        //Well really just one patient...
+        //Should just be one patient, but the function returns a list.
         const patients = recordsToPatients(response.data.patientRecords)
         const devices = recordsToDevices(response.data.patientDeviceRecords)
-        //TODO add devices?
-        //But just in case there is a problem...TODO should ===1?
         if (patients.length > 0) {
           var patient = patients[0]
           //add the groupName to the patient
@@ -97,7 +96,7 @@ export function setDevice(device, deviceData, deviceInputs) {
   }
 }
 
-//TODO better define what inputs is and such
+//Measurements are attached to devices.
 export function saveMeasurements(measurements, measurementInputs, patientId, device) {
   const deviceMeasurements = measurementInputs.map(i => (
     {
@@ -107,7 +106,6 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
   )
   ).filter(a => a.value != null)
   //TODO validate data and check for changes
-  //TODO on save device might also have to reload patient data (esp device list)
   if (deviceMeasurements.length > 0) {
     return function (dispatch) {
       axios.post(`${API_URL}patient/save_device`, {
@@ -117,7 +115,7 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
         measurements: deviceMeasurements.concat(device.deviceData)
       }, AXIOS_CONFIG)
         .then((response) => {
-          //use the response to set device id
+          //Use the response to set device Id in the store.
           const newDevice = { ...device, patientDeviceId: response.data.patientDeviceId, measurements: measurements }
 
           dispatch({ type: "SET_DEVICE", payload: newDevice })
@@ -135,28 +133,28 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
   }
 }
 
-
+//This is permanent.
 export function deletePatient(patientId) {
   return function (dispatch) {
     axios.post(`${API_URL}patient/delete`, {
       patientId: patientId
-    }, AXIOS_CONFIG).then(response => {
+    }, AXIOS_CONFIG).then(_response => {
+      //Reset store data.
       dispatch({ type: "SET_EDIT_DEVICE", payload: false })
       dispatch({
         type: "DELETE_PATIENT",
         payload: {}
       })
+      //Refresh patients to account for deleted.
       dispatch(getPatients())
-
     })
   }
 }
 
+//Used for unmounting patient page.
 export function clearPatient() {
   return function (dispatch) {
     dispatch({ type: "SET_EDIT_DEVICE", payload: false })
-    // dispatch({ type: "CLEAR_DEVICE", payload: {} })
-    // dispatch({ type: "CLEAR_DEVICES", payload: {} })
     dispatch({type: "CLEAR_PATIENT",payload: {}})
   }
 }

@@ -42,9 +42,7 @@ export default function reducer(state={
       return {...state,patient:action.payload}
     }
 
-    case "DELETE_PATIENT":{
-      return {...state,patient:emptyPatient,devices:[],device:emptyDevice}
-    }
+    case "DELETE_PATIENT":
     case "CLEAR_PATIENT":{
       return {...state,patient:emptyPatient,devices:[],device:emptyDevice}
     }

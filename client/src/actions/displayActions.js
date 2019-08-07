@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { measureStatesToMeasures } from '../functions/convertView'
 import { uxToColumns, uxToForm } from '../functions/uxConvert'
 
 import { AXIOS_CONFIG, API_URL } from '../config/API'
@@ -16,6 +15,7 @@ export function getGroupOptions() {
   }
 }
 
+//Column headers can be stored in an ux document in the DB allowing for admin to adjust tables.
 export function getColHeaders(table) {
   return function (dispatch) {
     axios.get(`${API_URL}ux/${table}`)
@@ -32,6 +32,7 @@ export function getColHeaders(table) {
   }
 }
 
+//Forms can be defined with a ux document in the DB allowing for admin to create forms and devices to have different inputs/measurments.
 export function getForm(formAccessor) {
   return function (dispatch) {
     axios.get(`${API_URL}ux/${formAccessor}`)
@@ -46,22 +47,7 @@ export function getForm(formAccessor) {
   }
 }
 
-//Can add device here?
-export function getMeasures(device) {
-  return function (dispatch) {
-    axios.post(`${API_URL}measure/all`, { device: device }, AXIOS_CONFIG)
-      .then(response => {
-        const measures = measureStatesToMeasures(response.data.messureStates)
-        dispatch({
-          type: "GET_MEASURE_INPUTS",
-          payload: measures
-        })
-      }).catch(err => {
-        dispatch({ type: "GET_MEASURE_INPUTS_REJECTED", payload: err })
-      })
-  }
-}
-
+//Turns the edit patient form on/off with boolean.
 export function setEditPatient(b){
   return {
     type: "SET_EDIT_PATIENT",
@@ -69,6 +55,7 @@ export function setEditPatient(b){
   }
 }
 
+//Turns the edit device form on/off with boolean.
 export function setEditDevice(b){
   return {
     type: "SET_EDIT_DEVICE",
@@ -76,22 +63,10 @@ export function setEditDevice(b){
   }
 }
 
+//Turns device area on/off with boolean
 export function setShowDevice(b){
   return {
     type: "SET_SHOW_DEVICE",
     payload: b
-  }
-}
-
-export function toggleItem(item) {
-  switch (item) {
-    case 'showDevice': return {
-      type: "TOGGLE_SHOW_DEVICE",
-      payload: null
-    }
-    default: return {
-      type: "NULL_TOGGLE",
-      payload: null
-    }
   }
 }
