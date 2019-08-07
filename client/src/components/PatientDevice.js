@@ -18,14 +18,6 @@ import attributeMap from '../functions/attributeMap'
   })
 })
 export default class PatientDevice extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      //todo set to null
-      measuresSRC: `https://limbfore-js-assets.s3.amazonaws.com/male-transradial-L.svg`
-    }
-  }
-
   //map side and gender to image used
   imageLocation = (gender, side) => {
     return `https://limbfore-js-assets.s3.amazonaws.com/${gender.toLowerCase()}-transradial-${side.charAt(0).toUpperCase()}.svg`
@@ -38,7 +30,7 @@ export default class PatientDevice extends React.Component {
 
   submitMeasurements = (measurements) => {
     this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id, this.props.device))
-  
+    
   }
 
   render() {
@@ -86,10 +78,10 @@ export default class PatientDevice extends React.Component {
               <img
                 className="card"
                 max-height="500"
-                src={(this.state.measuresSRC) ? this.state.measuresSRC : this.imageLocation(this.props.patient.gender, this.props.patient.side)}
+                src={this.imageLocation(this.props.patient.gender, this.props.device.side)}
               />
             </div> :
-            // We only have the download card if device has been saved...
+            // We only have the download card if device has been saved.
             <div>{(!isEmpty(ms)) ?
               <div className="card">
                 <Download

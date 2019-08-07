@@ -2,9 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default class SelectInput extends React.Component {
-  //A copied function, so this probably means it can be reused.
+  //Adjust default event to work with FormBuilder.
   checkInput = (event) => {
-    //Callback to state inside form with the parts of event we care about
     const change = {
       name: this.props.name,
       label: this.props.label,
@@ -16,7 +15,6 @@ export default class SelectInput extends React.Component {
   }
 
   render() {
-    //CSS - initial
     return (
       <div
         className={`FormBuilder-select ${(this.props.isvalid) ? '' : 'invalid'}`}
@@ -50,7 +48,6 @@ export default class SelectInput extends React.Component {
     )
   }
 }
-
 
 SelectInput.propTypes = {
   onChange: PropTypes.func.isRequired,

@@ -49,9 +49,7 @@ export default class Patient extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('ON will unmount patient')
     this.props.dispatch(clearPatient())
-    this.setState({ measuresSRC: null })
   }
 
   componentDidUpdate() {
@@ -94,11 +92,10 @@ export default class Patient extends React.Component {
 
   addDevice = (deviceData) => {
     const d = this.props.dispatch
-    d(setDevice({
-      measurements: {},
-      deviceId: 1,
-      patientDeviceId: null
-    }, deviceData, this.props.addDeviceForm.inputs))
+    var device = {...deviceData}
+    device.deviceId = 1
+    device.patientDeviceId = null
+    d(setDevice(device, deviceData, this.props.addDeviceForm.inputs))
     d(setShowDevice(true))
     d(setEditDevice(true))
     d(getForm('transradialDevice'))

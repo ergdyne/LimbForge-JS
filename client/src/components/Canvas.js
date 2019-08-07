@@ -106,7 +106,6 @@ export default class Canvas extends Component {
   //End possible cleanup area.
 
   render() {
-    //CSS
     return (
       <div
         className={this.props.className}

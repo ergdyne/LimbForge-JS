@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css"
 
 export default class DateSelect extends React.Component {
 
+  //Passes configuration into built in change.
   checkInput = (date) => {
     const change = {
       name: this.props.name,

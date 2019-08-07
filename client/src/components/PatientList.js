@@ -15,7 +15,6 @@ export default class PatientList extends React.Component {
         this.props.viewPatient,
         `View`
       )
-    //CSS - initial
     return (
       <ReactTable
         className="row"

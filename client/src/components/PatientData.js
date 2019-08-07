@@ -4,10 +4,7 @@ import FormBuilder from './FormBuilder'
 import attributeMap from '../functions/attributeMap'
 
 export default class PatientData extends React.Component {
-  
-
   render() {
-    //CSS
     const p = this.props.patient
     const explicitData = ['firstName', 'lastName', 'city', 'country', 'groupName']
     const extraData = this.props.patientForm.inputs.filter(x => !explicitData.includes(x.accessor))

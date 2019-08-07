@@ -2,10 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default class TextInput extends React.Component {
-  //Optional input check path (if validation on)
-  //Simple version of checking values for just our cases.
+  //Adjust default event to work with FormBuilder.
   checkInput = (event) => {
-    //Callback to state inside form with the parts of event we care about
     const change = {
       name: this.props.name,
       label: this.props.label,
@@ -17,15 +15,12 @@ export default class TextInput extends React.Component {
   }
 
   render() {
-    //CSS - initial
-    // Can use className to position the prop in the future.
     return (
       <div className="FormBuilder-text-input">
         <label
           data-tip={this.props.instruction}
         >
           {`${this.props.label}: `}
-
 
           <input
             className={`${this.props.isvalid ? '' : 'invalid'}`}
@@ -38,7 +33,6 @@ export default class TextInput extends React.Component {
             onChange={this.checkInput}
             data-tip={(this.props.isvalid) ? '' : this.props.errors}
           />
-
         </label>
       </div>
     )  

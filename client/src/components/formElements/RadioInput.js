@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default class RadioInput extends React.Component {
-
-  inputChange = (event) => {
+  //Adjust default event to work with FormBuilder.
+  checkInput = (event) => {
     const change = {
       name: this.props.name,
       label: this.props.label,
@@ -15,22 +15,20 @@ export default class RadioInput extends React.Component {
   }
 
   render() {
-    //CSS - initial
     return (
       <div
         key={this.props.name}
         className={`FormBuilder-radio ${(this.props.isvalid) ? '' : 'invalid'}`}
         data-tip={(this.props.isvalid) ? '' : this.props.errors}
-
       >
         {this.props.options.map(o => {
           return (<label key={`${this.props.name}-${o}`}>
             <input
               type="radio"
-              value={o} //TODO consider what is sent
+              value={o}
               name={this.props.name}
               checked={this.props.value === o}
-              onChange={this.inputChange}
+              onChange={this.checkInput}
             />
             {o}
           </label>)

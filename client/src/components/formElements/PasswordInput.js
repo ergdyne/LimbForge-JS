@@ -1,16 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+//This element is no longer needed as we do login with google.
 export default class PasswordInput extends React.Component {
-
   //Optional input check path (if validation on)
   //Simple version of checking values for just our cases.
   checkInput = (event) => {
-    //Callback to state inside form with the parts of event we care about
-    
-    //If it doesn't have validation, I don't want to call confirm...
     const hasConfirm = (this.props.validations) ? ((this.props.validations.confirm) ? true : false) : false
-
     if(hasConfirm){
       const first = (typeof this.props.value === 'string')?this.props.value:this.props.value.first
       const second = (typeof this.props.value === 'string')?'':this.props.value.second
@@ -42,8 +38,6 @@ export default class PasswordInput extends React.Component {
   }
 
   render() {
-    //CSS - initial
-    // TODO make password confirm.
     const hasConfirm = (this.props.validations) ? ((this.props.validations.confirm) ? true : false) : false
     const first = (typeof this.props.value === 'string')?this.props.value:this.props.value.first
     const second = (typeof this.props.value === 'string')?'':this.props.value.second
@@ -64,8 +58,6 @@ export default class PasswordInput extends React.Component {
               placeholder={this.props.placeholder}
               onChange={this.checkInput}
             />
-
-
           </span>
         </label>
         {(hasConfirm) ?
