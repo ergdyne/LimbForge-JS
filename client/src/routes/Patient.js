@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import PatientData from '../components/PatientData'
 import PatientDevices from '../components/PatientDevices'
 import PatientDevice from '../components/PatientDevice'
-import { getPatient, savePatient, deletePatient, clearPatient,setDevice,viewDevice } from '../actions/patientsActions'
-import { getForm, getColHeaders,setEditPatient, setEditDevice,setShowDevice } from '../actions/displayActions'
+import { getPatient, savePatient, deletePatient, clearPatient, setDevice, viewDevice } from '../actions/patientsActions'
+import { getForm, getColHeaders, setEditPatient, setEditDevice, setShowDevice } from '../actions/displayActions'
 import { getGroupOptions } from '../actions/displayActions'
 
 @connect((store) => {
@@ -85,27 +85,30 @@ export default class Patient extends React.Component {
 
   //TODO wire
   removePatient = (patientId) => {
-    console.log("Would be like are you sure?")
-    this.props.dispatch(deletePatient(patientId))
+    if (window.confirm('Are you sure you wish to delete this item?')) {
+      this.props.dispatch(deletePatient(patientId))
+      this.props.history.push('/patients/')
+    }
   }
 
   addDevice = (deviceData) => {
     const d = this.props.dispatch
     d(setDevice({
-      measurements:{},
-      deviceId:1,
-      patientDeviceId:null},deviceData,this.props.addBuildForm.inputs))
+      measurements: {},
+      deviceId: 1,
+      patientDeviceId: null
+    }, deviceData, this.props.addBuildForm.inputs))
     d(setShowDevice(true))
     d(setEditDevice(true))
     d(getForm('transradialBuild'))
   }
 
-  viewDevice = (patientDeviceId) =>{
+  viewDevice = (patientDeviceId) => {
     console.log('view', patientDeviceId)
-    console.log('posit', this.props.devices.find(d=>d.patientDeviceId === patientDeviceId))
-    console.log('posit ==', this.props.devices.find(d=>d.patientDeviceId == patientDeviceId))
-    const device = this.props.devices.find(d=>d.patientDeviceId === patientDeviceId)
-    
+    console.log('posit', this.props.devices.find(d => d.patientDeviceId === patientDeviceId))
+    console.log('posit ==', this.props.devices.find(d => d.patientDeviceId == patientDeviceId))
+    const device = this.props.devices.find(d => d.patientDeviceId === patientDeviceId)
+
     const d = this.props.dispatch
     d(viewDevice(device))
     d(setShowDevice(true))
@@ -147,7 +150,7 @@ export default class Patient extends React.Component {
               deviceCols={this.props.deviceCols}
               devices={this.props.devices}
 
-            /> : <span/>
+            /> : <span />
         }
         {/* Adjust position of this section... */}
         {(this.props.showDevice) ?
@@ -155,7 +158,7 @@ export default class Patient extends React.Component {
           // On add build -> clear measurements
           <PatientDevice
             className="row"
-          /> : <span/>
+          /> : <span />
         }
       </div>
     )

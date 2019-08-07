@@ -143,8 +143,10 @@ export function deletePatient(patientId) {
     }, AXIOS_CONFIG).then(response => {
       dispatch({
         type: "DELETE_PATIENT",
-        payload: { patientId: patientId }
+        payload: { }
       })
+      dispatch(getPatients())
+
     })
   }
 }
