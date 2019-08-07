@@ -73,14 +73,14 @@ export function savePatient(patient, inputs, groupName) {
   }
 }
 
-export function viewDevice(device) {
+export function setDevice(device) {
   return {
     type: "SET_DEVICE",
     payload: device
   }
 }
 
-export function setDevice(device, deviceData, deviceInputs) {
+export function setDeviceType(device, deviceData, deviceInputs) {
   const deviceAttributes = deviceInputs.map(i => (
     {
       recordId: i.recordId,

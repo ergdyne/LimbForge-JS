@@ -27,9 +27,7 @@ export default class Users extends React.Component {
   }
 
   addUser = (user) => {
-    //API Call
     this.props.dispatch(addUser(user))
-    
   }
 
   viewUser = (userId) => {
@@ -39,6 +37,7 @@ export default class Users extends React.Component {
   render() {
     const userColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.viewUser, `View`)
     const approveColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.viewUser, "View")
+    //This is here because of the groupOptions, but it could probably be moved into the store.
     const userInputs = [
       { accessor: `email`, name: `Email`, type: `string`, inputType: `text`, validation: { type: 'email' } },
       { accessor: `groupName`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions, validation: { required: true } },

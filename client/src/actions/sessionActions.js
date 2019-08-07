@@ -18,6 +18,7 @@ export function login() {
 
 //Kills the session on the server.
 export function logout() {
+  //TODO delete cookie?
   return function (dispatch) {
     axios.get(`${API_URL}auth/logout`, AXIOS_CONFIG)
       .then((_response) => {

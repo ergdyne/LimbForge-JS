@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PatientData from '../components/PatientData'
 import PatientDevices from '../components/PatientDevices'
 import PatientDevice from '../components/PatientDevice'
-import { getPatient, savePatient, deletePatient, clearPatient, setDevice, viewDevice } from '../actions/patientsActions'
+import { getPatient, savePatient, deletePatient, clearPatient, setDeviceType, setDevice } from '../actions/patientsActions'
 import { getForm, getColHeaders, setEditPatient, setEditDevice, setShowDevice } from '../actions/displayActions'
 import { getGroupOptions } from '../actions/displayActions'
 
@@ -37,12 +37,14 @@ export default class Patient extends React.Component {
     d(getColHeaders('deviceCols'))
     d(getGroupOptions())
     const { patientId } = this.props.match.params
-    //well some more filtering than this...? Also there is a 0 index, but not a 0 patientId ;)
+
     const id = parseInt(patientId)
     if (patientId && !(isNaN(id))) {
+      //Existing Patient, get patient Data.
       d(getPatient(id))
       d(setEditPatient(false))
     } else {
+      //New patient, get group options and open the form.
       d(getGroupOptions())
       d(setEditPatient(true))
     }
@@ -62,17 +64,17 @@ export default class Patient extends React.Component {
     if (this.state.groupName == null && this.props.patient.groupName) {
       this.setState({ groupName: this.props.patient.groupName })
     }
-    //These should only be called if required as updating state in componentDidUpdate can cause an infinit loop.
   }
 
   groupSubmit = (group) => {
     //TODO fix the form instead of using this hack
     if (group.groupName) {
-      this.setState({ groupName: group.groupName})
+      this.setState({ groupName: group.groupName })
     } else {
       this.setState({ groupName: this.props.optionStore.groupOptions[0] })
     }
   }
+
   //Callback for patient Data form.
   patientSubmit = (patient) => {
     //Check if patient exists
@@ -82,7 +84,7 @@ export default class Patient extends React.Component {
     this.props.dispatch(savePatient(patient, this.props.patientForm.inputs, this.state.groupName))
   }
 
-  //TODO wire
+  //Permanently deletes the patient.
   removePatient = (patientId) => {
     if (window.confirm('Are you sure you wish to delete this item?')) {
       this.props.dispatch(deletePatient(patientId))
@@ -90,38 +92,33 @@ export default class Patient extends React.Component {
     }
   }
 
+  //TODO move some of this to patientActions
   addDevice = (deviceData) => {
     const d = this.props.dispatch
-    var device = {...deviceData}
+    var device = { ...deviceData }
     device.deviceId = 1
     device.patientDeviceId = null
-    d(setDevice(device, deviceData, this.props.addDeviceForm.inputs))
+    d(setDeviceType(device, deviceData, this.props.addDeviceForm.inputs))
     d(setShowDevice(true))
     d(setEditDevice(true))
+    //When adding more devices, change this.
     d(getForm('transradialDevice'))
   }
 
+  //TODO move some of this to patientActions
   viewDevice = (patientDeviceId) => {
-    console.log('view', patientDeviceId)
-    console.log('posit', this.props.devices.find(d => d.patientDeviceId === patientDeviceId))
-    console.log('posit ==', this.props.devices.find(d => d.patientDeviceId == patientDeviceId))
-    const device = this.props.devices.find(d => d.patientDeviceId === patientDeviceId)
-
+    const device = this.props.devices.find(dev => dev.patientDeviceId === patientDeviceId)
     const d = this.props.dispatch
-    d(viewDevice(device))
+    d(setDevice(device))
     d(setShowDevice(true))
     d(setEditDevice(false))
+    //When adding more devices, change this.
     d(getForm('transradialDevice'))
   }
 
+  //TODO This page looks rather messy at the moment.
   render() {
-    console.log('group name',this.state.groupName)
-    console.log('group from', this.props.groupForm)
-    //TODO adjust location. This can be pulled when the user logs in. See multiple reducers in action from tutorial.
     return (
-      //if new patient and group options exist, give a dropdown.
-      //If no option or exising patient display group Name
-      //CSS - Initial
       <div className="container row">
         <PatientData
           hasGroupSelect={(

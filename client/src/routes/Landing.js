@@ -9,6 +9,7 @@ import { API_URL, API_DOMAIN } from '../config/API'
 import { signUp } from '../actions/groupsActions'
 import home from '../functions/home'
 
+//Socket combines with OAuth to link the client to the server and google for authorization and sets a cookie.
 const socket = io(API_DOMAIN)
 
 @connect((store) => {
@@ -18,28 +19,29 @@ const socket = io(API_DOMAIN)
     groupOptions: store.display.optionStore.publicGroupOptions
   })
 })
-
 export default class Landing extends React.Component {
   componentWillMount() {
     this.props.dispatch(getGroupOptions())
+    //If the user has an active cookie, login will get login information and direct them into the site.
     this.props.dispatch(login())
   }
   componentDidUpdate() {
     if (this.props.sessionUser.loggedIn && this.props.sessionUser.siteAccess != 'requested') {
       this.props.history.push(home(this.props.sessionUser.siteAccess))
     }
-
   }
 
+  //Once the user has been approved, the cookie is used to get login information.
+  logIn = () => {
+    this.props.dispatch(login())
+  }
+
+  //If this is a new user that is not preapproved, they can select the group they want to join.
   signUpSubmit = (groupData) => {
     if (!groupData.group) {
       groupData.group = this.props.groupOptions[0]
     }
     this.props.dispatch(signUp(groupData))
-  }
-
-  logIn = () => {
-    this.props.dispatch(login())
   }
 
   render() {
@@ -48,9 +50,7 @@ export default class Landing extends React.Component {
       { accessor: `group`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: (groupOptions), validation: { required: true } },
     ]
 
-    console.log('urls', API_DOMAIN, API_URL)
     return (
-      //CSS - Initial
       <div className="container">
         <div className="row">
           {(this.props.sessionUser.loggedIn) ?

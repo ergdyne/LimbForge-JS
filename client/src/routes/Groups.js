@@ -24,7 +24,6 @@ export default class Groups extends React.Component {
   }
 
   submitGroup = (group) => {
-    //API Call
     this.props.dispatch(addGroup(group))
   }
 
@@ -37,7 +36,6 @@ export default class Groups extends React.Component {
       )
 
     return (
-      //CSS - initial
       <div className="container">
         <div className="row">
           <FormBuilder
