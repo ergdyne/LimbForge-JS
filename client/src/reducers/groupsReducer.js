@@ -1,3 +1,4 @@
+//Section of store used by admin groups page.
 export default function reducer(state = {
   groups: [],
   group: {
@@ -16,7 +17,6 @@ export default function reducer(state = {
       return {...state, group:action.payload}
     }
     case "ADD_GROUP":{
-      //Don't really care about the ADD_GROUP yet, unless to do something with keeping state going.
       return {...state}
     }
     default: return state

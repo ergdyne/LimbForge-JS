@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import formatColumns from '../functions/formatColumns'
 import { userAccessLevels } from '../config/enums'
 import FormBuilder from '../components/FormBuilder';
-import { getGroupOptions, getUsers, approveUser, addUser } from '../actions/usersActions'
+import { getUsers, addUser } from '../actions/usersActions'
+import { getGroupOptions} from '../actions/displayActions'
 
 //Site Admin and Group Admin access
 ////Site Admin sees all users
@@ -12,7 +13,7 @@ import { getGroupOptions, getUsers, approveUser, addUser } from '../actions/user
 @connect((store) => {
   return ({
     sessionUser: store.session.user, //used for updating the store with the correct data
-    groupOptions: store.users.groupOptions,
+    groupOptions: store.display.optionStore.groupOptions,
     approvedUsers: store.users.approvedUsers,
     requestedUsers: store.users.requestedUsers,
     usersColHeaders: store.display.usersColHeaders
@@ -26,9 +27,7 @@ export default class Users extends React.Component {
   }
 
   addUser = (user) => {
-    //API Call
     this.props.dispatch(addUser(user))
-    
   }
 
   viewUser = (userId) => {
@@ -38,6 +37,7 @@ export default class Users extends React.Component {
   render() {
     const userColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.viewUser, `View`)
     const approveColumns = formatColumns(this.props.usersColHeaders.slice(0, 2), this.viewUser, "View")
+    //This is here because of the groupOptions, but it could probably be moved into the store.
     const userInputs = [
       { accessor: `email`, name: `Email`, type: `string`, inputType: `text`, validation: { type: 'email' } },
       { accessor: `groupName`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: this.props.groupOptions, validation: { required: true } },
@@ -54,9 +54,10 @@ export default class Users extends React.Component {
               title="Add User"
               className="card large"
               key='user'
+              accessor='user'
               elements={userInputs}
               onSubmit={this.addUser}
-              submitValue={`Add`}
+              buttonLabel={`Add`}
               preventDefault={true}
               clearOnSubmit={true}
             />

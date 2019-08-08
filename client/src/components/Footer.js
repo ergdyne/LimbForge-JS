@@ -6,10 +6,10 @@ export default class Footer extends React.Component{
   }
 
   render(){
-    //CSS - Initial
     return(
       <footer>
-          <span>Footer goes here</span>
+          
+          <div className="row">© 2019 &nbsp;<a href="https://www.victoriahandproject.com/"> Victoria Hand Project</a></div>
       </footer>
     )
   }

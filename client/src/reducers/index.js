@@ -6,3 +6,5 @@ import session from './sessionReducer'
 import users from './usersReducer'
 
 export default combineReducers({display,groups,patients,session,users})
+
+//Reducers + Actions drive the REDUX system.

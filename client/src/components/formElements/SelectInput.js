@@ -2,29 +2,27 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default class SelectInput extends React.Component {
-  //A copied function, so this probably means it can be reused.
+  //Adjust default event to work with FormBuilder.
   checkInput = (event) => {
-    //Callback to state inside form with the parts of event we care about
     const change = {
       name: this.props.name,
       label: this.props.label,
       value: event.target.value,
       validations: this.props.validations,
-      isValid: this.props.isValid
+      isvalid: this.props.isvalid
     }
     this.props.onChange(change)
   }
 
   render() {
-    //CSS - initial
     return (
       <div
-        className={`FormBuilder-select ${(this.props.isValid) ? '' : 'invalid'}`}
+        className={`FormBuilder-select ${(this.props.isvalid) ? '' : 'invalid'}`}
         key={this.props.name}>
         <label data-tip={this.props.instruction}>
           {`${this.props.label}: `}
           <span
-            data-tip={(this.props.isValid) ? '' : this.props.errors}
+            data-tip={(this.props.isvalid) ? '' : this.props.errors}
           >
             <select
               value={this.props.value}
@@ -51,7 +49,6 @@ export default class SelectInput extends React.Component {
   }
 }
 
-
 SelectInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
@@ -62,7 +59,7 @@ SelectInput.propTypes = {
   placeholder: PropTypes.string,
   label: PropTypes.string.isRequired,
   instruction: PropTypes.string,
-  isValid: PropTypes.bool,
+  isvalid: PropTypes.bool,
   errors: PropTypes.array,
   validations: PropTypes.object
 }

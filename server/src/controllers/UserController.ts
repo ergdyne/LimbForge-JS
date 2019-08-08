@@ -32,7 +32,8 @@ export default class UserController {
     //TODO change this repeated code to be function
     const sessionUser = req.session.user
     if (sessionUser == null) {
-      res.status(400).send({ msg: 'session failed' })
+      res.status(403).send()
+      return
     }
     //Need the user, admin access (for promotion option), and groups
     try {
@@ -57,10 +58,9 @@ export default class UserController {
                       fullUserGroups: fullUserGroups,
                       isAdmin: (adminAccess == null) ? false : adminAccess.isAdmin
                     }
-                    //success
-                    res.send(userData)
+                    res.status(200).send(userData)
                   } else {
-                    res.status(400).send({ msg: 'not authorized' })
+                    res.status(403).send()
                   }
                 })
             })
@@ -74,7 +74,8 @@ export default class UserController {
     //TODO change this repeated code to be function
     const sessionUser = req.session.user
     if (sessionUser == null) {
-      res.status(400).send({ msg: 'session failed' })
+      res.status(403).send()
+      return
     }
     //if user admin -All
     //if user groupAdmin -user from their groups
@@ -82,14 +83,14 @@ export default class UserController {
     if (sessionUser.siteAccess == 'admin') {
       getRepository(FullUserGroup).find()
         .then(userGroups => {
-          res.send({ fullUserGroups: userGroups })
-        }).catch(err => res.send(err))
+          res.status(200).send({ fullUserGroups: userGroups })
+        }).catch(err => res.status(400).send(err))
     } else {
 
       const acceptableGroupIds = groupAccess(['groupAdmin'], sessionUser.viewGroups)
       getRepository(FullUserGroup).find({ where: { groupId: In(acceptableGroupIds) } })
         .then(userGroups =>{
-          res.send({ fullUserGroups: userGroups })
+          res.status(200).send({ fullUserGroups: userGroups })
         }).catch(err => res.send(err))
       //TODO reject case?
     }
@@ -107,7 +108,8 @@ export default class UserController {
     //Standard reject if no session
     const sessionUser = req.session.user
     if (sessionUser == null) {
-      res.status(400).send({ msg: 'session failed' })
+      res.status(403).send({ msg: 'session failed' })
+      return
     }
 
     //Find if the user exists.
@@ -138,11 +140,11 @@ export default class UserController {
                         await transactionalEntityManager.save(createUserGroup(group, userGroupAccess, user))
                       }
                     }).then(_ => {
-                      res.send({ msg: 'user created' })
+                      res.status(200).send({ msg: 'user created' })
                     })
-                  } catch (error) { res.send({ msg: `rejected` }) }
+                  } catch (error) { res.status(400).send() }
                 } else {
-                  res.send({ msg: 'not authorized' })
+                  res.status(403).send()
                 }
               })
           })

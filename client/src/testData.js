@@ -1,5 +1,4 @@
-
-//used in URL generator
+//Used in URL Generator. To be deleted when features added to support devices.
 const forearm = {
   name: 'Forearm r20',
   version: 20,

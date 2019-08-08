@@ -1,17 +1,24 @@
 import isEmpty from '../functions/isEmpty'
 
-const emptyPatient ={
+//TODO with bouncing around to different patient locations, sometime, the patient is not cleared
+const emptyPatient = {
   id:null,
     //Other attributes exists in patient but are not given defaults.
+}
+//TODO simplify device store
+const emptyDevice ={
+  deviceId:null,
+  patientDeviceId:null,
+  deviceData:[],
+  measurements:{}
 }
 
 export default function reducer(state={
   //The outside layer is patients. Access by state.patients.item
-  //state.patients.patients, state.patients.patientFormLevel
-  patientFormLevel:'patient',
   patients:[],
   patient:emptyPatient,
-  measurements:{}
+  device:emptyDevice,
+  devices:[]
 
 },action){
   switch(action.type){
@@ -20,36 +27,24 @@ export default function reducer(state={
     }
     case "GET_PATIENT":{
       const patient = action.payload.patient
-      const measurements = action.payload.measurements
-      if(isEmpty(measurements)){
-        return {...state,patient:patient,patientFormLevel:'measurement'}
+      const devices = action.payload.devices
+      if(isEmpty(devices)){
+        return {...state,patient:patient}
       }
 
-      return {...state,patient:patient,measurements:measurements,patientFormLevel:'preview'}
+      return {...state,patient:patient,devices:devices}
     }
-
+    case "SET_DEVICE":{
+      return {...state,device:action.payload}
+    }
     case "SAVE_PATIENT":{
       return {...state,patient:action.payload}
     }
 
-    case "SAVE_MEASUREMENTS":{
-      //would only save the measurements to the db based on the patient information
-      return {...state,measurements:action.payload}
-    }
-
-    case "UPDATE_FORM_LEVEL":{
-      return {...state,patientFormLevel:action.payload.level}
-    }
-
-    case "DELETE_PATIENT":{
-      return {...state}
-    }
-
+    case "DELETE_PATIENT":
     case "CLEAR_PATIENT":{
-      return {...state,patient:emptyPatient,measurements:{},patientFormLevel:'patient'}
+      return {...state,patient:emptyPatient,devices:[],device:emptyDevice}
     }
-    
-
     default: return state
   }
 

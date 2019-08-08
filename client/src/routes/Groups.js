@@ -24,7 +24,6 @@ export default class Groups extends React.Component {
   }
 
   submitGroup = (group) => {
-    //API Call
     this.props.dispatch(addGroup(group))
   }
 
@@ -37,16 +36,16 @@ export default class Groups extends React.Component {
       )
 
     return (
-      //CSS - initial
       <div className="container">
         <div className="row">
           <FormBuilder
             title="Create Group"
             className="card large"
             key='group'
+            accessor={'group'}
             elements={this.props.groupInputs}
             onSubmit={this.submitGroup}
-            submitValue={`Add`}
+            buttonLabel={`Add`}
             clearOnSubmit={true}
             preventDefault={true}
           />

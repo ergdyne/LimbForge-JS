@@ -15,7 +15,6 @@ export default class PatientList extends React.Component {
         this.props.viewPatient,
         `View`
       )
-    //CSS - initial
     return (
       <ReactTable
         className="row"
@@ -33,11 +32,6 @@ PatientList.propTypes = {
     PropTypes.object
   ),
   viewPatient: PropTypes.func.isRequired,
-  patientColHeaders: PropTypes.arrayOf(
-    PropTypes.shape({
-      accessor: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired
-    })
-  )
+  patientColHeaders: PropTypes.array.isRequired
+  
 }

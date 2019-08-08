@@ -1,4 +1,5 @@
-//All about the person using the site
+//Data stored about the current user of the site.
+//The settings here does not impact DB access for the user. It only speeds access locally.
 const emptyUser = {
   id: null,
   email: '',
@@ -15,7 +16,6 @@ export default function reducer(state = {
 
   switch (action.type) {
     case "LOGIN": {
-      //Temp
       return {...state, user:action.payload}
     }
     case "LOGOUT": {
@@ -24,7 +24,6 @@ export default function reducer(state = {
     case "SIGN_UP":{
       return {...state, user:action.payload}
     }
-    //signup failed and such
     default: return state
   }
 }

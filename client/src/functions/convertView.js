@@ -1,5 +1,6 @@
-import { keyStringToJSON, listToJSON } from './ergJSON'
+import { keyStringToJSON, listToJSON,accessorToJSON } from './ergJSON'
 import _ from 'underscore'
+import home from './home'
 
 function groupStatesToGroups(ats) {
   const groupSets = _.pairs(_.groupBy(ats, (g) => g.groupId))
@@ -37,32 +38,12 @@ function fullUserGroupsToUsers(ugs) {
   })
 }
 
-//TODO think about how to handle some other cases...
-//A boolean type without a value is true kind of things
-function listToValidationObject(vs) {
-  return listToJSON(vs.map(v => {
-    var newV = { ...v }
-    newV.attribute = v.attribute.split("-").pop()
-    return newV
-  }))
-}
 
-function measureStatesToMeasures(mss) {
-  const measureSets = _.pairs(_.groupBy(mss, (ms) => ms.measureId))
-  return measureSets.map(set => {
-    const validations = set[1].filter(i => i.attribute.includes('validation-'))
-    const attributes = set[1].filter(i => !i.attribute.includes('validation-'))
-    var measure = listToJSON(attributes)
-    measure.validation = listToValidationObject(validations)
-    return measure
-  })
-}
-
-function patientStatesToPatients(pss) {
+function recordsToPatients(pss) {
   const patientSets = _.pairs(_.groupBy(pss, (ps) => ps.patientId))
   return patientSets.map(s => {
     //The second part of the pair is the list of attributes.
-    var patient = listToJSON(s[1])
+    var patient = accessorToJSON(s[1])
     //The first part of the pair is the patient Id
     patient.id = parseInt(s[0])
 
@@ -70,23 +51,41 @@ function patientStatesToPatients(pss) {
   })
 }
 
-function patientMeasurementStatesToMeasurements(pmss) {
-  //ARG this is the wrong way to do this, should just have a better view!
-  var measurements = {}
-  pmss.forEach(pms => {
-    measurements[pms.accessor] = parseFloat(pms.value)
+function recordsToDevices(rs){
+  const deviceSets = _.pairs(_.groupBy(rs, (r) => r.patientDeviceId))
+  return deviceSets.map(s=>{
+    //These are measurements and the device settings (left/right, amputation level...)
+    var device = accessorToJSON(s[1])
+    device.measurments = {...device}
+    device.id = parseInt(s[0])
+    device.deviceId = null
+    device.patientDeviceId = parseInt(s[0])
+    device.deviceData=[]
+     //this funky bit is to make tables work better.
+    //TODO refactor to remove the .deviceData and .measurements part and just have the device opbject be everything.
+
+    return device
   })
-  return measurements
 }
 
-
+function userDataToUser(response) {
+  const { id, email, viewGroups, siteAccess } = response.data
+  const ourUser = {
+    id: id,
+    email: email,
+    siteAccess: siteAccess,
+    home: home(siteAccess),
+    loggedIn: true,
+    groups: fullUserGroupsToGroups(viewGroups)
+  }
+  return ourUser
+}
 
 export {
   fullUserGroupsToGroups,
   fullUserGroupsToUsers,
   groupStatesToGroups,
-  listToValidationObject,
-  measureStatesToMeasures,
-  patientStatesToPatients,
-  patientMeasurementStatesToMeasurements
+  recordsToPatients,
+  recordsToDevices,
+  userDataToUser
 }

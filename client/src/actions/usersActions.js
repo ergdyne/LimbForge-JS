@@ -2,18 +2,7 @@ import axios from 'axios'
 import{fullUserGroupsToUsers, fullUserGroupsToGroups} from '../functions/convertView'
 import {AXIOS_CONFIG, API_URL} from '../config/API'
 
-export function getGroupOptions(){
-  return function (dispatch) {
-    axios.get(`${API_URL}group/options`,AXIOS_CONFIG)
-      .then((response) => {
-        dispatch({ type: "GET_GROUP_OPTIONS", payload: response.data.groupNames })
-      })
-      .catch((err) => {
-        dispatch({ type: "GET_GROUP_OPTIONS_REJECTED", payload: err })
-      })
-  }
-}
-
+//For admin and group admin.
 export function getUsers(){
   return function (dispatch) {
     axios.get(`${API_URL}user/all`,AXIOS_CONFIG)
@@ -50,6 +39,7 @@ export function getUser(userId){
   }
 }
 
+//Approve site access or group admin. Right now, site admin can only be done through DB.
 export function approveUser(userId, email,group,groupAccess){
   return function (dispatch) {
     //Add does double duty of adjusting group access
@@ -68,9 +58,9 @@ export function approveUser(userId, email,group,groupAccess){
   }
 }
 
+//Allows for an email to be preapproved or groupaccess added manually. This function works for both existing and new users.
 export function addUser(newUser){
   const { email, userGroupAccess, groupName } = newUser
-
   if (email.length > 0 && userGroupAccess.length > 0 && groupName.length > 0) {
     return function (dispatch) {
       axios.post(`${API_URL}user/add`, {

@@ -1,68 +1,12 @@
 import axios from 'axios'
-import { fullUserGroupsToGroups } from '../functions/convertView'
-import {AXIOS_CONFIG, API_URL} from '../config/API'
-import { isString } from 'util' //TEMP
-//NOTE! I believe that encryption of credentials is handled by HTTPS.
-//So when the site is live, as long as we use HTTPS, everything should be fine.
+import { userDataToUser } from '../functions/convertView'
+import { AXIOS_CONFIG, API_URL } from '../config/API'
 
-
-//support functions
-//ENUM?
-function home(siteAccess) {
-  switch (siteAccess) {
-    case 'admin': return '/users/'
-    case 'requested': return '/'
-    default: return '/patients/'
-  }
-}
-
-function userDataToUser(response) {
-  const { id, email, viewGroups, siteAccess } = response.data
-  const ourUser = {
-    id: id,
-    email: email,
-    siteAccess: siteAccess,
-    home: home(siteAccess),
-    loggedIn: true,
-    groups: fullUserGroupsToGroups(viewGroups)
-  }
-  return ourUser
-}
-
-export function login(payload) {
-  //Can preprocess the login credentials within the axios
-  //TEMP quick login
-  var email = ''
-  var password = ''
-  // TEMPORARY
-  if (isString(payload)) {
-    switch (payload) {
-      case 'admin': {
-        email = 'admin@admin.com'
-        password = 'a'
-        break
-      }
-      case 'groupAdmin': {
-        email = 'j@j.com'
-        password = 'moo'
-        break
-      }
-      case 'user': {
-        email = 'x@b.com'
-        password = 'as'
-        break
-      }
-    }
-  } else { //END TEMPORARY
-    email = payload.email
-    password = payload.password
-  }
-
+//Login runs after the user has been logged via OAuth and Sockets.
+//This API get's the user's data.
+export function login() {
   return function (dispatch) {
-    axios.post(`${API_URL}auth/login`, {
-      email: email,
-      auth: password
-    }, AXIOS_CONFIG)
+    axios.get(`${API_URL}auth/login`, AXIOS_CONFIG)
       .then((response) => {
         dispatch({ type: "LOGIN", payload: userDataToUser(response) })
       })
@@ -72,40 +16,18 @@ export function login(payload) {
   }
 }
 
+//Kills the session on the server.
 export function logout() {
+  //TODO delete cookie?
   return function (dispatch) {
     axios.get(`${API_URL}auth/logout`, AXIOS_CONFIG)
-      .then((response) => {
-        //response doesn't really matter
+      .then((_response) => {
         dispatch({ type: "LOGOUT", payload: {} })
       })
       .catch((err) => {
         dispatch({ type: "LOGOUT_REJECTED", payload: err })
       })
   }
-  //todo server request
 }
 
-export function signUp(newUser) {
-  const { email, password, passwordConfirm, group } = newUser
-  if (password === passwordConfirm) {
-    return function (dispatch) {
-      axios.post(`${API_URL}auth/signup`, {
-        email: email,
-        auth: password,
-        groupName: group
-      }, AXIOS_CONFIG)
-        .then((response) => {
-          dispatch({ type: "SIGN_UP", payload: userDataToUser(response) })
-        })
-        .catch((err) => {
-          dispatch({ type: "SIGN_UP_REJECTED", payload: err })
-        })
-    }
-  }
 
-  return {
-    type: "SIGN_UP_REJECTED",
-    payload: { msg: "passwords don't match" }
-  }
-}

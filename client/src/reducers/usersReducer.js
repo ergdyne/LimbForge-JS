@@ -5,30 +5,20 @@ export default function reducer(state={
   //state.users.approvedUsers, state.users.user...
   approvedUsers:[],
   requestedUsers:[],
-  user:{ //for looking at a particular user
+  user:{ //When a particular user's information is accessed, it loads here to be displayed.
     id:null,
     email:'',
     isAdmin:'',
     groups:[]
-  },
-  groupOptions:[],
-  publicGroupOptions:['New Group']
+  }
 },action){
 
   switch (action.type){
-    case "GET_GROUP_OPTIONS":{
-      const groups = action.payload
-      const pubGroups = groups.concat(['New Group'])
-      return{...state, groupOptions:groups,publicGroupOptions:pubGroups }
-    }
     case "GET_USERS":{
       const {approvedUsers, requestedUsers} = action.payload
-
       return{...state, approvedUsers:approvedUsers, requestedUsers:requestedUsers}
     }
-    
     case "GET_USER":{
-
       return {...state, user:action.payload}
     }
     case "APPROVE_USER":{

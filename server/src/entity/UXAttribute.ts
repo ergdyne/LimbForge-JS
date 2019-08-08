@@ -1,8 +1,9 @@
 import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne} from 'typeorm'
-import Patient from "./Patient"
+import UX from "./UX"
 
+//Which records define the attributes of a UX (name, accessor, version...)
 @Entity()
-export class PatientAttribute{
+export class UXAttribute{
   @PrimaryGeneratedColumn()
   public id: number
 
@@ -18,9 +19,9 @@ export class PatientAttribute{
   @CreateDateColumn()
   public create_at: Date
 
-  //Many to one Patient
-  @ManyToOne(type=> Patient, patient => patient.patientAttributes)
-  patient: Patient
+  //Many to one UX
+  @ManyToOne(type=> UX, uX => uX.uXAttributes)
+  uX: UX
 }
 
-export default PatientAttribute
+export default UXAttribute

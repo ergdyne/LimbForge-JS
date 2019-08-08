@@ -16,10 +16,12 @@ export default class Download extends React.Component {
   }
 
   createZip = () => {
-    //as Forearm is always the item, it is imported from testdata
+    //As Forearm is always the item, it is imported from testdata.
+    //Expanding to add other devices will complicate this area.
     var ur = urlGenerator({...this.props.patient, measurements: this.props.measurements}, forearm)
 
     //Copied from LimbForge code
+    //Can move some of this functionality to a common file and create another Component for downloading instruction.
     function urlToPromise(url) {
       return new Promise(function (resolve, reject) {
         JSZipUtils.getBinaryContent(url, function (err, data) {
@@ -86,15 +88,3 @@ export default class Download extends React.Component {
 }
 
 //TODO add the PropTypes...
-
-//Right now using Option 2.
-//In the future will use Option 3/4 thing. with EC2 connected to S3.
-/**
- * Option 1-> bring in the amputation/sizes/gender/ect and convert to stl objects(link,filename,type, position, rotation)
- * //Props not option 1.
- * Option 2-> bring in the amputation/sizes/gender/ect -> send to function -> get back stl objects
- * //I like this as I can centeralize changes
- * Option 3 -> complete redesign and push everything serverside
- * Option 4 -> have each stl objects stored serverside and do a query for it (this can be part of 2)
- * //This requires the a bit of complete redesign to do upload to server + version control there.
- */

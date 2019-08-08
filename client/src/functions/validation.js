@@ -1,10 +1,11 @@
 import isEmail from 'email-validator'
 
-
 function reqText (name){
   return `${name} is required.`
 }
 
+//Runs validation set vs a value and returns a list of string errors.
+//There are better ways of doing this that should be explored in the future. Such as using someone else's library.
 export default function validation (validations,value,name){
   const v = validations
   var errors = []
@@ -12,6 +13,15 @@ export default function validation (validations,value,name){
   //If any other requirements, required is implied
   if(v.required && value.length <1){
     errors.push(reqText(name))
+  }
+
+  if(v.confirm){
+    const first = (typeof value === 'string')?value:value.first
+    const second = (typeof value === 'string')?'':value.second
+
+    if(first !==second){
+      errors.push(`Passwords must match.`)
+    }
   }
 
   //Type errors

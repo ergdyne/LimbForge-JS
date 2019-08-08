@@ -5,19 +5,19 @@ import "react-datepicker/dist/react-datepicker.css"
 
 export default class DateSelect extends React.Component {
 
+  //Passes configuration into built in change.
   checkInput = (date) => {
     const change = {
       name: this.props.name,
       label: this.props.label,
       value: date,
       validations: this.props.validations,
-      isValid: this.props.isValid
+      isvalid: this.props.isvalid
     }
     this.props.onChange(change)
   }
 
   render() {
-    //CSS - initial
     return (
       <div className={`FormBuilder-date`}>
         <label
@@ -25,8 +25,8 @@ export default class DateSelect extends React.Component {
         >
           {`${this.props.label}: `}
           <span 
-            className={`${(this.props.isValid) ? '' : 'invalid'}`}
-            data-tip={(this.props.isValid) ? '' : this.props.errors}>
+            className={`${(this.props.isvalid) ? '' : 'invalid'}`}
+            data-tip={(this.props.isvalid) ? '' : this.props.errors}>
             <DatePicker
               selected={this.props.value}
               onChange={this.checkInput}
@@ -46,7 +46,7 @@ DateSelect.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   instruction: PropTypes.string,
-  isValid: PropTypes.bool,
+  isvalid: PropTypes.bool,
   errors: PropTypes.array,
   validations: PropTypes.object
 }

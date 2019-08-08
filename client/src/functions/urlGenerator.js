@@ -8,8 +8,8 @@
 //This is all a HACK and confusing.
 export default function urlGenerator(specs, component) {
   //These are all the items we need to get the correct URLs. Patient name is optional.
-  const {firstName, lastName, gender, side, measurements} = specs
-  const {c1, c4, l1, l4} = measurements
+  const {firstName, lastName, gender, measurements} = specs
+  const {c1, c4, l1, l4, side} = measurements
   const componentFolder = component.folder
   const componentVersion = component.version
 

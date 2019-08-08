@@ -1,87 +1,83 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import io from 'socket.io-client'
 import { login } from '../actions/sessionActions'
-import { getGroupOptions } from '../actions/usersActions'
-import { signUp } from '../actions/sessionActions'
-import FormBuilder from '../components/FormBuilder';
-//API Call
-//Will provide the login/signup page in the future and access to a demo.
+import { getGroupOptions } from '../actions/displayActions'
+import FormBuilder from '../components/FormBuilder'
+import OAuth from '../components/OAuth'
+import { API_URL, API_DOMAIN } from '../config/API'
+import { signUp } from '../actions/groupsActions'
+import home from '../functions/home'
 
-//For testing add a login button or two.
+//Socket combines with OAuth to link the client to the server and google for authorization and sets a cookie.
+const socket = io(API_DOMAIN)
 
 @connect((store) => {
   return ({
     stored: store,
     sessionUser: store.session.user,
-    groupOptions: store.users.publicGroupOptions
+    groupOptions: store.display.optionStore.publicGroupOptions
   })
 })
-
 export default class Landing extends React.Component {
   componentWillMount() {
     this.props.dispatch(getGroupOptions())
+    //If the user has an active cookie, login will get login information and direct them into the site.
+    this.props.dispatch(login())
   }
   componentDidUpdate() {
-    //only redirect if not '/' as home, otherwise infinite loop!
-    if (this.props.sessionUser.loggedIn && this.props.sessionUser.home != '/') { this.props.history.push(this.props.sessionUser.home) }
-  }
-
-  signUpSubmit = (newUser) => {
-    if (!newUser.group) {
-      newUser.group = this.props.groupOptions[0]
+    if (this.props.sessionUser.loggedIn && this.props.sessionUser.siteAccess != 'requested') {
+      this.props.history.push(home(this.props.sessionUser.siteAccess))
     }
-    this.props.dispatch(signUp(newUser))
   }
 
-  loginSubmit = (userData) => {
-    this.props.dispatch(login(userData))
+  //Once the user has been approved, the cookie is used to get login information.
+  logIn = () => {
+    this.props.dispatch(login())
+  }
+
+  //If this is a new user that is not preapproved, they can select the group they want to join.
+  signUpSubmit = (groupData) => {
+    if (!groupData.group) {
+      groupData.group = this.props.groupOptions[0]
+    }
+    this.props.dispatch(signUp(groupData))
   }
 
   render() {
-    //TODO adjust location of inputs (maybe?)
     const groupOptions = this.props.groupOptions
-    //TODO matching passwords validation! and feedback signup type errors
-    const signUpInputs = [//PUSH IN THE NEW OPTION
-      { accessor: `email`, name: `Email`, type: `string`, inputType: `text`, validation: { type: 'email' } },
-      { accessor: `password`, name: `Password`, type: `string`, inputType: `password`, validation: { required: true } },
-      { accessor: `passwordConfirm`, name: `Confirm Password`, type: `string`, inputType: `password`, validation: { required: true } },
+    const signUpInputs = [
       { accessor: `group`, name: `Group`, type: `string`, inputType: `select`, placeholder: 'Select Group', options: (groupOptions), validation: { required: true } },
     ]
+
     return (
-      //CSS - Initial
       <div className="container">
-        {/* TEMPORARY */}
         <div className="row">
-          <button onClick={() => this.props.dispatch(login('admin'))}>Login Admin</button>
-          <button onClick={() => this.props.dispatch(login('user'))}>Login User</button>
-          <button onClick={() => this.props.dispatch(login('groupAdmin'))}>Login Group Admin</button>
-        </div>
-        {/* END TEMPORARY */}
-        <div className="row">
-          <div className="card large">
-            <FormBuilder
-              title="Login"
-              key='Login'
-              elements={signUpInputs.slice(0, 2)}
-              onSubmit={this.loginSubmit}
-              submitValue='Login'
-              preventDefault={true}
-            />
-          </div>
-          <span>{(this.props.groupOptions.length > 0) ?
-              <span>{(this.props.sessionUser.siteAccess === 'requested') ?
-                <span>{'Access Requested'}</span> :
-                <div className="card large" >
-                  <FormBuilder
-                    title="Sign Up"
-                    key='signUp'
-                    elements={signUpInputs}
-                    onSubmit={this.signUpSubmit}
-                    submitValue='Sign Up'
-                    preventDefault={true}
-                  />
-                </div>
-              }</span>:<span />
+          {(this.props.sessionUser.loggedIn) ?
+            <span /> :
+            <div className="card small Landing-Spacer"><OAuth
+              onLogIn={this.logIn}
+              provider={'google'}
+              key={'google'}
+              apiURL={API_URL}
+              socket={socket}
+            /></div>}
+          {/* Will become and option for a user with no groups or site access */}
+          <span>{(this.props.groupOptions.length > 0 && this.props.sessionUser.siteAccess === 'requested') ?
+            <span>{(this.props.sessionUser.groups.length > 0) ?
+              <span>{'Access Requested'}</span> :
+              <div className="card large" >
+                <FormBuilder
+                  title="Sign Up"
+                  key='signUp'
+                  accessor='signUp'
+                  elements={signUpInputs}
+                  onSubmit={this.signUpSubmit}
+                  buttonLabel='Sign Up'
+                  preventDefault={true}
+                />
+              </div>
+            }</span> : <span />
           }</span>
         </div>
       </div>

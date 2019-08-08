@@ -25,7 +25,6 @@ export default class User extends React.Component {
   }
 
   render() {
-    //CSS initial
     const approve = {
       Header: '',
       accessor: 'id',
