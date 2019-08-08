@@ -12,14 +12,12 @@ import { ViewAdminAccess } from '../entity/ViewAdminAccess'
 
 const saltRounds = 11
 
-//Support functions
+//Support function
 function siteAccess(vg: FullUserGroup[]) {
   const accessLevels = vg.map(g => g.access)
-
   if (accessLevels.includes('groupAdmin')) {
     return 'groupAdmin'
   }
-
   if (accessLevels.includes('user')) {
     return 'user'
   }
@@ -27,20 +25,22 @@ function siteAccess(vg: FullUserGroup[]) {
 }
 
 export default class AuthController {
+  //Returns socket response for google login.
   static google = async (req: Request, res: Response) => {
     const io = req.app.get('io')
-
     io.in(req.session.socketId).emit('google', { loggedIn: true })
-    res.end()//on login, run the request for user details
+    res.end()
   }
   
+  //Destroys session.
   static logout = async (req: Request, res: Response) => {
-    req.session.destroy(() => res.send({ msg: 'logged out' }))
+    req.session.destroy(() => res.status(200).send({ msg: 'logged out' }))
   }
 
+  //After session has been established by passport, provide user details.
   static login = async (req: Request, res: Response) => {
     if(!req.session.passport){
-      return res.status(400).send({msg:'failed to auth'})
+      return res.status(403).send({msg:'failed to auth'})
     }
 
     const id =  req.session.passport.user
@@ -66,7 +66,7 @@ export default class AuthController {
               })
             })
         })
-    }).catch(error => res.status(401).send())
+    }).catch(error => res.status(400).send())
 
   }
 }

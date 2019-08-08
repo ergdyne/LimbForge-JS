@@ -53,7 +53,7 @@ export default class PatientController {
     //For any user, groupadmin, or admin go ahead
     const sessionUser = req.session.user
     if (sessionUser == null) {
-      res.status(400).send({ msg: 'session failed' })
+      res.status(403).send()
       return
     }
     if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
@@ -67,7 +67,7 @@ export default class PatientController {
               let records = (await inputsToPatientRecords(patient, patientInputs)).filter(r => r.value != null)
               await transactionalEntityManager.save(records)
             }).then(_ => {
-              res.send({ patientId: patientId, msg: 'updated' })
+              res.status(200).send({ patientId: patientId, msg: 'updated' })
               return
             })
           })
@@ -99,7 +99,7 @@ export default class PatientController {
                   await transactionalEntityManager.save(records)
 
                 }).then(_ => {
-                  res.send({ patientId: newPatient.id, msg: 'new patient' })
+                  res.status(200).send({ patientId: newPatient.id, msg: 'new patient' })
                   return
                 })
               })
@@ -110,7 +110,7 @@ export default class PatientController {
         }
       }
     } else {
-      res.status(400).send({ msg: 'not authorized' })
+      res.status(403).send()
       return
     }
   }
@@ -123,14 +123,14 @@ export default class PatientController {
 
     //TODO error handling for not found
     if (sessionUser == null) {
-      return res.status(400).send({ msg: 'session failed' })
+      return res.status(403).send()
     }
 
     if (sessionUser.siteAccess == 'admin') {
       getRepository(Patient).delete(patientId).then(_r => {
         
         res.status(200).send({ msg: 'success' })//success is redundent with 200
-      }).catch(err => res.status(403).send(err))
+      }).catch(err => res.status(400).send(err))
     } else {
       //For users and groupAdmins, deleting a patient is group limited
       const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
@@ -145,7 +145,7 @@ export default class PatientController {
           getRepository(Patient).delete(patientId).then(_r => {
             res.status(200).send({ msg: 'success' })
           })
-        }).catch(err => res.status(403).send(err))
+        }).catch(err => res.status(400).send(err))
     }
   }
   //Admin - all
@@ -156,7 +156,7 @@ export default class PatientController {
 
     //TODO error handling for not found
     if (sessionUser == null) {
-      res.status(400).send({ msg: 'session failed' })
+      res.status(403).send()
       return
     }
     getRepository(PatientRecordState).find({ where: { patientId: patientId } })
@@ -171,7 +171,7 @@ export default class PatientController {
                   .findOneOrFail({ where: { patientId: patientId } })
                   .then(group => {
                     //Get the group name
-                    res.send({
+                    res.status(200).send({
                       patientRecords: pss,
                       patientDeviceRecords: devices,
                       groupName: group.groupName
@@ -188,7 +188,7 @@ export default class PatientController {
                     }
                   }).then(group => {
                     //Get the group name
-                    res.send({
+                    res.status(200).send({
                       patientRecords: pss,
                       patientDeviceRecords: devices,
                       groupName: group.groupName
@@ -196,7 +196,7 @@ export default class PatientController {
                   })
               }
             } catch{
-              res.status(400).send({ msg: 'no access' })
+              res.status(400).send()
               return
             }
           })
@@ -211,20 +211,20 @@ export default class PatientController {
     //Auth stuff and limit to user's groups, or no limit if admin
     const sessionUser = req.session.user
     if (sessionUser == null) {
-      res.status(400).send({ msg: 'session failed' })
+      res.status(403).send()
       return
     }
     if (sessionUser.siteAccess == 'admin') {
       getRepository(PatientRecordState).find()
         .then(patients => {
-          res.send(patients)
+          res.status(200).send(patients)
         }).catch(err => res.status(400).send(err))
     } else {
       const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
       
       getRepository(PatientRecordState).find({ where: { groupId: In(acceptableGroupIds) } })
         .then(patients => {
-          res.send(patients)
+          res.status(200).send(patients)
         }).catch(err => res.status(400).send(err))
     }
   }
@@ -235,7 +235,7 @@ export default class PatientController {
     //For any user, groupadmin, or admin go ahead
     const sessionUser = req.session.user
     if (sessionUser == null) {
-      res.status(400).send({ msg: 'session failed' })
+      res.status(403).send()
       return
     }
     if (['admin', 'groupAdmin', 'user'].includes(sessionUser.siteAccess)) {
@@ -249,7 +249,7 @@ export default class PatientController {
               await transactionalEntityManager.save(records)
 
             }).then(_ => {
-              res.send({ patientDeviceId: pDevice.id, msg: 'device updated' })
+              res.status(200).send({ patientDeviceId: pDevice.id, msg: 'device updated' })
               return
             })
           })
@@ -268,7 +268,7 @@ export default class PatientController {
                 await transactionalEntityManager.save(records)
 
               }).then(_ => {
-                res.send({ patientDeviceId: pDevice.id, msg: 'new device' })
+                res.status(200).send({ patientDeviceId: pDevice.id, msg: 'new device' })
                 return
               })
             })
@@ -280,7 +280,7 @@ export default class PatientController {
         return
       }
     } else {
-      res.status(400).send({ msg: 'not authorized' })
+      res.status(403).send()
       return
     }
   }

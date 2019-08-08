@@ -1,4 +1,4 @@
---Version 0.4 seed
+--Version 0.4 seed, copy into database terminal.
 
 insert into "device" (create_at) values (current_timestamp);
 

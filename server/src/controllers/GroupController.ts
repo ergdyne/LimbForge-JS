@@ -16,7 +16,7 @@ export default class GroupController {
     let { groupId } = req.body
     const sessionUser = req.session.user
     if (sessionUser == null) {
-      res.status(400).send({ msg: 'session failed' })
+      res.status(403).send()
       return
     }
 
@@ -24,18 +24,16 @@ export default class GroupController {
     //At this point, either user is admin or value is in, or reject
     if (sessionUser.siteAccess == 'admin' || acceptableGroupIds.includes(groupId)) {
       try {
-        //Get the group. 
+        //Get the group and the users of the group.
         const groupAttributes = await getRepository(GroupState).find({ where: { groupId: groupId } })
-
         const fullUserGroups = await getRepository(FullUserGroup).find({ where: { groupId: groupId } })
-        //Get the users of the group.
-        res.send({ groupAttributes: groupAttributes, userGroups: fullUserGroups })
+        res.status(200).send({ groupAttributes: groupAttributes, userGroups: fullUserGroups })
       } catch{
         res.status(400).send()
       }
     }
     else {
-      res.status(400).send()
+      res.status(403).send()
     }
 
   }
@@ -45,28 +43,27 @@ export default class GroupController {
     //Otherwise admin or user or requested or none -> list all groups
     const sessionUser = req.session.user
     //admin gets all group options. user or groupAdmin gets some
-    //TODO confirm that getGroupOptions doing triple duty like this does not cause problems.
-    //A possible fix could be to add a parameter for the type of get.
     if (sessionUser == null || sessionUser.siteAccess == 'admin') {
       getRepository(GroupState).find({ where: { attribute: 'name' } })
         .then(gss =>
-          res.send({ groupNames: gss.map(g => g.value) })
-        )
+          res.status(200).send({ groupNames: gss.map(g => g.value) })
+        ).catch(error => res.status(400).send())
     } else {
       const acceptableGroupIds = groupAccess(['groupAdmin', 'user'], sessionUser.viewGroups)
       getRepository(GroupState).find({ where: { attribute: 'name', groupId: In(acceptableGroupIds) } })
         .then(gss =>
-          res.send({ groupNames: gss.map(g => g.value) })
-        )
+          res.status(200).send({ groupNames: gss.map(g => g.value) })
+        ).catch(error => res.status(400).send())
     }
 
   }
 
+  //When a new user sets the group they would like to join.
   static signUp = async (req: Request, res: Response) => {
     const { groupName } = req.body
     const sessionUser = req.session.user
     if (sessionUser == null) {
-      res.status(400).send({ msg: 'not authorized' })
+      res.status(403).send()
       return
     }
     //Find the group or none
@@ -79,7 +76,7 @@ export default class GroupController {
         let groupAttribute = await getRepository(GroupState).findOneOrFail({ attribute: 'name', value: groupName })
         group = await getRepository(Group).findOneOrFail(groupAttribute.groupId)
       } catch (error) {
-        res.status(401).send({ msg: 'group not found' })
+        res.status(400).send()
         return
       }
     }
@@ -119,12 +116,12 @@ export default class GroupController {
     //Check access.
     const sessionUser = req.session.user
     if (sessionUser == null || sessionUser.siteAccess != 'admin') {
-      res.status(400).send({ msg: 'not authorized' })
+      res.status(403).send()
       return
     }
     try {
       const groupAttributes = await getRepository(GroupState).find()
-      res.send({ groupAttributes: groupAttributes })
+      res.status(200).send({ groupAttributes: groupAttributes })
 
     } catch{
       res.status(400).send()
@@ -142,7 +139,7 @@ export default class GroupController {
     //Check access.
     const sessionUser = req.session.user
     if (sessionUser == null || sessionUser.siteAccess != 'admin') {
-      res.status(400).send({ msg: 'not authorized' })
+      res.status(403).send()
       return
     }
 
@@ -153,7 +150,7 @@ export default class GroupController {
       groupAttribute = await groupStateRepo.findOne({ attribute: 'name', value: name })
       //if it does, then we got an error.
       if (groupAttribute != null) {
-        res.status(401).send({ msg: 'group name exists' })
+        res.status(400).send({ msg: 'group name exists' })
         return
       }
     } catch (error) {
@@ -183,10 +180,10 @@ export default class GroupController {
         await transactionalEntityManager.save(groupDescription)
       })
 
-      res.send({ msg: "Group Saved" })
+      res.status(200).send({ msg: "Group Saved" })
       return
     } catch (err) {
-      res.send({ msg: "Failed to save Group" })
+      res.status(400).send({ msg: "Failed to save Group" })
       return
     }
   }

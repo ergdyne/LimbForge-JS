@@ -5,6 +5,7 @@ import patient from './patient'
 import user from './user'
 import ux from './ux'
 
+//Collection of routes for the API.
 const routes = Router()
 
 routes.use('/auth', auth)

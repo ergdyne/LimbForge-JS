@@ -7,8 +7,8 @@ import {ViewSiteAuth} from '../entity/ViewSiteAuth'
 import {SiteAuth} from '../entity/SiteAuth'
 import google from 'passport-google-oauth20'
 
+//Registers the strategy with passport to connect OAuth to google. 
 export default function () {
-
 	passport.serializeUser((user: User, cb) => {
 		cb(null, user.id)
 	})
