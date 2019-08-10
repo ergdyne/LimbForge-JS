@@ -65,5 +65,19 @@ drop table migrations;
 drop table typeorm_metadata;
 
 
+drop table  admin_access        cascade;
+drop table  "group"               cascade;
+drop table  group_attribute     cascade;
+drop table  measure             cascade;
+drop table  measure_attribute   cascade;
+drop table  migrations          cascade;
+drop table  patient             cascade;
+drop table  patient_attribute   cascade;
+drop table  patient_group       cascade;
+drop table  patient_measurement cascade;
+drop table  site_auth           cascade;
+drop table  typeorm_metadata    cascade;
+drop table  "user"                cascade;
+drop table  user_group          cascade;
 
  
