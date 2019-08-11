@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import PatientList from '../components/PatientList'
+import PatientList from '../components/Patient/PatientList'
 import { getPatients } from '../actions/patientsActions'
 import { getColHeaders } from '../actions/displayActions';
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ReactTable from 'react-table'
-import formatColumns from '../functions/formatColumns'
+import formatColumns from '../../functions/formatColumns'
 
 export default class PatientList extends React.Component {
   constructor(props) {

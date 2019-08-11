@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import PatientData from '../components/PatientData'
-import PatientDevices from '../components/PatientDevices'
-import PatientDevice from '../components/PatientDevice'
+import PatientData from '../components/Patient/PatientData'
+import PatientDevices from '../components/Patient/PatientDevices'
+import PatientDevice from '../components/Patient/PatientDevice'
 import { getPatient, savePatient, deletePatient, clearPatient, setDeviceType, setDevice } from '../actions/patientsActions'
 import { getForm, getColHeaders, setEditPatient, setEditDevice, setShowDevice } from '../actions/displayActions'
 import { getGroupOptions } from '../actions/displayActions'
@@ -119,39 +119,44 @@ export default class Patient extends React.Component {
   //TODO This page looks rather messy at the moment.
   render() {
     return (
-      <div className="container row">
-        <PatientData
-          hasGroupSelect={(
-            (!this.props.patient.id) &&
-            this.state.groupName == null &&
-            this.props.optionStore.groupOptions.length > 1
-          )}
-          groupForm={this.props.groupForm}
-          optionStore={this.props.optionStore}
-          groupSubmit={this.groupSubmit}
-          patient={this.props.patient}
-          editPatient={() => this.props.dispatch(setEditPatient(true))}
-          deletePatient={this.removePatient}
-          hasPatientForm={this.props.isEditPatient}
-          patientForm={this.props.patientForm}
-          patientSubmit={this.patientSubmit}
-        />
-        {(this.props.showDevice) ?
-          <PatientDevice
-          /> : <span />
-        }
-
-        {
-          (this.props.patient.id) ?
-            <PatientDevices
-              addDeviceForm={this.props.addDeviceForm}
-              addDevice={this.addDevice}
-              viewDevice={this.viewDevice}
-              deviceCols={this.props.deviceCols}
-              devices={this.props.devices}
+      <div className="container" >
+        <div className="row">
+          {/* Three main areas for the Patient Page. */}
+          {/* Patient Data covers the constant items across all devices for a patient. */}
+          <PatientData
+            hasGroupSelect={(
+              (!this.props.patient.id) &&
+              this.state.groupName == null &&
+              this.props.optionStore.groupOptions.length > 1
+            )}
+            groupForm={this.props.groupForm}
+            optionStore={this.props.optionStore}
+            groupSubmit={this.groupSubmit}
+            patient={this.props.patient}
+            editPatient={() => this.props.dispatch(setEditPatient(true))}
+            deletePatient={this.removePatient}
+            hasPatientForm={this.props.isEditPatient}
+            patientForm={this.props.patientForm}
+            patientSubmit={this.patientSubmit}
+          />
+          {/* The current device being viewed or edited. */}
+          {(this.props.showDevice && !this.props.isEditPatient) ?
+            <PatientDevice
             /> : <span />
-        }
+          }
 
+          {/* The List of devices and addition of new devices. */}
+          {
+            (this.props.patient.id && !this.props.isEditPatient) ?
+              <PatientDevices
+                addDeviceForm={this.props.addDeviceForm}
+                addDevice={this.addDevice}
+                viewDevice={this.viewDevice}
+                deviceCols={this.props.deviceCols}
+                devices={this.props.devices}
+              /> : <span />
+          }
+        </div>
       </div >
     )
   }
