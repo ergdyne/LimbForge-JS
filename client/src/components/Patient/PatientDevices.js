@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ReactTable from 'react-table'
-import FormBuilder from './FormBuilder'
-import formatColumns from '../functions/formatColumns'
+import FormBuilder from '../FormBuilder'
+import formatColumns from '../../functions/formatColumns'
 
 export default class PatientDevices extends React.Component {
   render() {
@@ -14,7 +14,7 @@ export default class PatientDevices extends React.Component {
       )
 
     return (
-      <div >
+      <span >
         {/* This form (and list) will adjust settings on the Patient Device area */}
         <div className="card large">
           <FormBuilder
@@ -28,16 +28,17 @@ export default class PatientDevices extends React.Component {
             preventDefault={true}
           />
         </div>
-        {(this.props.devices.length>0)?
-          <ReactTable
-            className="card large"
-            data={this.props.devices}
-            columns={columns}
-            filterable={true}
-            minRows={0}
-          />:<span/>
+        {(this.props.devices.length > 0) ?
+          <div className="card large">
+            <ReactTable
+              data={this.props.devices}
+              columns={columns}
+              filterable={true}
+              minRows={0}
+            />
+          </div> : <span />
         }
-      </div>
+      </span>
     )
   }
 }
