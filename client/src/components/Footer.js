@@ -9,7 +9,7 @@ export default class Footer extends React.Component{
     return(
       <footer>
           
-          <div className="row">© 2019 &nbsp;<a href="https://www.victoriahandproject.com/"> Victoria Hand Project</a></div>
+          <div className="row">{`© 2019 - `}<a href="https://www.victoriahandproject.com/"> {` Victoria Hand Project`}</a></div>
       </footer>
     )
   }

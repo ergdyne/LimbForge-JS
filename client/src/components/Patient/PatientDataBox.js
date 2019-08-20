@@ -15,7 +15,7 @@ export default class PatientDataBox extends React.Component {
         <h3 className='row'>
           {`${(p.city != null) ? `${p.city}${(p.city != null && p.country != null) ? ',' : ''}` : ''} ${(p.country != null) ? `${p.country}` : ''}`}
         </h3>
-        <div>
+        <div className='card'>
           {extraData.map(x => SimpleAttribute(x, p))}
 
         </div >
