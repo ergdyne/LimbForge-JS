@@ -2,8 +2,10 @@
   border: 1px solid red;
   color: red;
 }
-.Landing-Spacer{
-  padding: 200px;
+.OAuth{
+  padding-top: 150px;
+  padding-bottom: 150px;
+  margin: auto;
 }
 
 .google-button {

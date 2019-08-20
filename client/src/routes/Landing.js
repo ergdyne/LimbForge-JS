@@ -55,7 +55,8 @@ export default class Landing extends React.Component {
         <div className="row">
           {(this.props.sessionUser.loggedIn) ?
             <span /> :
-            <div className="card small Landing-Spacer"><OAuth
+            <div className="card">
+              <OAuth
               onLogIn={this.logIn}
               provider={'google'}
               key={'google'}
