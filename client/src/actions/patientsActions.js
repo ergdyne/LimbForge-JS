@@ -80,6 +80,13 @@ export function setDevice(device) {
   }
 }
 
+export function setPatientDeviceId(id){
+  return{
+    type: "SET_PATIENT_DEVICE_ID",
+    payload: id
+  }
+}
+
 export function setDeviceType(device, deviceData, deviceInputs) {
   const deviceAttributes = deviceInputs.map(i => (
     {
@@ -115,12 +122,13 @@ export function saveMeasurements(measurements, measurementInputs, patientId, dev
         measurements: deviceMeasurements.concat(device.deviceData)
       }, AXIOS_CONFIG)
         .then((response) => {
-          //Use the response to set device Id in the store.
-          const newDevice = { ...device, patientDeviceId: response.data.patientDeviceId, measurements: measurements }
-
-          dispatch({ type: "SET_DEVICE", payload: newDevice })
-          dispatch({ type: "SET_EDIT_DEVICE", payload: false })
           dispatch(getPatient(patientId))
+          const device = recordsToDevices(response.data.device)[0]
+          //replace with view device
+          dispatch({ type: "SET_DEVICE", payload: device })
+          dispatch({ type: "SET_EDIT_DEVICE", payload: false })
+          dispatch({type: "SET_SHOW_DEVICE",payload: true})
+          
         })
         .catch((err) => {
           dispatch({ type: "SAVE_DEVICE_REJECTED", payload: err })
