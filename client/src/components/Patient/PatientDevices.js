@@ -16,18 +16,23 @@ export default class PatientDevices extends React.Component {
     return (
       <span >
         {/* This form (and list) will adjust settings on the Patient Device area */}
-        <div className="card large">
-          <FormBuilder
-            title={this.props.addDeviceForm.name}
-            key={this.props.addDeviceForm.accessor}
-            accessor={this.props.addDeviceForm.accessor}
-            elements={this.props.addDeviceForm.inputs}
-            onSubmit={this.props.addDevice}
-            buttonLabel={this.props.addDeviceForm.button}
-            clearOnSubmit={true}
-            preventDefault={true}
-          />
-        </div>
+
+        {(!this.props.isEditDevice) ?
+          <div className="card large">
+            <FormBuilder
+              title={this.props.addDeviceForm.name}
+              key={this.props.addDeviceForm.accessor}
+              accessor={this.props.addDeviceForm.accessor}
+              elements={this.props.addDeviceForm.inputs}
+              onSubmit={this.props.addDevice}
+              buttonLabel={this.props.addDeviceForm.button}
+              clearOnSubmit={true}
+              preventDefault={true}
+            />
+          </div> : <span/>
+        }
+
+
         {(this.props.devices.length > 0) ?
           <div className="card large">
             <ReactTable
@@ -48,5 +53,6 @@ PatientDevices.propTypes = {
   addDevice: PropTypes.func,
   viewDevice: PropTypes.func,
   deviceCols: PropTypes.array,
-  devices: PropTypes.array
+  devices: PropTypes.array,
+  isEditDevice: PropTypes.bool
 }

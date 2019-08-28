@@ -19,6 +19,7 @@ import PatientDeviceData from './PatientDeviceData'
 })
 export default class PatientDevice extends React.Component {
   //map side and gender to image used
+  //TODO make this a DB look up in the long term.
   imageLocation = (gender, side) => {
     return `https://limbfore-js-assets.s3.amazonaws.com/${gender.toLowerCase()}-transradial-${side.charAt(0).toUpperCase()}.svg`
   }
@@ -30,7 +31,7 @@ export default class PatientDevice extends React.Component {
 
   submitMeasurements = (measurements) => {
     this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id, this.props.device))
-
+    
   }
 
   render() {

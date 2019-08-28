@@ -47,7 +47,6 @@ export default function () {
 							.then(user => {
 								//Yes -> create site auth
 								if (user) {
-									console.log('premade user', user)
 									getManager().transaction(async transactionalEntityManager => {
 										let siteAuth = new SiteAuth()
 										siteAuth.user = user

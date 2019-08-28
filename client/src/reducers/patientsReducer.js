@@ -37,6 +37,12 @@ export default function reducer(state={
     case "SET_DEVICE":{
       return {...state,device:action.payload}
     }
+
+    case "SET_PATIENT_DEVICE_ID":{
+      const device = state.devices.find(dev => dev.patientDeviceId === action.payload)
+      //TODO possibly check if device found, otherwise do something else
+      return{...state,device:device}
+    }
     case "SAVE_PATIENT":{
       return {...state,patient:action.payload}
     }

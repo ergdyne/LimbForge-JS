@@ -12,6 +12,7 @@ import { getGroupOptions } from '../actions/displayActions'
     sessionUser: store.session.user, //matters for new patient
     patient: store.patients.patient,
     isEditPatient: store.display.editPatient,
+    isEditDevice: store.display.editDevice,
     showDevice: store.display.showDevice,
     optionStore: store.display.optionStore,
     addDeviceForm: store.display.addDevice,
@@ -96,17 +97,18 @@ export default class Patient extends React.Component {
   addDevice = (deviceData) => {
     const d = this.props.dispatch
     var device = { ...deviceData }
-    device.deviceId = 1
+    device.deviceId = 1 //TODO When adding more devices, change this to look up the device.
     device.patientDeviceId = null
     d(setDeviceType(device, deviceData, this.props.addDeviceForm.inputs))
     d(setShowDevice(true))
     d(setEditDevice(true))
-    //When adding more devices, change this.
+    //TODO When adding more devices, change this.
     d(getForm('transradialDevice'))
   }
 
   //TODO move some of this to patientActions
   viewDevice = (patientDeviceId) => {
+    //TODO, this is sloppy! Why, because it shouldn't need the props...
     const device = this.props.devices.find(dev => dev.patientDeviceId === patientDeviceId)
     const d = this.props.dispatch
     d(setDevice(device))
@@ -154,6 +156,7 @@ export default class Patient extends React.Component {
                 viewDevice={this.viewDevice}
                 deviceCols={this.props.deviceCols}
                 devices={this.props.devices}
+                isEditDevice={this.props.isEditDevice}
               /> : <span />
           }
         </div>

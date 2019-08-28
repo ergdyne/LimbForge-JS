@@ -128,7 +128,7 @@ export default class PatientController {
 
     if (sessionUser.siteAccess == 'admin') {
       getRepository(Patient).delete(patientId).then(_r => {
-        
+
         res.status(200).send({ msg: 'success' })//success is redundent with 200
       }).catch(err => res.status(400).send(err))
     } else {
@@ -221,7 +221,7 @@ export default class PatientController {
         }).catch(err => res.status(400).send(err))
     } else {
       const acceptableGroupIds = groupAccess(['user', 'groupAdmin'], sessionUser.viewGroups)
-      
+
       getRepository(PatientRecordState).find({ where: { groupId: In(acceptableGroupIds) } })
         .then(patients => {
           res.status(200).send(patients)
@@ -249,8 +249,14 @@ export default class PatientController {
               await transactionalEntityManager.save(records)
 
             }).then(_ => {
-              res.status(200).send({ patientDeviceId: pDevice.id, msg: 'device updated' })
-              return
+                //one of three spots for this same code...
+              getRepository(PatientDeviceRecordState).find({ where: { patientId: patientId, patientDeviceId:pDevice.id } })
+                .then(device => {
+                  res.status(200).send({ device:device, msg: 'device updated' })
+                  return
+
+                })
+
             })
           })
         } else {
@@ -268,8 +274,12 @@ export default class PatientController {
                 await transactionalEntityManager.save(records)
 
               }).then(_ => {
-                res.status(200).send({ patientDeviceId: pDevice.id, msg: 'new device' })
-                return
+
+                getRepository(PatientDeviceRecordState).find({ where: { patientId: patientId, patientDeviceId:pDevice.id } })
+                .then(device => {
+                  res.status(200).send({ device:device,  msg: 'new device'  })
+                  return
+                })
               })
             })
           })
