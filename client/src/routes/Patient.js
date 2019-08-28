@@ -12,6 +12,7 @@ import { getGroupOptions } from '../actions/displayActions'
     sessionUser: store.session.user, //matters for new patient
     patient: store.patients.patient,
     isEditPatient: store.display.editPatient,
+    isEditDevice: store.display.editDevice,
     showDevice: store.display.showDevice,
     optionStore: store.display.optionStore,
     addDeviceForm: store.display.addDevice,
@@ -119,7 +120,6 @@ export default class Patient extends React.Component {
 
   //TODO This page looks rather messy at the moment.
   render() {
-    if(this.props.showDevice){console.log("should be showing device")}
     return (
       <div className="container" >
         <div className="row">
@@ -156,6 +156,7 @@ export default class Patient extends React.Component {
                 viewDevice={this.viewDevice}
                 deviceCols={this.props.deviceCols}
                 devices={this.props.devices}
+                isEditDevice={this.props.isEditDevice}
               /> : <span />
           }
         </div>

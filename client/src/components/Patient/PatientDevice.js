@@ -36,9 +36,6 @@ export default class PatientDevice extends React.Component {
 
   render() {
     const ms = this.props.device.measurments
-
-    console.log("device is",this.props.device)
-    if(isEmpty(ms)){console.log('measurements are empty')}
     return (
       <span>
         {
