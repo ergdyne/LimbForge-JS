@@ -20,6 +20,7 @@ export default class PatientData extends React.Component {
               onSubmit={this.props.groupSubmit}
               buttonLabel={this.props.groupForm.button}
               preventDefault={true}
+              onCancel={this.props.onCancel}
             /> </div> :
           // If group is determined, show patient form or Patient Data
           <span>
@@ -34,7 +35,9 @@ export default class PatientData extends React.Component {
                     onSubmit={this.props.patientSubmit}
                     buttonLabel={this.props.patientForm.button}
                     preventDefault={true}
-                    initial={(this.props.patient) ? this.props.patient : {}}
+                    initial={(this.props.patient) ? this.props.patient : {}} 
+                    //At the moment patient seems to always be at least {id:null}, which means this Ternary is probably not needed
+                    onCancel={this.props.onCancel}
                   />
                 </div>
                 {/* If the patient has been saved and in edit mode, if the option to delete. */}
@@ -62,5 +65,6 @@ export default class PatientData extends React.Component {
 //TODO all props
 PatientData.propTypes = {
   patient: PropTypes.object,
-  editPatient: PropTypes.func
+  editPatient: PropTypes.func,
+  onCancel: PropTypes.func
 }

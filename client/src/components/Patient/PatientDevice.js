@@ -34,6 +34,10 @@ export default class PatientDevice extends React.Component {
     
   }
 
+  onCancel = () =>{
+    this.props.dispatch(setEditDevice(false))
+  }
+
   render() {
     const ms = this.props.device.measurments
     return (
@@ -59,6 +63,7 @@ export default class PatientDevice extends React.Component {
                   accessor={this.props.measurementForm.accessor}
                   elements={this.props.measurementForm.inputs}
                   onSubmit={this.submitMeasurements}
+                  onCancel={this.onCancel}
                   buttonLabel={this.props.measurementForm.button}
                   preventDefault={true}
                   initial={(!isEmpty(ms)) ? ms : {}}

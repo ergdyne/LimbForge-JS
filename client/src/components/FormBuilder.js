@@ -50,10 +50,10 @@ export default class FormBuilder extends React.Component {
           if (['radio', 'select'].includes(element.inputType)) {
             //The source of the options maybe fed seperately or as part of the element.
             const options = (element.optionStore) ? this.props.optionStore[element.optionStore] : element.options
-            if(options.length === 1){
+            if (options.length === 1) {
               //A radio or select with only one option. This will also not display.
-              item.value = options[0] 
-            }else{
+              item.value = options[0]
+            } else {
               //At least one option (if no options then blank)/
               item.value = (options.length > 0) ? options[0] : ''
             }
@@ -71,11 +71,15 @@ export default class FormBuilder extends React.Component {
     })
     this.setState(newState)
   }
+  
+  onCancel = () => {
+      this.setInitialState()
+      this.props.onCancel()
+  }
 
   componentWillMount() {
     this.setInitialState()
   }
-
 
   handleInputChange = (change) => {
     //Change is an altered version of event. Exicutes with each change to an input field.
@@ -143,7 +147,7 @@ export default class FormBuilder extends React.Component {
               key={`${this.props.accessor}-${element.accessor}`}
               name={element.accessor}
               value={ops[0]}
-              style={{display:"none"}}
+              style={{ display: "none" }}
             /> :
 
             <SelectInput
@@ -194,7 +198,7 @@ export default class FormBuilder extends React.Component {
         return (
           <TextInput
             key={`${this.props.accessor}-${element.accessor}`}
-            name={element.accessor} 
+            name={element.accessor}
             instruction={element.instruction}
             label={element.name}
             isvalid={this.state[element.accessor].isvalid}
@@ -214,7 +218,7 @@ export default class FormBuilder extends React.Component {
       <form key={this.props.accessor}
         onSubmit={() => {
           //Default is to reload the page, which is not ideal in single page application.
-          if (this.props.preventDefault) { event.preventDefault() } 
+          if (this.props.preventDefault) { event.preventDefault() }
 
           //Running checkErrors updates the state to include any error notifications.
           if (this.checkErrors().length === 0) {
@@ -250,6 +254,9 @@ export default class FormBuilder extends React.Component {
             type="submit"
             data-tip={this.state.submitError}
           />
+          {(this.props.onCancel) ?
+            <button type="button" onClick={this.onCancel}>Cancel</button>:<span/>
+          }
         </fieldset>
         <ReactTooltip />
       </form>
@@ -260,6 +267,7 @@ export default class FormBuilder extends React.Component {
 FormBuilder.propTypes = {
   accessor: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func,
   buttonLabel: PropTypes.string,
   optionStore: PropTypes.object,
   preventDefault: PropTypes.bool,

@@ -118,6 +118,16 @@ export default class Patient extends React.Component {
     d(getForm('transradialDevice'))
   }
 
+  cancelPatient = () =>{
+    if(this.props.patient.id > 0){
+      //if there is a patient, just close edit
+      this.props.dispatch(setEditPatient(false))
+    }else{
+      //If no patient, return to home
+      this.props.history.push('/patients/')
+    }
+  }
+
   //TODO This page looks rather messy at the moment.
   render() {
     return (
@@ -140,6 +150,7 @@ export default class Patient extends React.Component {
             hasPatientForm={this.props.isEditPatient}
             patientForm={this.props.patientForm}
             patientSubmit={this.patientSubmit}
+            onCancel={this.cancelPatient}
           />
           {/* The current device being viewed or edited. */}
           {(this.props.showDevice && !this.props.isEditPatient) ?
