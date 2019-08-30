@@ -6,7 +6,7 @@
   "scripts": {
     "analyze": "source-map-explorer 'dist/*.js'",
     "start": "API_URL=https://127.0.0.1:3000 webpack-dev-server --https --open --mode development ",
-    "build": "API_URL=https://limbforge.ergdyne.com:8000 webpack --mode production",
+    "build": "API_URL=https://limbforge.victoriahandproject.com:8000 webpack --mode production",
     "test": "mocha --require jsdomSetup.js --require @babel/register --require ignore-styles --require isomorphic-fetch --recursive"
   },
   "keywords": [],

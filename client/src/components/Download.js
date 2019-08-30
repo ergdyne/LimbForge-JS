@@ -1,15 +1,14 @@
 import React from 'react'
-import JSZipUtils from 'jszip-utils'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import Canvas from './Canvas'
+import urlToPromise from '../functions/urlToPromise'
 import { forearm } from '../testData'
 import urlGenerator from '../functions/urlGenerator'
 
 export default class Download extends React.Component {
   constructor(props) {
     super(props)
-
     this.state = {
       preview: false,
     }
@@ -20,20 +19,7 @@ export default class Download extends React.Component {
     //Expanding to add other devices will complicate this area.
     var ur = urlGenerator({...this.props.patient, measurements: this.props.measurements}, forearm)
 
-    //Copied from LimbForge code
-    //Can move some of this functionality to a common file and create another Component for downloading instruction.
-    function urlToPromise(url) {
-      return new Promise(function (resolve, reject) {
-        JSZipUtils.getBinaryContent(url, function (err, data) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(data);
-          }
-        });
-      });
-    }
-
+    //Copied from LimbForge (Ruby version).
     var zip = new JSZip();
     ur.forEach((url) => {
       var filename = url.name + '.stl';
@@ -72,7 +58,6 @@ export default class Download extends React.Component {
   }
 
   render() {
-    //CSS
     return (
       <div>
         <button onClick={this.preview}>{`Preview`}</button>

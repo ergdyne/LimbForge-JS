@@ -8,6 +8,10 @@
   margin: auto;
 }
 
+.right  {
+  float: right;
+}
+
 .google-button {
   height: 40px;
   border-width: 0;
