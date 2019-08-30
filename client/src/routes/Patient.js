@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import PatientData from '../components/Patient/PatientData'
+import PatientForm from '../components/Patient/PatientForm'
+import PatientDataBox from '../components/Patient/PatientDataBox'
+import PatientGroupSelect from '../components/Patient/PatientGroupSelect'
 import PatientDevices from '../components/Patient/PatientDevices'
 import PatientDevice from '../components/Patient/PatientDevice'
 import { getPatient, savePatient, deletePatient, clearPatient, setDeviceType, setDevice } from '../actions/patientsActions'
@@ -118,40 +120,63 @@ export default class Patient extends React.Component {
     d(getForm('transradialDevice'))
   }
 
-  cancelPatient = () =>{
-    if(this.props.patient.id > 0){
+  cancelPatient = () => {
+    if (this.props.patient.id > 0) {
       //if there is a patient, just close edit
       this.props.dispatch(setEditPatient(false))
-    }else{
+    } else {
       //If no patient, return to home
       this.props.history.push('/patients/')
     }
   }
 
+  editPatient = () => this.props.dispatch(setEditPatient(true))
+
   //TODO This page looks rather messy at the moment.
   render() {
+    console.log("hello")
+    //Booleans for determining form elements
+    const hasGroupSelect = (
+      (!this.props.patient.id) &&
+      this.state.groupName == null &&
+      this.props.optionStore.groupOptions.length > 1
+    )
+    const isEditPatient = this.props.isEditPatient
+    console.log("now rendering")
+
+    //Used props
+    const patient = this.props.patient
+    const patientForm = this.props.patientForm
     return (
       <div className="container" >
         <div className="row">
-          {/* Three main areas for the Patient Page. */}
-          {/* Patient Data covers the constant items across all devices for a patient. */}
-          <PatientData
-            hasGroupSelect={(
-              (!this.props.patient.id) &&
-              this.state.groupName == null &&
-              this.props.optionStore.groupOptions.length > 1
-            )}
-            groupForm={this.props.groupForm}
-            optionStore={this.props.optionStore}
-            groupSubmit={this.groupSubmit}
-            patient={this.props.patient}
-            editPatient={() => this.props.dispatch(setEditPatient(true))}
-            deletePatient={this.removePatient}
-            hasPatientForm={this.props.isEditPatient}
-            patientForm={this.props.patientForm}
-            patientSubmit={this.patientSubmit}
-            onCancel={this.cancelPatient}
-          />
+          {(hasGroupSelect) ?
+            <PatientGroupSelect
+              groupForm={this.props.groupForm}
+              optionStore={this.props.optionStore}
+              onCancel={this.cancelPatient}
+              groupSubmit={this.groupSubmit}
+            /> : <span />
+          }
+
+          {(!hasGroupSelect && isEditPatient) ?
+            <PatientForm
+              patientForm={patientForm}
+              patient={patient}
+              patientSubmit={this.patientSubmit}
+              onCancel={this.cancelPatient}
+              deletePatient={this.removePatient}
+            /> : <span />
+          }
+
+          {(!hasGroupSelect && !isEditPatient) ?
+            <PatientDataBox
+              patient={patient}
+              inputs={patientForm.inputs}
+              editPatient={this.editPatient}
+            /> : <span />
+          }
+
           {/* The current device being viewed or edited. */}
           {(this.props.showDevice && !this.props.isEditPatient) ?
             <PatientDevice
