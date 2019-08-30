@@ -1,27 +1,46 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import ImageCard from '../components/ImageCard'
+import PatientAddDevice from '../components/Patient/PatientAddDevice'
 import PatientForm from '../components/Patient/PatientForm'
 import PatientDataBox from '../components/Patient/PatientDataBox'
 import PatientGroupSelect from '../components/Patient/PatientGroupSelect'
+import PatientDeviceForm from '../components/Patient/PatientDeviceForm'
+import PatientDeviceData from '../components/Patient/PatientDeviceData'
 import PatientDevices from '../components/Patient/PatientDevices'
-import PatientDevice from '../components/Patient/PatientDevice'
-import { getPatient, savePatient, deletePatient, clearPatient, setDeviceType, setDevice } from '../actions/patientsActions'
-import { getForm, getColHeaders, setEditPatient, setEditDevice, setShowDevice } from '../actions/displayActions'
-import { getGroupOptions } from '../actions/displayActions'
+import isEmpty from '../functions/isEmpty'
+import {
+  getPatient,
+  savePatient,
+  deletePatient,
+  clearPatient,
+  setDeviceType,
+  setDevice,
+  saveMeasurements
+} from '../actions/patientsActions'
+import {
+  getColHeaders,
+  getGroupOptions,
+  getForm,
+  setEditPatient,
+  setEditDevice,
+  setShowDevice
+} from '../actions/displayActions'
 
 @connect((store) => {
   return ({
-    sessionUser: store.session.user, //matters for new patient
-    patient: store.patients.patient,
+    addDeviceForm: store.display.addDevice,
+    device: store.patients.device,
+    deviceCols: store.display.deviceCols,
+    devices: store.patients.devices,
+    groupForm: store.display.selectGroup,
     isEditPatient: store.display.editPatient,
     isEditDevice: store.display.editDevice,
-    showDevice: store.display.showDevice,
+    measurementForm: store.display.measurementForm,
     optionStore: store.display.optionStore,
-    addDeviceForm: store.display.addDevice,
-    groupForm: store.display.selectGroup,
+    patient: store.patients.patient,
     patientForm: store.display.patientForm,
-    deviceCols: store.display.deviceCols,
-    devices: store.patients.devices
+    showDevice: store.display.showDevice
   })
 })
 export default class Patient extends React.Component {
@@ -132,28 +151,55 @@ export default class Patient extends React.Component {
 
   editPatient = () => this.props.dispatch(setEditPatient(true))
 
+
+  editDevice = () => {
+    this.props.dispatch(setEditDevice(true))
+  }
+
+  submitMeasurements = (measurements) => {
+    this.props.dispatch(saveMeasurements(measurements, this.props.measurementForm.inputs, this.props.patient.id, this.props.device))
+
+  }
+
+  cancelDevice = () => {
+    this.props.dispatch(setEditDevice(false))
+  }
+
+  deviceImage = (gender, side) => {
+    return `https://limbfore-js-assets.s3.amazonaws.com/${gender.toLowerCase()}-transradial-${side.charAt(0).toUpperCase()}.svg`
+  }
+
+
   //TODO This page looks rather messy at the moment.
   render() {
-    console.log("hello")
+    //Multi used props
+    const device = this.props.device
+    const patient = this.props.patient
+    const patientForm = this.props.patientForm
+    const ms = device.measurments
+    const measurementForm = this.props.measurementForm
+    const optionStore = this.props.optionStore
+
     //Booleans for determining form elements
     const hasGroupSelect = (
       (!this.props.patient.id) &&
       this.state.groupName == null &&
-      this.props.optionStore.groupOptions.length > 1
+      optionStore.groupOptions.length > 1
     )
-    const isEditPatient = this.props.isEditPatient
-    console.log("now rendering")
 
-    //Used props
-    const patient = this.props.patient
-    const patientForm = this.props.patientForm
+    const isEditPatient = this.props.isEditPatient
+    const isEditDevice = this.props.isEditDevice
+    const showDevice = this.props.showDevice && !this.props.isEditPatient
+    const hasDevices = this.props.patient.id && !this.props.isEditPatient
+    const hasMeasures = !isEmpty(ms)
+
     return (
       <div className="container" >
         <div className="row">
           {(hasGroupSelect) ?
             <PatientGroupSelect
               groupForm={this.props.groupForm}
-              optionStore={this.props.optionStore}
+              optionStore={optionStore}
               onCancel={this.cancelPatient}
               groupSubmit={this.groupSubmit}
             /> : <span />
@@ -177,23 +223,47 @@ export default class Patient extends React.Component {
             /> : <span />
           }
 
-          {/* The current device being viewed or edited. */}
-          {(this.props.showDevice && !this.props.isEditPatient) ?
-            <PatientDevice
+          {(showDevice && hasMeasures) ?
+              <PatientDeviceData
+                patient={patient}
+                device={device}
+                measurements={ms}
+                inputs={measurementForm.inputs}
+                editDevice={this.editDevice}
+                isEditDevice={isEditDevice}
+              /> : <span />
+          }
+
+          {(showDevice && isEditDevice) ?
+            <PatientDeviceForm
+              patient={patient}
+              device={device}
+              measurments={ms}
+              measurementForm={measurementForm}
+              submitMeasurements={this.submitMeasurements}
+              onCancel={this.cancelDevice}
             /> : <span />
           }
 
-          {/* The List of devices and addition of new devices. */}
-          {
-            (this.props.patient.id && !this.props.isEditPatient) ?
-              <PatientDevices
-                addDeviceForm={this.props.addDeviceForm}
-                addDevice={this.addDevice}
-                viewDevice={this.viewDevice}
-                deviceCols={this.props.deviceCols}
-                devices={this.props.devices}
-                isEditDevice={this.props.isEditDevice}
-              /> : <span />
+          {(showDevice && isEditDevice)?
+          <ImageCard
+            imageSource={this.deviceImage(patient.gender, device.side)}
+          />:<span/>}
+
+
+          {(hasDevices && !isEditDevice) ?
+            <PatientAddDevice
+              addDeviceForm={this.props.addDeviceForm}
+              addDevice={this.addDevice}
+            /> : <span />
+          }
+
+          {(hasDevices && this.props.devices.length > 0) ?
+            <PatientDevices
+              viewDevice={this.viewDevice}
+              deviceCols={this.props.deviceCols}
+              devices={this.props.devices}
+            /> : <span />
           }
         </div>
       </div >
