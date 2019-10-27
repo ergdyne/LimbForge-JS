@@ -1,6 +1,8 @@
 import {Entity, PrimaryGeneratedColumn, CreateDateColumn, OneToMany} from 'typeorm'
 import RecordAttribute from './RecordAttribute'
 import PatientRecord from './PatientRecord'
+import PartRecord from './PartRecord'
+import PartFileRecord from './PartFileRecord'
 import PatientDeviceRecord from './PatientDeviceRecord'
 import UXRecord from './UXRecord'
 
@@ -24,6 +26,12 @@ export class Record{
   //Patient Records
   @OneToMany(type => PatientRecord, patientRecord => patientRecord.record)
   patientRecords: PatientRecord[]
+
+  @OneToMany(type => PartRecord, partRecord => partRecord.record)
+  partRecords: PartRecord[]
+
+  @OneToMany(type => PartFileRecord, partFileRecord => partFileRecord.record)
+  partFileRecords: PartFileRecord[]
 
   //UXRecords
   @OneToMany(type => UXRecord, uXRecord => uXRecord.record)
