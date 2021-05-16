@@ -1,5 +1,4 @@
 import express from 'express'
-import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import cors from 'cors'
 import path from 'path'
