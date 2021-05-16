@@ -1,12 +1,6 @@
 import { Request, Response } from "express"
-import { getRepository, getManager } from "typeorm"
-import bcrypt from 'bcrypt'
+import { getRepository } from "typeorm"
 import { User } from '../entity/User'
-import { SiteAuth } from '../entity/SiteAuth'
-import { GroupState } from '../entity/ViewGroupState'
-import { UserGroup } from '../entity/UserGroup'
-import { Group } from '../entity/Group'
-import { ViewSiteAuth } from '../entity/ViewSiteAuth'
 import { FullUserGroup } from '../entity/ViewFullUserGroup'
 import { ViewAdminAccess } from '../entity/ViewAdminAccess'
 
