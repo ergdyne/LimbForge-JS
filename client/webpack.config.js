@@ -1,6 +1,6 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const {EnvironmentPlugin} = require("webpack");
+const { EnvironmentPlugin } = require("webpack");
 module.exports = {
   module: {
     rules: [
@@ -18,7 +18,6 @@ module.exports = {
               // you can specify a publicPath here
               // by default it uses publicPath in webpackOptions.output
               publicPath: '../',
-              hmr: process.env.NODE_ENV === 'development',
             },
           },
           'css-loader',
@@ -30,12 +29,11 @@ module.exports = {
       },
       {
         test: /\.html$/,
-        use: [
-          {
-            loader: "html-loader"
-          }
-        ]
-      }
+        exclude: [/node_modules/, require.resolve('./src/index.html')],
+        use: {
+          loader: 'file-loader',
+        },
+      },
     ]
   },
   resolve: {
