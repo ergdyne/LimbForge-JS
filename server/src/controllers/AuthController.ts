@@ -4,8 +4,6 @@ import { User } from '../entity/User'
 import { FullUserGroup } from '../entity/ViewFullUserGroup'
 import { ViewAdminAccess } from '../entity/ViewAdminAccess'
 
-const saltRounds = 11
-
 //Support function
 function siteAccess(vg: FullUserGroup[]) {
   const accessLevels = vg.map(g => g.access)
@@ -16,6 +14,31 @@ function siteAccess(vg: FullUserGroup[]) {
     return 'user'
   }
   return 'requested'
+}
+
+// Hard coded login for https and google by-pass
+function unsecure(req: Request, res: Response) {
+  const email = req.app.get('email')
+  console.log('Running unsecure local by-pass with user', email)
+  getRepository(User).findOneOrFail({ where: { email: email } }).then(user => {
+    getRepository(FullUserGroup).find({ where: { userId: user.id } })
+      .then(viewGroups => {
+        getRepository(ViewAdminAccess).findOne({ where: { userId: user.id } })
+          .then(adminAccess => {
+            const admin = (adminAccess == null) ? false : adminAccess.isAdmin
+            const userData = {
+              id: user.id,
+              email: user.email, //needed for admin
+              viewGroups: viewGroups,
+              siteAccess: admin ? 'admin' : siteAccess(viewGroups)
+            }
+            req.session.user = userData
+            req.session.save(() => {
+              return res.status(200).send(userData)
+            })
+          })
+      })
+  }).catch(error => res.status(400).send())
 }
 
 export default class AuthController {
@@ -33,7 +56,8 @@ export default class AuthController {
 
   //After session has been established by passport, provide user details.
   static login = async (req: Request, res: Response) => {
-    if(!req.session.passport){
+    if(!req.session.passport) {
+      if (req.app.get('secure') === false) { return unsecure(req, res) }
       return res.status(403).send({msg:'failed to auth'})
     }
 

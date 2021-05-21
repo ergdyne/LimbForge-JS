@@ -51,7 +51,9 @@ module.exports = {
   },
 
   plugins: [
-    new EnvironmentPlugin(['API_URL']),
+    new EnvironmentPlugin({
+      'API_URL': 'http://127.0.0.1:3000',
+    }),
     new HtmlWebPackPlugin({
       template: "./src/index.html",
       filename: "./index.html"

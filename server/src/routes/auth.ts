@@ -6,8 +6,8 @@ const router = Router()
 
 const googleAuth = passport.authenticate('google', {scope:['profile','https://www.googleapis.com/auth/userinfo.email']})
 
-router.get('/login',AuthController.login)
-router.get('/logout',AuthController.logout)
+router.get('/login', AuthController.login)
+router.get('/logout', AuthController.logout)
 
 router.get('/google/callback', googleAuth, AuthController.google)
 
