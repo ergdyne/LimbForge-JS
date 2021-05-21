@@ -17,10 +17,18 @@ import passportConfig from './functions/passportConfig'
 dotenv.config()
 
 //if in development mode, pulls in a certificate file for https.
-const devCert = (process.env.NODE_ENV !== 'production') ? {
-  key: fs.readFileSync(path.resolve('./server.key')),
-  cert: fs.readFileSync(path.resolve('./server.crt'))
-} : {}
+
+let devCert = {}
+let skipHTTPS = false
+try {
+  devCert = (process.env.NODE_ENV !== 'production') ? {
+    key: fs.readFileSync(path.resolve('./server.key')),
+    cert: fs.readFileSync(path.resolve('./server.crt'))
+  } : {}
+} catch (error) {
+  skipHTTPS = true
+  console.log('No Cert. Running in Local Login mode')
+}
 
 //Establishing connection to Database.
 createConnection().then(async (connection) => {
@@ -29,17 +37,25 @@ createConnection().then(async (connection) => {
   //The odd bit of naming app and server comes from an socket tutorial.
   const app = express()
   //In dev mode, we run the server as https. In production we use nginx to proxy.
-  const server = (process.env.NODE_ENV !== 'production') ?
-    https.createServer(devCert, app) :
-    http.createServer(app)
+  const server = (process.env.NODE_ENV === 'production' || skipHTTPS) ?
+    http.createServer(app) :
+    https.createServer(devCert, app)
 
   //Body parser handles incoming json documents.
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
 
-  //Passport is our connection to OAuth with Google.
-  app.use(passport.initialize())
-  passportConfig()
+  if (skipHTTPS) {
+    // Run in local testing mode with hardcoded login
+    app.set('secure', false)
+    // Change email to what you want to use locally
+    app.set('email', 'test@local.com')
+  } else {
+    //Passport is our connection to OAuth with Google.
+    app.set('secure', true)
+    app.use(passport.initialize())
+    passportConfig()
+  }
 
   //Corse and session handles cookies and authentication.
   app.use(cors({ origin: process.env.CLIENT_ORIGIN, credentials: true }))
@@ -72,7 +88,8 @@ createConnection().then(async (connection) => {
 
   //Notes to let me know things are happening.
   if (process.env.NODE_ENV !== 'production') {
-    console.log('Running https - DEV mode on', port)
+    
+    console.log(`Running http${skipHTTPS ? '' : 's'} - DEV mode on`, port)
 
   } else {
     console.log('Running http - Production mode on', port)

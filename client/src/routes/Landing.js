@@ -5,7 +5,7 @@ import { login } from '../actions/sessionActions'
 import { getGroupOptions } from '../actions/displayActions'
 import FormBuilder from '../components/FormBuilder'
 import OAuth from '../components/OAuth'
-import { API_URL, API_DOMAIN } from '../config/API'
+import { API_URL, API_DOMAIN, IS_HTTPS } from '../config/API'
 import { signUp } from '../actions/groupsActions'
 import home from '../functions/home'
 
@@ -44,6 +44,22 @@ export default class Landing extends React.Component {
     this.props.dispatch(signUp(groupData))
   }
 
+  loginForm() {
+    if (this.props.sessionUser.loggedIn) { return (<span />) }
+    if (IS_HTTPS) {
+      return (
+        <div className="card">
+        <OAuth
+        onLogIn={this.logIn}
+        provider={'google'}
+        key={'google'}
+        apiURL={API_URL}
+        socket={socket}
+      /></div>
+    )}
+    return <span>{'Running in Local mode, add user to DB'}</span> 
+  }
+
   render() {
     const groupOptions = this.props.groupOptions
     const signUpInputs = [
@@ -53,16 +69,7 @@ export default class Landing extends React.Component {
     return (
       <div className="container">
         <div className="row">
-          {(this.props.sessionUser.loggedIn) ?
-            <span /> :
-            <div className="card">
-              <OAuth
-              onLogIn={this.logIn}
-              provider={'google'}
-              key={'google'}
-              apiURL={API_URL}
-              socket={socket}
-            /></div>}
+          {this.loginForm()}
           {/* Will become and option for a user with no groups or site access */}
           <span>{(this.props.groupOptions.length > 0 && this.props.sessionUser.siteAccess === 'requested') ?
             <span>{(this.props.sessionUser.groups.length > 0) ?

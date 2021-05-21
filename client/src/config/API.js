@@ -10,9 +10,11 @@ let AXIOS_CONFIG = {
 //API url is mapped from the package.json file as part of the build script.
 let API_DOMAIN = process.env.API_URL
 let API_URL = `${API_DOMAIN}/api/`
+let IS_HTTPS = API_DOMAIN.startsWith('https')
 
 export {
   AXIOS_CONFIG,
   API_URL,
-  API_DOMAIN
+  API_DOMAIN,
+  IS_HTTPS
 }

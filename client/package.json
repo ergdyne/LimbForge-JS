@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'dist/*.js'",
+    "local-start": "webpack serve --open --mode development --stats-children",
     "start": "API_URL=https://127.0.0.1:3000 webpack serve --https --open --mode development --stats-children",
     "build": "API_URL=https://limbforge.ergdyne.com:8000 webpack --mode production",
     "test": "mocha --require jsdomSetup.js --require @babel/register --require ignore-styles --require isomorphic-fetch --recursive"
