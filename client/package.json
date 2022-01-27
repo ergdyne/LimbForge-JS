@@ -59,7 +59,7 @@
     "redux-promise-middleware": "6.1.2",
     "redux-thunk": "2.3.0",
     "socket.io-client": "4.1.1",
-    "three": "0.128.0",
+    "three": "0.137.0",
     "three-orbit-controls": "82.1.0",
     "three-stl-loader": "1.0.6",
     "underscore": "1.13.1"
