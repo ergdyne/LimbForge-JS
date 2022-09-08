@@ -42,7 +42,7 @@
     "css-loader": "5.2.4",
     "email-validator": "2.0.4",
     "file-saver": "2.0.5",
-    "jszip": "3.6.0",
+    "jszip": "3.7.0",
     "jszip-utils": "0.1.0",
     "mini.css": "3.0.1",
     "moment": "2.29.1",
